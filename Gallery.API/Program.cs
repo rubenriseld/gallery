@@ -1,4 +1,6 @@
 using Gallery.Database.Contexts;
+using Gallery.Database.Interfaces;
+using Gallery.Database.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +14,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<GalleryContext>(
 	options =>
 	options.UseSqlServer(builder.Configuration.GetConnectionString("DevConnection")));
+builder.Services.AddScoped<IGalleryService, GalleryService>();
 
 var app = builder.Build();
 

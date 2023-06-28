@@ -17,6 +17,7 @@ namespace Gallery.Database.Entities
 		public string? Title { get; set; }
 		[MaxLength(80), Required]
 		public string? Description { get; set; }
+		public int ImageCollectionId { get; set; }
 		public virtual ImageCollection? ImageCollection { get; set; }
 
 		public string? ImageName { get; set; }

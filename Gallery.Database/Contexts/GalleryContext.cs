@@ -22,7 +22,31 @@ namespace Gallery.Database.Contexts
 		protected override void OnModelCreating(ModelBuilder builder)
 		{
 			base.OnModelCreating(builder);
-			//SeedData(builder);
+			SeedData(builder);
+		}
+		private void SeedData(ModelBuilder builder)
+		{
+			var imagecollections = new List<ImageCollection>
+			{
+				new ImageCollection
+				{
+					Id = 1,
+					Name = "collection 1"
+				}
+			};
+			builder.Entity<ImageCollection>().HasData(imagecollections);
+			var images = new List<Image>
+			{
+				new Image
+				{
+					Id = 1,
+					Title = "image 1",
+					Description = "desc 1",
+					ImageCollectionId = 1,
+					ImageName = "test.png"
+				}
+			};
+			builder.Entity<Image>().HasData(images);
 		}
 	}
 }
