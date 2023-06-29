@@ -1,14 +1,15 @@
 {
   "version": 2,
-  "dgSpecHash": "YWNv9VUoKpHuBVpm8wNCURQcq3sQbfCMJyHdJR+xgtlC9X+0bqrR7mZBDk+cX18Cgk/WK0S3qUO2yHwOMXXO4Q==",
+  "dgSpecHash": "+XySHEz5TaonHOQ4JG5vJzq6OqjYtVMZm/AJzz54Hfdc9CiPHFsQ74Elc2Ld6BKsbybC8SsjqWA0QES/pEKYow==",
   "success": true,
   "projectFilePath": "C:\\Users\\ruben\\source\\repos\\Gallery\\Gallery.Database\\Gallery.Database.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\ruben\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\ruben\\.nuget\\packages\\azure.core\\1.24.0\\azure.core.1.24.0.nupkg.sha512",
     "C:\\Users\\ruben\\.nuget\\packages\\azure.identity\\1.6.0\\azure.identity.1.6.0.nupkg.sha512",
     "C:\\Users\\ruben\\.nuget\\packages\\microsoft.aspnetcore.http.features\\5.0.17\\microsoft.aspnetcore.http.features.5.0.17.nupkg.sha512",
     "C:\\Users\\ruben\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\1.1.1\\microsoft.bcl.asyncinterfaces.1.1.1.nupkg.sha512",
-    "C:\\Users\\ruben\\.nuget\\packages\\microsoft.csharp\\4.5.0\\microsoft.csharp.4.5.0.nupkg.sha512",
+    "C:\\Users\\ruben\\.nuget\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512",
     "C:\\Users\\ruben\\.nuget\\packages\\microsoft.data.sqlclient\\5.0.2\\microsoft.data.sqlclient.5.0.2.nupkg.sha512",
     "C:\\Users\\ruben\\.nuget\\packages\\microsoft.data.sqlclient.sni.runtime\\5.0.1\\microsoft.data.sqlclient.sni.runtime.5.0.1.nupkg.sha512",
     "C:\\Users\\ruben\\.nuget\\packages\\microsoft.entityframeworkcore\\7.0.8\\microsoft.entityframeworkcore.7.0.8.nupkg.sha512",

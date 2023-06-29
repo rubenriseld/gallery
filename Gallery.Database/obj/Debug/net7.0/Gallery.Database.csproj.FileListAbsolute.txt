@@ -10,3 +10,6 @@ C:\Users\ruben\source\repos\Gallery\Gallery.Database\obj\Debug\net7.0\Gallery.Da
 C:\Users\ruben\source\repos\Gallery\Gallery.Database\obj\Debug\net7.0\refint\Gallery.Database.dll
 C:\Users\ruben\source\repos\Gallery\Gallery.Database\obj\Debug\net7.0\Gallery.Database.pdb
 C:\Users\ruben\source\repos\Gallery\Gallery.Database\obj\Debug\net7.0\ref\Gallery.Database.dll
+C:\Users\ruben\source\repos\Gallery\Gallery.Database\bin\Debug\net7.0\Gallery.Common.dll
+C:\Users\ruben\source\repos\Gallery\Gallery.Database\bin\Debug\net7.0\Gallery.Common.pdb
+C:\Users\ruben\source\repos\Gallery\Gallery.Database\obj\Debug\net7.0\Gallery.Database.csproj.CopyComplete

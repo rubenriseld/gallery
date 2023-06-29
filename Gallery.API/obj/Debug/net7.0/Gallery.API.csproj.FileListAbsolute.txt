@@ -76,3 +76,6 @@ C:\Users\ruben\source\repos\Gallery\Gallery.API\obj\Debug\net7.0\refint\Gallery.
 C:\Users\ruben\source\repos\Gallery\Gallery.API\obj\Debug\net7.0\Gallery.API.pdb
 C:\Users\ruben\source\repos\Gallery\Gallery.API\obj\Debug\net7.0\Gallery.API.genruntimeconfig.cache
 C:\Users\ruben\source\repos\Gallery\Gallery.API\obj\Debug\net7.0\ref\Gallery.API.dll
+C:\Users\ruben\source\repos\Gallery\Gallery.API\bin\Debug\net7.0\AutoMapper.dll
+C:\Users\ruben\source\repos\Gallery\Gallery.API\bin\Debug\net7.0\Gallery.Common.dll
+C:\Users\ruben\source\repos\Gallery\Gallery.API\bin\Debug\net7.0\Gallery.Common.pdb
