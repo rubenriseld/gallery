@@ -28,6 +28,8 @@ public interface IGalleryService
 		where TEntity : class
 		where TDto : class;
 
+	Task<TEntity> Add<TEntity>(TEntity entity)
+		where TEntity : class, IEntity;
 	void Update<TEntity, TDto>(int id, TDto dto)
 		where TEntity : class, IEntity
 		where TDto : class;

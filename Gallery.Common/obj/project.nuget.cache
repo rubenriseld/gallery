@@ -1,8 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "t7ugnZDlFLnSKXbiMMlw5xOqrEA5lae2BagysumqFfgS5eVorKAXepUcFqV8bbzQldU+FOCH8xtyjyb2MDdKZQ==",
+  "dgSpecHash": "ZH2fdc/xJnNshrW71JcwSGyVEiANSe1fcUuem6QX2oKi8ljQdP0D2I5ReSmobTEU37dyzVUYwbk/eo490QXwkA==",
   "success": true,
   "projectFilePath": "C:\\Users\\ruben\\source\\repos\\Gallery\\Gallery.Common\\Gallery.Common.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\ruben\\.nuget\\packages\\microsoft.aspnetcore.http.features\\5.0.17\\microsoft.aspnetcore.http.features.5.0.17.nupkg.sha512",
+    "C:\\Users\\ruben\\.nuget\\packages\\microsoft.extensions.primitives\\5.0.1\\microsoft.extensions.primitives.5.0.1.nupkg.sha512",
+    "C:\\Users\\ruben\\.nuget\\packages\\system.io.pipelines\\5.0.2\\system.io.pipelines.5.0.2.nupkg.sha512"
+  ],
   "logs": []
 }

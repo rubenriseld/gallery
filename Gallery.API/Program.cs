@@ -5,6 +5,8 @@ using Gallery.Database.Entities;
 using Gallery.Database.Interfaces;
 using Gallery.Database.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
+using System.Net.NetworkInformation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,22 +21,27 @@ builder.Services.AddDbContext<GalleryContext>(
 	options =>
 	options.UseSqlServer(builder.Configuration.GetConnectionString("DevConnection")));
 
+builder.Services.AddCors();
 
-builder.Services.AddCors(policy =>
-{
-	policy.AddPolicy("CorsAllAccessPolicy", opt =>
-		opt.AllowAnyOrigin()
-		.AllowAnyHeader()
-		.AllowAnyMethod()
-	);
-});
+//builder.Services.AddCors(policy =>
+//{
+//	policy.AddPolicy("CorsAllAccessPolicy", opt =>
+//		opt.AllowAnyOrigin()
+//		.AllowAnyHeader()
+//		.AllowAnyMethod()
+//	);
+//});
 
 ConfigureAutoMapper(builder.Services);
 
 builder.Services.AddScoped<IGalleryService, GalleryService>();
 
 var app = builder.Build();
+var env = app.Environment;
 
+app.UseCors(options => options.WithOrigins("http://localhost:5173")
+	.AllowAnyMethod()
+	.AllowAnyHeader());
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -43,6 +50,12 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseStaticFiles(new StaticFileOptions
+{
+	FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath, "Images")),
+	RequestPath = "/Images"
+} );
 
 app.UseAuthorization();
 

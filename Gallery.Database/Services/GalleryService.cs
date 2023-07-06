@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Gallery.Database.Contexts;
+using Gallery.Database.Entities;
 using Gallery.Database.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Update;
@@ -71,6 +72,16 @@ public class GalleryService : IGalleryService
 		await _db.Set<TEntity>().AddAsync(entity);
 		return entity;
 	}
+	///hej
+
+	public async Task<TEntity> Add<TEntity>(TEntity entity)
+		where TEntity : class, IEntity
+	{
+		await _db.Set<TEntity>().AddAsync(entity);
+		return entity;
+	}
+
+
 
 	public void Update<TEntity, TDto>(int id, TDto dto)
 		where TEntity : class, IEntity

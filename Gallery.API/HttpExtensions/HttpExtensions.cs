@@ -1,5 +1,8 @@
-﻿using Gallery.Database.Interfaces;
-
+﻿using Gallery.Common.DTOs;
+using Gallery.Database.Entities;
+using Gallery.Database.Interfaces;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 namespace Gallery.API.Extensions;
 
 public static class HttpExtensions
@@ -9,8 +12,11 @@ public static class HttpExtensions
         where TDto : class
     {
         db.Include<TEntity>();
-        return Results.Ok(await db.GetAsync<TEntity, TDto>());
+        var result = await db.GetAsync<TEntity, TDto>();
+        return Results.Ok(result);
+        
     }
+
 
     public static async Task<IResult> HttpSingleAsync<TEntity, TDto>(this IGalleryService db, int id)
        where TEntity : class, IEntity
