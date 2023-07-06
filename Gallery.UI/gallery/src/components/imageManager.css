@@ -1,0 +1,29 @@
+.image-manager-container {
+    display:flex;
+}
+.image-manager-form {
+    width: 30%;
+}
+.image-results-container {
+    width: 70%;
+    display:flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+.image-results-title{
+    flex-basis: 100%;
+    text-align: center;
+}
+
+
+.image-card{
+    width: 25%;
+    height: 25rem;
+    padding:0.5rem;
+}
+.record-image{
+    width: 100%;
+}
+.record-details * {
+    margin:0;
+}

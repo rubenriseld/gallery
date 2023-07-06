@@ -12,8 +12,18 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+  
 }
-
+#root, body {
+    width: 100%;
+    display: flex;
+    max-width: 1920px;
+    align-items: center;
+    justify-content: center;
+}
+body{
+    margin: auto;
+}
 a {
   font-weight: 500;
   color: #646cff;
@@ -23,18 +33,7 @@ a:hover {
   color: #535bf2;
 }
 
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
 
 button {
   border-radius: 8px;
