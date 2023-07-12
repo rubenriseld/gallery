@@ -2,9 +2,36 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import './index.css'
+import {
+    createBrowserRouter,
+    RouterProvider,
+    Route,
+    Link,
+  } from "react-router-dom";
+import AdminPage from './components/AdminPage.jsx';
+import IndexPage from './components/IndexPage.jsx';
+import ErrorPage from './ErrorPage.jsx';
+
+const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <App />,
+      errorElement: <ErrorPage />,
+      children: [
+        {
+          path: "/",
+          element: <IndexPage />,
+        },
+        {
+          path: "/admin", //routing för enskild receptsida
+          element: <AdminPage />,
+        }
+      ],
+    },
+  ]);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+    <RouterProvider router={router}/>
+ </React.StrictMode>
 )

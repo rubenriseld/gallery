@@ -5,27 +5,21 @@ import axios from 'axios';
 import ImageEditor from './components/ImageManager';
 import ImageCollectionManager from './components/ImageCollectionManager';
 
-export default function App() {
-    const [selectedEditor, setSelectedEditor] = useState("images");
+import {
+    NavLink,
+    Outlet
+  } from 'react-router-dom'
 
+export default function App() {
     return (
         <>
-            <div className='manager-page'>
-                <div className='manager-header'>
-                    <h1 className='manager-title'>Gallery Manager</h1>
-                    <div className='manager-selector'>
-                        <button onClick={x => setSelectedEditor("images")}>Images</button>
-                        <button onClick={x => setSelectedEditor("imageCollections")}>Image Collections</button>
-                    </div>
-                </div>
-                <section className='manager-section'>
-                    {selectedEditor == "images" ?
-                        <ImageEditor></ImageEditor>
-                        :
-                        <ImageCollectionManager></ImageCollectionManager>
-                    }
-                </section>
-            </div>
+        <header>
+            <NavLink to="/">home</NavLink>
+            <NavLink to="/admin">admin</NavLink>
+        </header>
+        <main>
+            <Outlet/>
+        </main>
         </>
     )
 }

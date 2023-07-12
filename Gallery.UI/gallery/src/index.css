@@ -19,7 +19,8 @@
     display: flex;
     max-width: 1920px;
     align-items: center;
-    justify-content: center;
+    /* justify-content: center; */
+    flex-direction: column;
 }
 body{
     margin: auto;
