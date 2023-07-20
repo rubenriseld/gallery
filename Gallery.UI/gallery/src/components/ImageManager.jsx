@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react"
 import axios from 'axios';
-import './imageManager.css'
 
 
 
@@ -200,12 +199,14 @@ export default function ImageManager() {
         return (
             <div onClick={() => showRecordDetails(data)}>
                 <img className="record-image"src={data.imageSrc}></img>
-                <div className="record-details">
-                    <p>id: {data.id}</p>
-                    <h5>{data.title}</h5>
-                    <span>{data.description}</span>
+                <div className="record-details-container">
+                    <div className="record-details">
+                        <p>id: {data.id}</p>
+                        <h5>{data.title}</h5>
+                        <span>{data.description}</span>
+                    </div>
+                    <button className='record-delete-btn' onClick={e => onDelete(e, parseInt(data.id))}><span className="material-symbols-outlined">delete</span></button>
                 </div>
-                <button className='delete-button' onClick={e => onDelete(e, parseInt(data.id))}>delete</button>
             </div>
         )
     }
@@ -242,7 +243,7 @@ export default function ImageManager() {
                     </div>
                 </form>
                 <section className="image-results-container">
-                    <h3 className="image-results-title">results</h3>
+                    {/* <h3 className="image-results-title">results</h3> */}
                     {
                         imageList.map((e, i) =>
                         <div className="image-card" key={i}>{imageCard(imageList[i])}</div>

@@ -1,8 +1,16 @@
+import { NavLink, Route, Router, Switch } from "react-router-dom/cjs/react-router-dom.min";
+import Header from "./Header";
+import Collection from "./Collection";
+
+
+
+
 export default function IndexPage() {
+    
 return(
     <>
-        <h1>hej</h1>
-        <p>nej</p>
+        {/* <Header></Header> */}
+        {/* <Collection id={2}></Collection> */}
     </>
 )
 }
