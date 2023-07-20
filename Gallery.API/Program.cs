@@ -39,7 +39,7 @@ builder.Services.AddScoped<IGalleryService, GalleryService>();
 var app = builder.Build();
 var env = app.Environment;
 
-app.UseCors(options => options.WithOrigins("http://localhost:5173")
+app.UseCors(options => options.WithOrigins("http://localhost:3000")
 	.AllowAnyMethod()
 	.AllowAnyHeader());
 // Configure the HTTP request pipeline.

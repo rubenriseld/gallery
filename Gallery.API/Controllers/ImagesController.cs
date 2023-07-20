@@ -37,8 +37,13 @@ public class ImagesController : ControllerBase
 
 	// GET api/<CoursesController>/5
 	[HttpGet("{id}")]
-	public async Task<IResult> Get(int id) =>
-		await _db.HttpSingleAsync<Image, ImageDTO>(id);
+	public async Task<IResult> Get(int id)
+	{
+		var result = await _db.SingleAsync<Image, ImageDTO>(e => e.Id.Equals(id));
+		result.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, result.ImageName);
+		return Results.Ok(result);
+	}
+		//await _db.HttpSingleAsync<Image, ImageDTO>(id);
 
 	// POST api/<CoursesController>
 	[HttpPost]

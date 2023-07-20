@@ -23,13 +23,23 @@ public class ImageCollectionsController : ControllerBase
 
 	// GET api/<CoursesController>/5
 	[HttpGet("{id}")]
-	public async Task<IResult> Get(int id) =>
-		await _db.HttpSingleAsync<ImageCollection, ImageCollectionDTO>(id);
+	public async Task<IResult> Get(int id)
+	{
+		_db.Include<ImageCollection>();
+
+		var result = await _db.SingleAsync<ImageCollection, ImageCollectionDTO>(e => e.Id.Equals(id));
+		foreach (var item in result.Images)
+		{
+			item.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, item.ImageName);
+		}
+		return Results.Ok(result);
+	}
+		//await _db.HttpSingleAsync<ImageCollection, ImageCollectionDTO>(id);
 
 	// POST api/<CoursesController>
 	[HttpPost]
-	public async Task<IResult> Post([FromBody] ImageCollectionCreateDTO image) =>
-		await _db.HttpPostAsync<ImageCollection, ImageCollectionCreateDTO>(image);
+	public async Task<IResult> Post([FromBody] ImageCollectionCreateDTO dto) =>
+		await _db.HttpPostAsync<ImageCollection, ImageCollectionCreateDTO>(dto);
 
 	// PUT api/<CoursesController>/5
 	[HttpPut("{id}")]
