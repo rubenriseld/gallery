@@ -1,16 +1,21 @@
 import React, { useState, useEffect } from "react"
+import Modal from "./Modal";
 import axios from 'axios';
 
 export default function Collection({id}){
     
     const [collection, setCollection] = useState([]);
-
+    const [clickedImage, setClickedImage] = useState(null);
+    const [currentIndex, setCurrentIndex] = useState(null);
+    const backdropDiv = document.createElement("div");
+    backdropDiv.id = "backdrop";
+    backdropDiv.classList.add("fadeInFilter");
+    
     useEffect(() => {
         getImageCollection();
+        
     }, []);
 
-    function getCollection(id) {
-    }
     function getImageCollection(){
         // getCollection(id)
         axios.get('https://localhost:6001/api/ImageCollections/'+id)
@@ -21,36 +26,60 @@ export default function Collection({id}){
         .catch(error => console.log(error));
     }
 
-    
-    // const galleryAPI = (url = 'https://localhost:6001/api/Images') => {
-    //     return {
-    //         getCollections: () => axios.get('https://localhost:6001/api/ImageCollections'),
-    //         fetchAll: () => axios.get(url),
-    //         // create: newRecord => axios.post(url, newRecord),
-    //         create: newRecord => axios.post(url, newRecord, {
-    //             headers: {
-    //                 'Content-Type': 'multipart/form-data'
-    //             }
-    //         }),
-    //         update: (id, updatedRecord) => axios.put(url + "/" + id, updatedRecord, {
-    //             headers: {
-    //                 'Content-Type': 'multipart/form-data'
-    //             }
-    //         }),
-    //         delete: id => axios.delete(url + "/" + id),
-    //     }
-    // }
+    const handleClick = (image, index) => {
+        setCurrentIndex(index);
+        setClickedImage(image.imageSrc);
+        document.body.appendChild(backdropDiv);
+        document.body.classList.add("stop-scrolling")
+
+    }
+
+    const handleRotationRight = () => {
+        const totalLength = collection.length;
+        if(currentIndex +1 >= totalLength){
+            setCurrentIndex(0);
+            const newImageSrc = collection[0].imageSrc;
+            setClickedImage(newImageSrc);
+            return;
+        }
+        const newIndex = currentIndex+1;
+        setCurrentIndex(newIndex);
+        const newUrl = collection[newIndex].imageSrc;
+        setClickedImage(newUrl);
+    }
+    const handleRotationLeft = () => {
+        const totalLength = collection.length;
+        if(currentIndex === 0){
+            setCurrentIndex(totalLength-1);
+            const newImageSrc = collection[totalLength-1].imageSrc;
+            setClickedImage(newImageSrc);
+            return;
+        }
+        const newIndex = currentIndex-1;
+        setCurrentIndex(newIndex);
+        const newUrl = collection[newIndex].imageSrc;
+        setClickedImage(newUrl);
+    }
+
     return(
         <>
-        <div>
-            {collection.map((i) => {
-                // <img key={i.}></img>
+        <div className="collection-container">
+            {collection.map((image, index) => {
                 return(
                     
-                    <img id={i.id} src={i.imageSrc} width={300} height={300}/>
+                    <img key={image.id} className="collection-thumbnail-img" src={image.imageSrc} onClick={() => handleClick(image, index)}/>
                 )
             })}
         </div>
+        {clickedImage != null ? 
+            <Modal 
+                imageSrc={clickedImage} 
+                setClickedImage={setClickedImage} 
+                handleRotationRight={handleRotationRight} 
+                handleRotationLeft={handleRotationLeft}
+                initialIsVisible={true}
+            />
+            : <></>}
         </>
         )
 }
