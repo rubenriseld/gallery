@@ -16,7 +16,8 @@ const clientId = import.meta.env.VITE_CLIENT_ID;
 const oktaAuth = new OktaAuth({
     issuer: issuer,
     clientId: clientId,
-    redirectUri: window.location.origin + '/login/callback'
+    // redirectUri: window.location.origin + '/login/callback'
+    redirectUri: 'https://rubenriseld.se/login/callback'
 });
 
 export default function App() {
