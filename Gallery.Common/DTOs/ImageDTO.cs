@@ -14,7 +14,7 @@ public class ImageBaseDTO
 	public string Title { get; set; } = null!;
 	public string Description { get; set; } = null!;
 	public string ImageName { get; set; } = null!;
-	public string ImageSrc { get; set; }
+	public string? ImageSrc { get; set; }
 
 	//public IFormFile ImageFile { get; set; }
 
