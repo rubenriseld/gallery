@@ -17,7 +17,9 @@ export default function Collection({id}){
 
     function getImageCollection(){
         // getCollection(id)
-        axios.get('https://localhost:6001/api/ImageCollections/'+id)
+        // axios.get('https://localhost:6001/api/ImageCollections/'+id)
+        axios.get('https://galleryapiappservice.azurewebsites.net/ImageCollections/'+id)
+    
         .then(response => {
             console.log(response.data);
             setCollection(response.data.images)
