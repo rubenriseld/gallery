@@ -1,0 +1,15 @@
+C:\Users\ruben\source\repos\Gallery\Gallery.Database\bin\Release\net7.0\Gallery.Database.deps.json
+C:\Users\ruben\source\repos\Gallery\Gallery.Database\bin\Release\net7.0\Gallery.Database.dll
+C:\Users\ruben\source\repos\Gallery\Gallery.Database\bin\Release\net7.0\Gallery.Database.pdb
+C:\Users\ruben\source\repos\Gallery\Gallery.Database\bin\Release\net7.0\Gallery.Common.dll
+C:\Users\ruben\source\repos\Gallery\Gallery.Database\bin\Release\net7.0\Gallery.Common.pdb
+C:\Users\ruben\source\repos\Gallery\Gallery.Database\obj\Release\net7.0\Gallery.Database.csproj.AssemblyReference.cache
+C:\Users\ruben\source\repos\Gallery\Gallery.Database\obj\Release\net7.0\Gallery.Database.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ruben\source\repos\Gallery\Gallery.Database\obj\Release\net7.0\Gallery.Database.AssemblyInfoInputs.cache
+C:\Users\ruben\source\repos\Gallery\Gallery.Database\obj\Release\net7.0\Gallery.Database.AssemblyInfo.cs
+C:\Users\ruben\source\repos\Gallery\Gallery.Database\obj\Release\net7.0\Gallery.Database.csproj.CoreCompileInputs.cache
+C:\Users\ruben\source\repos\Gallery\Gallery.Database\obj\Release\net7.0\Gallery.Database.csproj.CopyComplete
+C:\Users\ruben\source\repos\Gallery\Gallery.Database\obj\Release\net7.0\Gallery.Database.dll
+C:\Users\ruben\source\repos\Gallery\Gallery.Database\obj\Release\net7.0\refint\Gallery.Database.dll
+C:\Users\ruben\source\repos\Gallery\Gallery.Database\obj\Release\net7.0\Gallery.Database.pdb
+C:\Users\ruben\source\repos\Gallery\Gallery.Database\obj\Release\net7.0\ref\Gallery.Database.dll

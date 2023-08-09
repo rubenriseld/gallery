@@ -19,7 +19,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<GalleryContext>(
 	options =>
-	options.UseSqlServer(builder.Configuration.GetConnectionString("DevConnection")));
+	options.UseSqlServer(builder.Configuration.GetConnectionString("GalleryConnection")));
 
 builder.Services.AddCors();
 
@@ -39,7 +39,12 @@ builder.Services.AddScoped<IGalleryService, GalleryService>();
 var app = builder.Build();
 var env = app.Environment;
 
-app.UseCors(options => options.WithOrigins("http://localhost:3000")
+//local dev
+//app.UseCors(options => options.WithOrigins("http://localhost:3000")
+//	.AllowAnyMethod()
+//	.AllowAnyHeader());
+
+app.UseCors(options => options.WithOrigins("https://rubenriseld.se/")
 	.AllowAnyMethod()
 	.AllowAnyHeader());
 // Configure the HTTP request pipeline.

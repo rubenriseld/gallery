@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+This file is used by the publish/package process of your Web project. You can customize the behavior of this process
+by editing this MSBuild file. In order to learn more about this please visit https://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project>
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAANpxyZ/8uCk+4mb90/GTwBgAAAAACAAAAAAAQZgAAAAEAACAAAAAVyubSRx14mjGwpKm02KPUo9Jk7MaBSor/z9CwMbZlXwAAAAAOgAAAAAIAACAAAACYKPH822R8IH9ob+oxRV1taXdntV8C3MZLzpVasfje3IAAAABzBtK9CWBcdeansMsRnmunlBnjEumxTegIAi4/CrZcy2iYUY2irJpzUzTNFRNuqa9JH5V4W6S2k57TqYx7Kk1NTeUlD4DHSswoT8U9DFobrdoMmxTb2ESuIntnv0iUcren/jcSNCoMVZi9SCeRtxwRQtcwZljoi8PfstaltaXJbEAAAABV9xD51l8Ua5ffZVS2Q/eVp0DpaG4NJFrfdoO3AJPwvtsTUERBzaNsQwIV6ZBoSL6wS2rm8OW+LPpOZMSFZjz+</EncryptedPassword>
+    <History>True|2023-08-09T22:16:00.7580099Z;</History>
+    <LastFailureDetails />
+  </PropertyGroup>
+  <ItemGroup>
+    <EFMigrations Include="Gallery.Database.Contexts.GalleryContext">
+      <Value>Data Source=tcp:gallery-apidbserver.database.windows.net,1433%3bInitial Catalog=Gallery.API_db%3bUser Id=rubenriseld%40gallery-apidbserver%3bPassword=%40Gurkskiva08</Value>
+    </EFMigrations>
+  </ItemGroup>
+</Project>

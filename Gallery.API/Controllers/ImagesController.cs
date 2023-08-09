@@ -34,9 +34,20 @@ public class ImagesController : ControllerBase
 	[HttpGet("{id}")]
 	public async Task<IResult> Get(int id)
 	{
-		var result = await _db.SingleAsync<Image, ImageDTO>(e => e.Id.Equals(id));
-		result.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, result.ImageName);
-		return Results.Ok(result);
+		try
+		{
+
+			var result = await _db.SingleAsync<Image, ImageDTO>(e => e.Id.Equals(id));
+			result.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, result.ImageName);
+			return Results.Ok(result);
+		}
+		catch (Exception ex)
+		{
+			return Results.BadRequest($"Couldn't get the Images.\n{ex}.");
+			throw;
+		}
+		//return Results.BadRequest($"Couldn't get the Images.");
+
 	}
 
 	[HttpPost]
