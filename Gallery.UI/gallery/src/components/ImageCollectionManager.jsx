@@ -34,7 +34,7 @@ export default function ImageCollectionManager() {
             }
         }, [recordForEdit])
 
-    const galleryAPI = (url = 'https://localhost:6001/api/ImageCollections') => {
+    const galleryAPI = (url = 'https://galleryapiappservice.azurewebsites.net/ImageCollections') => {
         return {
             fetchAll: () => axios.get(url),
             // create: newRecord => axios.post(url, newRecord),

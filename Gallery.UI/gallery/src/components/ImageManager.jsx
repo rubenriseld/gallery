@@ -53,9 +53,12 @@ export default function ImageManager() {
     }, [recordForEdit])
 
     //axios methods
-    const galleryAPI = (url = 'https://localhost:6001/api/Images') => {
+    // const galleryAPI = (url = 'https://localhost:6001/api/Images') => {
+        
+        const galleryAPI = (url = 'https://galleryapiappservice.azurewebsites.net/Images') => {
         return {
-            getCollections: () => axios.get('https://localhost:6001/api/ImageCollections'),
+            // getCollections: () => axios.get('https://localhost:6001/api/ImageCollections'),
+            getCollections: () => axios.get('https://galleryapiappservice.azurewebsites.net/ImageCollections'),
             fetchAll: () => axios.get(url),
             // create: newRecord => axios.post(url, newRecord),
             create: newRecord => axios.post(url, newRecord, {

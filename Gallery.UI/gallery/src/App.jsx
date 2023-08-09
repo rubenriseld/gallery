@@ -8,8 +8,10 @@ import Header from './components/Header';
 import SignIn from './components/SignIn';
 import Collection from './components/Collection.jsx';
 
-const issuer = import.meta.env.VITE_ISSUER;
-const clientId = import.meta.env.VITE_CLIENT_ID;
+// const issuer = import.meta.env.VITE_ISSUER;
+// const clientId = import.meta.env.VITE_CLIENT_ID;
+const issuer = process.env.VITE_ISSUER;
+const clientId = process.env.VITE_CLIENT_ID;
 
 const oktaAuth = new OktaAuth({
     issuer: issuer,
