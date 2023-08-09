@@ -1,5 +1,4 @@
-﻿using Gallery.API.Extensions;
-using Gallery.Common.DTOs;
+﻿using Gallery.Common.DTOs;
 using Gallery.Database.Entities;
 using Gallery.Database.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -16,12 +15,15 @@ public class ImageCollectionsController : ControllerBase
 	{
 		_db = db;
 	}
-	// GET: api/<CoursesController>
-	[HttpGet]
-	public async Task<IResult> Get() =>
-		await _db.HttpGetAsync<ImageCollection, ImageCollectionDTO>();
 
-	// GET api/<CoursesController>/5
+	[HttpGet]
+	public async Task<IResult> Get() 
+	{
+		await _db.GetAsync<ImageCollection, ImageCollectionDTO>();
+		var result = await _db.GetAsync<ImageCollection, ImageCollectionDTO>();
+		return Results.Ok(result);
+	}
+
 	[HttpGet("{id}")]
 	public async Task<IResult> Get(int id)
 	{
@@ -34,21 +36,54 @@ public class ImageCollectionsController : ControllerBase
 		}
 		return Results.Ok(result);
 	}
-		//await _db.HttpSingleAsync<ImageCollection, ImageCollectionDTO>(id);
 
-	// POST api/<CoursesController>
 	[HttpPost]
-	public async Task<IResult> Post([FromBody] ImageCollectionCreateDTO dto) =>
-		await _db.HttpPostAsync<ImageCollection, ImageCollectionCreateDTO>(dto);
+	public async Task<IResult> Post([FromBody] ImageCollectionCreateDTO dto)
+	{
+		try
+		{
+			var entity = await _db.AddAsync<ImageCollection, ImageCollectionCreateDTO>(dto);
+			if (await _db.SaveChangesAsync())
+			{
+				return Results.Created($"/imagecollections/{entity.Id}", entity);
+			}
+		}
+		catch (Exception ex)
+		{
+			return Results.BadRequest($"Couldn't add the Image Collection.\n{ex}.");
+			throw;
+		}
+		return Results.BadRequest($"Couldn't add the Image Collection.");
+	}
 
-	// PUT api/<CoursesController>/5
 	[HttpPut("{id}")]
-	public async Task<IResult> Put(int id, [FromBody] ImageCollectionEditDTO dto) =>
-		await _db.HttpPutAsync<ImageCollection, ImageCollectionEditDTO>(id, dto);
+	public async Task<IResult> Put(int id, [FromBody] ImageCollectionEditDTO dto)
+	{
+		try
+		{
+			if (!await _db.AnyAsync<ImageCollection>(e => e.Id.Equals(id))) return Results.NotFound();
+			_db.Update<ImageCollection, ImageCollectionEditDTO>(id, dto);
+			if (await _db.SaveChangesAsync()) return Results.NoContent();
+		}
+		catch (Exception ex)
+		{
+			return Results.BadRequest($"Couldn't update the Image Collection.\n{ex}.");
+		}
+		return Results.BadRequest($"Couldn't update the Image Collection.");
+	}
 
-
-	// DELETE api/<CoursesController>/5
 	[HttpDelete("{id}")]
-	public async Task<IResult> Delete(int id) =>
-		await _db.HttpDeleteAsync<ImageCollection>(id);
+	public async Task<IResult> Delete(int id)
+	{
+		try
+		{
+			if (!await _db.DeleteAsync<ImageCollection>(id)) return Results.NotFound();
+			if (await _db.SaveChangesAsync()) return Results.NoContent();
+		}
+		catch (Exception ex)
+		{
+			return Results.BadRequest($"Couldn't delete the Image Collection.\n{ex}.");
+		}
+		return Results.BadRequest($"Couldn't delete the Image Collection.");
+	}
 }

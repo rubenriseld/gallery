@@ -1,5 +1,4 @@
-﻿using Gallery.API.Extensions;
-using Gallery.Common.DTOs;
+﻿using Gallery.Common.DTOs;
 using Gallery.Database.Entities;
 using Gallery.Database.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -21,7 +20,6 @@ public class ImagesController : ControllerBase
 		_hostEnvironment = hostEnvironment;
 	}
 
-	// GET: api/<CoursesController>
 	[HttpGet]
 	public async Task<IResult> Get()
 	{
@@ -32,10 +30,7 @@ public class ImagesController : ControllerBase
 		}
 		return Results.Ok(result);
 	}
-	//public async Task<IResult> Get() =>
-	//	await _db.HttpGetAsync<Image, ImageDTO>();
 
-	// GET api/<CoursesController>/5
 	[HttpGet("{id}")]
 	public async Task<IResult> Get(int id)
 	{
@@ -43,18 +38,30 @@ public class ImagesController : ControllerBase
 		result.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, result.ImageName);
 		return Results.Ok(result);
 	}
-		//await _db.HttpSingleAsync<Image, ImageDTO>(id);
 
-	// POST api/<CoursesController>
 	[HttpPost]
 	public async Task<IResult> Post([FromForm] ImageCreateDTO image)
 	{
+		try
+		{
+
 		//Console.Write(image);
 		image.ImageName = await SaveImage(image.ImageFile);
-		var result = await _db.HttpPostAsync<Image, ImageCreateDTO>(image);
-		return Results.Ok(result);
+		var result = await _db.AddAsync<Image, ImageCreateDTO>(image);
+		if (await _db.SaveChangesAsync())
+		{
+			return Results.Ok(result);
+		}
+
+		}
+		catch (Exception ex)
+		{
+			return Results.BadRequest($"Couldn't add the Image.\n{ex}.");
+			throw;
+		}
+		return Results.BadRequest($"Couldn't add the Image.");
 	}
-	// PUT api/<CoursesController>/5
+
 	[HttpPut("{id}")]
 	public async Task<IResult> Put(int id, [FromForm] ImageEditDTO image)
 	{
@@ -63,20 +70,34 @@ public class ImagesController : ControllerBase
 			DeleteImage(image.ImageName);
 			image.ImageName = await SaveImage(image.ImageFile);
 		}
-		var result = await _db.HttpPutAsync<Image, ImageEditDTO>(id, image);
-		return Results.Ok(result);
-
+		try
+		{
+			if (!await _db.AnyAsync<Image>(e => e.Id.Equals(id))) return Results.NotFound();
+			_db.Update<Image, ImageEditDTO>(id, image);
+			if (await _db.SaveChangesAsync()) return Results.NoContent();
+		}
+		catch (Exception ex)
+		{
+			return Results.BadRequest($"Couldn't update the Image.\n{ex}.");
+		}
+		return Results.BadRequest($"Couldn't update the Image.");
 	}
 
-
-	// DELETE api/<CoursesController>/5
 	[HttpDelete("{id}")]
 	public async Task<IResult> Delete(int id)
 	{
 		var image = await _db.SingleAsync<Image, ImageDTO>(e => e.Id.Equals(id));
 		DeleteImage(image.ImageName);
-		var result = await _db.HttpDeleteAsync<Image>(id);
-		return Results.Ok(result);
+		try
+		{
+			if (!await _db.DeleteAsync<Image>(id)) return Results.NotFound();
+			if (await _db.SaveChangesAsync()) return Results.NoContent();
+		}
+		catch (Exception ex)
+		{
+			return Results.BadRequest($"Couldn't delete the Image.\n{ex}.");
+		}
+		return Results.BadRequest($"Couldn't delete the Image.");
 	} 
 
 	[NonAction]
@@ -100,4 +121,3 @@ public class ImagesController : ControllerBase
 		}
 	}
 }
-
