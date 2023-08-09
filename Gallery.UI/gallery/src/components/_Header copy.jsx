@@ -15,9 +15,9 @@ export default function Header(){
         <header>
 
         <nav className="menu">
-        <NavLink to="/">Home</NavLink>
-        <NavLink to="/admin">Private</NavLink>
-      </nav>
+            <NavLink to="/">Home</NavLink>
+            <NavLink to="/admin">Private</NavLink>
+        </nav>
       {userText}
         </header>
         </>

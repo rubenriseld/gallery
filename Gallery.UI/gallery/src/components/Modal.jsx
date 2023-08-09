@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react"
 
-export default function Modal({imageSrc, handleRotationRight, handleRotationLeft, setClickedImage, initialIsVisible}) {
+export default function Modal({image, handleRotationRight, handleRotationLeft, setClickedImage, initialIsVisible, currentIndex, collectionLength}) {
     const [isComponentVisible, setIsComponentVisible] = useState(initialIsVisible);
     const ref = useRef(null);
 
@@ -23,8 +23,8 @@ export default function Modal({imageSrc, handleRotationRight, handleRotationLeft
     const isLeftSwipe = distance > minSwipeDistance
     const isRightSwipe = distance < -minSwipeDistance
     if (isLeftSwipe || isRightSwipe){
-        console.log('swipe', isLeftSwipe ? 'left' : 'right')
-        isLeftSwipe ? handleRotationLeft(): handleRotationRight()
+        // console.log('swipe', isLeftSwipe ? 'left' : 'right')
+        isLeftSwipe ?  handleRotationRight(): handleRotationLeft()
     }
     // add your conditional logic here
     }
@@ -34,10 +34,10 @@ export default function Modal({imageSrc, handleRotationRight, handleRotationLeft
             if (ref.current && !ref.current.contains(e.target)) {
                 const backdropDiv = document.querySelector("#backdrop");
                 backdropDiv.classList.add("fadeOutFilter");
-                document.body.classList.remove("stop-scrolling")
+                // document.body.classList.remove("stop-scrolling")
                 setTimeout(function() {
                     document.body.removeChild(backdropDiv);
-                }, 300);
+                }, 140);
                 setIsComponentVisible(false);
                 setClickedImage(null);
             }
@@ -54,12 +54,13 @@ export default function Modal({imageSrc, handleRotationRight, handleRotationLeft
         // if(e.target.classList.contains("lightbox-btn-close")){
             const backdropDiv = document.querySelector("#backdrop");
             backdropDiv.classList.add("fadeOutFilter");
-            document.body.classList.remove("stop-scrolling")
+            // document.body.classList.remove("stop-scrolling")
 
             setTimeout(function() {
                 document.body.removeChild(backdropDiv);
-            }, 300);
+            }, 140);
             setClickedImage(null);
+
         // }
     }
 
@@ -67,20 +68,38 @@ export default function Modal({imageSrc, handleRotationRight, handleRotationLeft
     return(
         <>
             
-        <div id="lightbox" ref={ref} >
+        <div id="lightbox" ref={ref} onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd} >
             
-            <img className="lightbox-img" src={imageSrc}  onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}></img>
+            <img className="lightbox-img" src={image.imageSrc}  ></img>
+            <div className="lightbox-btn-container-left">
             <button className="lightbox-btn-left" onClick={handleRotationLeft}>
                 <span className="material-symbols-outlined">arrow_back_ios</span>
             </button>
+            </div>
+            <div className="lightbox-btn-container-close">
             <button className="lightbox-btn-close" onClick={handleClick}>
                 <span className="material-symbols-outlined">close</span>
             </button>
+            </div>
+            <div className="lightbox-btn-container-right">
             <button className="lightbox-btn-right" onClick={handleRotationRight}>
                 <span className="material-symbols-outlined">arrow_forward_ios</span>
             </button>
 
+            </div>
+
+            
+           
+          
+            
         </div>
+        <div className="lightbox-info">
+                <p>{currentIndex+1}/{collectionLength}</p>
+                <div className="lightbox-image-info">
+                    <p>{image.title}</p>
+                    <p>{image.description}</p>
+                </div>
+            </div>
         </>
     )
 }

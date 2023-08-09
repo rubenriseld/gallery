@@ -117,11 +117,13 @@ export default function ImageManager() {
         })
     }
     const handleSelectChange = e => {
+        console.log(e.target.value);
+        const value = e.target.value;
         setValues({
             ...values,
-            imageCollectionId: e.target.value
+            imageCollectionId: value
         })
-        console.log(values.imageCollectionId);
+        // console.log(values.imageCollectionId);
     }
 
     const handleFormSubmit = e => {
@@ -135,6 +137,7 @@ export default function ImageManager() {
             formData.append("imageName", values.imageName);
             formData.append("imageFile", values.imageFile);
             addOrEdit(formData, resetForm);
+            console.log(formData);
         }
         else {
             alert("invalid input");
@@ -176,7 +179,7 @@ export default function ImageManager() {
 
             galleryAPI().create(formData)
                 .then(response => {
-                    // console.log(response);
+                    console.log(response);
                     onSuccess();
                     refreshImageList();
                 })

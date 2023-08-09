@@ -13,7 +13,6 @@ export default function Collection({id}){
     
     useEffect(() => {
         getImageCollection();
-        
     }, []);
 
     function getImageCollection(){
@@ -28,7 +27,7 @@ export default function Collection({id}){
 
     const handleClick = (image, index) => {
         setCurrentIndex(index);
-        setClickedImage(image.imageSrc);
+        setClickedImage(image);
         document.body.appendChild(backdropDiv);
         document.body.classList.add("stop-scrolling")
 
@@ -38,26 +37,26 @@ export default function Collection({id}){
         const totalLength = collection.length;
         if(currentIndex +1 >= totalLength){
             setCurrentIndex(0);
-            const newImageSrc = collection[0].imageSrc;
-            setClickedImage(newImageSrc);
+            const newImage = collection[0];
+            setClickedImage(newImage);
             return;
         }
         const newIndex = currentIndex+1;
         setCurrentIndex(newIndex);
-        const newUrl = collection[newIndex].imageSrc;
+        const newUrl = collection[newIndex];
         setClickedImage(newUrl);
     }
     const handleRotationLeft = () => {
         const totalLength = collection.length;
         if(currentIndex === 0){
             setCurrentIndex(totalLength-1);
-            const newImageSrc = collection[totalLength-1].imageSrc;
-            setClickedImage(newImageSrc);
+            const newImage = collection[totalLength-1];
+            setClickedImage(newImage);
             return;
         }
         const newIndex = currentIndex-1;
         setCurrentIndex(newIndex);
-        const newUrl = collection[newIndex].imageSrc;
+        const newUrl = collection[newIndex];
         setClickedImage(newUrl);
     }
 
@@ -66,18 +65,22 @@ export default function Collection({id}){
         <div className="collection-container">
             {collection.map((image, index) => {
                 return(
-                    
-                    <img key={image.id} className="collection-thumbnail-img" src={image.imageSrc} onClick={() => handleClick(image, index)}/>
+                    <div className="collection-thumbnail-container"  onClick={() => handleClick(image, index)}>
+                        <span className="collection-thumbnail-tooltip">{image.title}</span>
+                        <img key={image.id} className="collection-thumbnail-img" src={image.imageSrc}/>
+                    </div>
                 )
             })}
         </div>
         {clickedImage != null ? 
             <Modal 
-                imageSrc={clickedImage} 
+                image={clickedImage} 
                 setClickedImage={setClickedImage} 
                 handleRotationRight={handleRotationRight} 
                 handleRotationLeft={handleRotationLeft}
                 initialIsVisible={true}
+                currentIndex={currentIndex}
+                collectionLength={collection.length}
             />
             : <></>}
         </>
