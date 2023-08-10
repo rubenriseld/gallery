@@ -105,7 +105,7 @@ export default function ImageCollectionManager() {
 
             galleryAPI().create(formData)
                 .then(response => {
-                    // console.log(response);
+                    console.log(response);
                     onSuccess();
                     refreshImageCollectionList();
                 })
