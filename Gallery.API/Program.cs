@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using System.Net.NetworkInformation;
 
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -21,8 +23,7 @@ builder.Services.AddDbContext<GalleryContext>(
 	options =>
 	options.UseSqlServer(builder.Configuration.GetConnectionString("GalleryConnection")));
 
-builder.Services.AddCors();
-
+//builder.Services.AddCors();
 //builder.Services.AddCors(policy =>
 //{
 //	policy.AddPolicy("CorsAllAccessPolicy", opt =>
@@ -31,22 +32,33 @@ builder.Services.AddCors();
 //		.AllowAnyMethod()
 //	);
 //});
+builder.Services.AddCors(policy =>
+{
+	policy.AddPolicy(name: MyAllowSpecificOrigins,
+		policy =>
+	{
+		policy.WithOrigins("https://rubenriseld.se");
+			//.AllowAnyHeader()
+			//.AllowAnyMethod();
+	});
+});
 
 ConfigureAutoMapper(builder.Services);
 
 builder.Services.AddScoped<IGalleryService, GalleryService>();
 
 var app = builder.Build();
-var env = app.Environment;
+//var env = app.Environment;
 
 //local dev
 //app.UseCors(options => options.WithOrigins("http://localhost:3000")
 //	.AllowAnyMethod()
 //	.AllowAnyHeader());
 
-app.UseCors(options => options.WithOrigins("https://rubenriseld.se/")
-	.AllowAnyMethod()
-	.AllowAnyHeader());
+//app.UseCors(options => options.WithOrigins("https://rubenriseld.se/")
+//	.AllowAnyMethod()
+//	.AllowAnyHeader());
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -58,9 +70,11 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles(new StaticFileOptions
 {
-	FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath, "Images")),
+	FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.ContentRootPath, "wwwroot", "Images")),
 	RequestPath = "/Images"
 } );
+
+app.UseCors(MyAllowSpecificOrigins);
 
 app.UseAuthorization();
 
