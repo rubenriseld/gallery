@@ -32,7 +32,7 @@ public class ImageCollectionsController : ControllerBase
 		var result = await _db.SingleAsync<ImageCollection, ImageCollectionDTO>(e => e.Id.Equals(id));
 		foreach (var item in result.Images)
 		{
-			item.ImageSrc = String.Format("{0}://{1}{2}/wwwroot/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, item.ImageName);
+			item.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, item.ImageName);
 		}
 		return Results.Ok(result);
 	}

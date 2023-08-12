@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "28ChkasX/CQit026xSLUtdT1IHXLQkxCuvTHlClRTEY=",
+  "Hash": "/k5luq/BaTG5ztwO6EcSuzu1CH53JVwe4ss0gtKbx3k=",
   "Source": "Gallery.API",
   "BasePath": "_content/Gallery.API",
   "Mode": "Default",
@@ -15,23 +15,5 @@
       "Pattern": "**"
     }
   ],
-  "Assets": [
-    {
-      "Identity": "C:\\Users\\ruben\\source\\repos\\Gallery\\Gallery.API\\wwwroot\\Images\\test.png",
-      "SourceId": "Gallery.API",
-      "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\ruben\\source\\repos\\Gallery\\Gallery.API\\wwwroot\\",
-      "BasePath": "_content/Gallery.API",
-      "RelativePath": "Images/test.png",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "PreserveNewest",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\Images\\test.png"
-    }
-  ]
+  "Assets": []
 }

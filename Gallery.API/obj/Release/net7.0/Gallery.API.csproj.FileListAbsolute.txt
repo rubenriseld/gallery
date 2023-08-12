@@ -80,4 +80,3 @@ C:\Users\ruben\source\repos\Gallery\Gallery.API\obj\Release\net7.0\Gallery.API.p
 C:\Users\ruben\source\repos\Gallery\Gallery.API\obj\Release\net7.0\Gallery.API.genruntimeconfig.cache
 C:\Users\ruben\source\repos\Gallery\Gallery.API\obj\Release\net7.0\ref\Gallery.API.dll
 C:\Users\ruben\source\repos\Gallery\Gallery.API\bin\Release\net7.0\Gallery.API.staticwebassets.runtime.json
-C:\Users\ruben\source\repos\Gallery\Gallery.API\bin\Release\net7.0\wwwroot\Images\test.png

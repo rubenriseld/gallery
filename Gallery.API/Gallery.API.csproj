@@ -27,19 +27,10 @@
   </ItemGroup>
 
   <ItemGroup>
+	  <Folder Include="wwwroot\Images\" />
 	  <Folder Include="wwwroot\Images\*">
 		  <CopyToPublishDirectory>always</CopyToPublishDirectory>
 	  </Folder>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Remove="wwwroot\Images\test.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Update="wwwroot\Images\test.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
 </Project>
