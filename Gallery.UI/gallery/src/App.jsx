@@ -34,7 +34,7 @@ export default function App() {
 
                 <Route path='/' component={LoginCallback} />
                 <Route path='/' exact={true} component={IndexPage} />
-                <Route path='/testCollection'  component={() => <Collection id={2} />} />
+                <Route path='/testCollection'  component={() => <Collection id={8} />} />
                 <Route path='/admin' exact={true} component={SignIn} />
                 <SecureRoute path='/admin/manager' exact={true} component={AdminPage} />
 
