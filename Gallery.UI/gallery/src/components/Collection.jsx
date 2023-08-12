@@ -22,7 +22,7 @@ export default function Collection({id}){
     
         .then(response => {
             console.log(response.data);
-            response.data.sort(function (a, b) {
+            response.data.images.sort(function (a, b) {
                 if (a.title < b.title) {
                   return -1;
                 }
