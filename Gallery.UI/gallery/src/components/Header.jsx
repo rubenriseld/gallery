@@ -1,6 +1,5 @@
 import { NavLink, Route } from 'react-router-dom/cjs/react-router-dom.min';
 import { useState, useEffect } from "react";
-import "./header.css";
 
 
 export default function Header() {
