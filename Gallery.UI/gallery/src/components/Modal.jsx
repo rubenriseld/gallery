@@ -34,6 +34,8 @@ export default function Modal({image, handleRotationRight, handleRotationLeft, s
             if (ref.current && !ref.current.contains(e.target)) {
                 const backdropDiv = document.querySelector("#backdrop");
                 backdropDiv.classList.add("fadeOutFilter");
+                document.body.classList.remove("stop-scrolling")
+
                 // document.body.classList.remove("stop-scrolling")
                 setTimeout(function() {
                     document.body.removeChild(backdropDiv);
@@ -54,6 +56,8 @@ export default function Modal({image, handleRotationRight, handleRotationLeft, s
         // if(e.target.classList.contains("lightbox-btn-close")){
             const backdropDiv = document.querySelector("#backdrop");
             backdropDiv.classList.add("fadeOutFilter");
+        document.body.classList.remove("stop-scrolling")
+
             // document.body.classList.remove("stop-scrolling")
 
             setTimeout(function() {

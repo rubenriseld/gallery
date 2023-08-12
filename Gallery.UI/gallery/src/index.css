@@ -390,6 +390,10 @@ header a {
     .collection-thumbnail-container{
         width: calc(25% - 0.5rem);
     }
+    .lightbox-img {
+        max-height: 80%;
+        width:auto;
+    }
 }
 
 @media screen and (min-width: 1200px) {
@@ -397,9 +401,7 @@ header a {
         width: calc(20% - 0.5rem);
     }
 
-    .lightbox-img {
-        max-height: 80%;
-    }
+    
 }
 
 
