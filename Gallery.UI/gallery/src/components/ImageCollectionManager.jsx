@@ -143,15 +143,14 @@ export default function ImageCollectionManager() {
         <>
         <div className="collection-manager-container">
             <form className="collection-manager-form"autoComplete="off" noValidate onSubmit={handleFormSubmit}>
-                
-                <p>id: {values.id}</p>
+                {values.id != 0 ? <p>ID: {values.id}</p>: <></>}
                 <div>
                     <div>
-                        <p>collection name</p>
-                        <input placeholder="Collection Name" name="name" value={values.name} onChange={handleInputChange} />
+                        <p>Collection name</p>
+                        <input placeholder="Collection name" name="name" value={values.name} onChange={handleInputChange} />
                     </div>
                     
-                    <button type="submit">submit</button>
+                    <button type="submit" className="submit-btn">Submit</button>
                 </div>
             </form>
             <div className="collection-results-container">

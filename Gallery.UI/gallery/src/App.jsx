@@ -37,6 +37,9 @@ export default function App() {
                 <Route path='/testCollection'  component={() => <Collection id={2} />} />
                 <Route path='/admin' exact={true} component={SignIn} />
                 <SecureRoute path='/admin/manager' exact={true} component={AdminPage} />
+
+                {/* dev route  */}
+                {/* <Route path='/admin/manager' exact={true} component={AdminPage} /> */}
             </Security>
         </>
     )

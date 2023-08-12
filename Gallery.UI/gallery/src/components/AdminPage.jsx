@@ -15,8 +15,8 @@ export default function AdminPage() {
                 <div className='manager-header'>
                     <h1 className='manager-title'>Gallery Manager</h1>
                     <div className='manager-selector'>
-                        <button onClick={x => setSelectedEditor("images")}>Images</button>
-                        <button onClick={x => setSelectedEditor("imageCollections")}>Image Collections</button>
+                        <button onClick={x => setSelectedEditor("images")} className={selectedEditor == "images" ? "selected" : ""}>Images</button>
+                        <button onClick={x => setSelectedEditor("imageCollections")} className={selectedEditor == "imageCollections" ? "selected" : ""}>Image Collections</button>
                     </div>
                 </div>
                 <section className='manager-section'>

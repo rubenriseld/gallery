@@ -225,18 +225,18 @@ export default function ImageManager() {
                         <img src={values.imageSrc} width="200px" />
                         <input type="file" accept="image/*" autoComplete="off" onChange={showPreview} id="image-uploader" />
                     </div>
-                    <p>id: {values.id}</p>
+                    {values.id != 0 ? <p>ID: {values.id}</p>: <></>}
                     <div>
                         <div>
-                            <p>image title</p>
-                            <input placeholder="Image Title" name="title" value={values.title} onChange={handleInputChange} />
+                            <p>Image title</p>
+                            <input placeholder="Image title" name="title" value={values.title} onChange={handleInputChange} />
                         </div>
                         <div>
-                            <p>image description</p>
-                            <input placeholder="Image Description" name="description" value={values.description} onChange={handleInputChange} />
+                            <p>Image description</p>
+                            <input placeholder="Image description" name="description" value={values.description} onChange={handleInputChange} />
                         </div>
                         <div>
-                            <p>colleciton id</p>
+                            <p>Collection</p>
                             {/* <input placeholder="Image Collection Id" name="imageCollectionId" value={values.imageCollectionId} onChange={handleInputChange} /> */}
                             <select id="imageCollectionSelect" name="imageCollectionId" onChange={handleSelectChange} defaultValue={0}>
                                 <option disabled value={0}>Select a collection</option>
@@ -245,7 +245,7 @@ export default function ImageManager() {
                                     )}
                             </select>
                         </div>
-                        <button type="submit">submit</button>
+                        <button type="submit" className="submit-btn">Submit</button>
                     </div>
                 </form>
                 <section className="image-results-container">
