@@ -212,7 +212,7 @@ header a {
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
-    justify-content: space-between;
+    /* justify-content: space-between; */
 }
 .collection-thumbnail-container{
     width: calc(33% - 0.5rem);
