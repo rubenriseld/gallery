@@ -8,9 +8,9 @@ export default function SignIn(){
 
     const userText = authState?.isAuthenticated
         ?  
-            <button className='admin-sign-out-btn' onClick={logout}>Sign Out</button>
+            <button className='admin-sign-out-btn admin-btn' onClick={logout}>Sign Out</button>
         :   <>
-                <button className='admin-sign-in-btn' onClick={login}>Sign In</button>
+                <button className='admin-sign-in-btn admin-btn' onClick={login}>Sign In</button>
                 <p className='admin-info'>Please sign in to use the admin manager.</p>
             </>  
 
