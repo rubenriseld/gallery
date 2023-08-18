@@ -7,29 +7,29 @@ export default function Header() {
     const [showMobileMenu, setShowMobileMenu] = useState(false);
     const [shadow, setShadow] = useState(false);
     
-    const toggleBoxShadow = () => {
-        window.addEventListener('scroll', () => {
-            // currentScroll är användarens position i Y-led, från toppen av dokumentet 
-            const currentScroll = window.scrollY;
-            if (currentScroll > 10) {
-                setShadow(true);
-                return;
-            }
-            else{
-                setShadow(false);
-                return;
-            }
-        })
-    }
-    useEffect(() => {
-        const handleScrollEvent = () => {
-            toggleBoxShadow();
-        }
-        window.addEventListener('scroll', handleScrollEvent);
-        return () => {
-            window.addEventListener('scroll', handleScrollEvent);
-        };
-    }, []);
+    // const toggleBoxShadow = () => {
+    //     window.addEventListener('scroll', () => {
+    //         // currentScroll är användarens position i Y-led, från toppen av dokumentet 
+    //         const currentScroll = window.scrollY;
+    //         if (currentScroll > 10) {
+    //             setShadow(true);
+    //             return;
+    //         }
+    //         else{
+    //             setShadow(false);
+    //             return;
+    //         }
+    //     })
+    // }
+    // useEffect(() => {
+    //     const handleScrollEvent = () => {
+    //         toggleBoxShadow();
+    //     }
+    //     window.addEventListener('scroll', handleScrollEvent);
+    //     return () => {
+    //         window.addEventListener('scroll', handleScrollEvent);
+    //     };
+    // }, []);
 
     return (
         <>

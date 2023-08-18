@@ -23,7 +23,7 @@ export default function Modal({image, handleRotationRight, handleRotationLeft, s
     const isLeftSwipe = distance > minSwipeDistance
     const isRightSwipe = distance < -minSwipeDistance
     if (isLeftSwipe || isRightSwipe){
-        // console.log('swipe', isLeftSwipe ? 'left' : 'right')
+        console.log('swipe', isLeftSwipe ? 'left' : 'right');
         isLeftSwipe ?  handleRotationRight(): handleRotationLeft()
     }
     // add your conditional logic here
@@ -33,13 +33,15 @@ export default function Modal({image, handleRotationRight, handleRotationLeft, s
         const Clickout = (e) => {
             if (ref.current && !ref.current.contains(e.target)) {
                 const backdropDiv = document.querySelector("#backdrop");
+                backdropDiv.classList.remove("fadeInFilter");
                 backdropDiv.classList.add("fadeOutFilter");
+                
                 document.body.classList.remove("stop-scrolling")
-
                 // document.body.classList.remove("stop-scrolling")
                 setTimeout(function() {
+                    
                     document.body.removeChild(backdropDiv);
-                }, 140);
+                }, 150);
                 setIsComponentVisible(false);
                 setClickedImage(null);
             }
@@ -55,6 +57,8 @@ export default function Modal({image, handleRotationRight, handleRotationLeft, s
     const handleClick = (e) => {
         // if(e.target.classList.contains("lightbox-btn-close")){
             const backdropDiv = document.querySelector("#backdrop");
+            backdropDiv.classList.remove("fadeInFilter");
+
             backdropDiv.classList.add("fadeOutFilter");
         document.body.classList.remove("stop-scrolling")
 
@@ -62,19 +66,22 @@ export default function Modal({image, handleRotationRight, handleRotationLeft, s
 
             setTimeout(function() {
                 document.body.removeChild(backdropDiv);
-            }, 140);
+            }, 150);
             setClickedImage(null);
 
         // }
     }
 
+    const toggleZoomImage = () => {
+        
+    }
 
     return(
         <>
             
         <div id="lightbox" ref={ref} onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd} >
             
-            <img className="lightbox-img" src={image.imageSrc}  ></img>
+            <img className="lightbox-img" src={image.imageSrc} ></img>
             <div className="lightbox-btn-container-left">
             <button className="lightbox-btn-left" onClick={handleRotationLeft}>
                 <span className="material-symbols-outlined">arrow_back_ios</span>
