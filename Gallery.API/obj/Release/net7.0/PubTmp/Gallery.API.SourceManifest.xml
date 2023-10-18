@@ -1,5 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<sitemanifest>
-  <IisApp path="C:\Users\ruben\source\repos\Gallery\Gallery.API\obj\Release\net7.0\PubTmp\Out\" />
-  <dbfullsql path="C:\Users\ruben\source\repos\Gallery\Gallery.API\obj\Release\net7.0\PubTmp\EFSQLScripts\Gallery.Database.Contexts.GalleryContext.sql" />
-</sitemanifest>
