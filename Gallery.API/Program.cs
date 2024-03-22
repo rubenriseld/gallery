@@ -1,10 +1,16 @@
 using Gallery.Database;
+using Gallery.Database.Entities;
+using Gallery.Database.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
+
+services.AddScoped<IRepository<Image>, Repository<Image>>();
+services.AddScoped<IRepository<ImageCollection>, Repository<ImageCollection>>();
+services.AddScoped<IRepository<Tag>, Repository<Tag>>();
 
 services.AddControllers();
 services.AddEndpointsApiExplorer();

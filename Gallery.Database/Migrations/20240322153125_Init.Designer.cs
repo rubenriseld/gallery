@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gallery.Database.Migrations
 {
     [DbContext(typeof(GalleryDbContext))]
-    [Migration("20240322152511_Init")]
+    [Migration("20240322153125_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -69,6 +69,21 @@ namespace Gallery.Database.Migrations
                     b.ToTable("ImageCollection");
                 });
 
+            modelBuilder.Entity("Gallery.Database.Entities.ImageTag", b =>
+                {
+                    b.Property<string>("ImageId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("TagId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("ImageId", "TagId");
+
+                    b.HasIndex("TagId");
+
+                    b.ToTable("ImageTag");
+                });
+
             modelBuilder.Entity("Gallery.Database.Entities.Tag", b =>
                 {
                     b.Property<string>("Id")
@@ -82,21 +97,6 @@ namespace Gallery.Database.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Tag");
-                });
-
-            modelBuilder.Entity("ImageTag", b =>
-                {
-                    b.Property<string>("ImagesId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("TagsId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("ImagesId", "TagsId");
-
-                    b.HasIndex("TagsId");
-
-                    b.ToTable("ImageTag");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -308,17 +308,17 @@ namespace Gallery.Database.Migrations
                     b.Navigation("ImageCollection");
                 });
 
-            modelBuilder.Entity("ImageTag", b =>
+            modelBuilder.Entity("Gallery.Database.Entities.ImageTag", b =>
                 {
                     b.HasOne("Gallery.Database.Entities.Image", null)
-                        .WithMany()
-                        .HasForeignKey("ImagesId")
+                        .WithMany("Tags")
+                        .HasForeignKey("ImageId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Gallery.Database.Entities.Tag", null)
-                        .WithMany()
-                        .HasForeignKey("TagsId")
+                        .WithMany("Images")
+                        .HasForeignKey("TagId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -374,7 +374,17 @@ namespace Gallery.Database.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Gallery.Database.Entities.Image", b =>
+                {
+                    b.Navigation("Tags");
+                });
+
             modelBuilder.Entity("Gallery.Database.Entities.ImageCollection", b =>
+                {
+                    b.Navigation("Images");
+                });
+
+            modelBuilder.Entity("Gallery.Database.Entities.Tag", b =>
                 {
                     b.Navigation("Images");
                 });

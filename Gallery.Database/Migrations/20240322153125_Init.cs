@@ -205,21 +205,21 @@ namespace Gallery.Database.Migrations
                 name: "ImageTag",
                 columns: table => new
                 {
-                    ImagesId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    TagsId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    ImageId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    TagId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ImageTag", x => new { x.ImagesId, x.TagsId });
+                    table.PrimaryKey("PK_ImageTag", x => new { x.ImageId, x.TagId });
                     table.ForeignKey(
-                        name: "FK_ImageTag_Image_ImagesId",
-                        column: x => x.ImagesId,
+                        name: "FK_ImageTag_Image_ImageId",
+                        column: x => x.ImageId,
                         principalTable: "Image",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ImageTag_Tag_TagsId",
-                        column: x => x.TagsId,
+                        name: "FK_ImageTag_Tag_TagId",
+                        column: x => x.TagId,
                         principalTable: "Tag",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -270,9 +270,9 @@ namespace Gallery.Database.Migrations
                 column: "ImageCollectionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ImageTag_TagsId",
+                name: "IX_ImageTag_TagId",
                 table: "ImageTag",
-                column: "TagsId");
+                column: "TagId");
         }
 
         /// <inheritdoc />

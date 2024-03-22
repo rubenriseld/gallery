@@ -9,8 +9,8 @@ public class ImageConfiguration : IEntityTypeConfiguration<Image>
 {
     public void Configure(EntityTypeBuilder<Image> entity)
     {
-        entity.HasMany(i => i.Tags)
-            .WithMany(t => t.Images);
+        //entity.HasMany(i => i.Tags)
+        //    .WithMany(t => t.Images);
 
         entity.Property(e => e.Title).HasMaxLength(64).IsRequired();
         entity.Property(e => e.Description).HasMaxLength(256);
