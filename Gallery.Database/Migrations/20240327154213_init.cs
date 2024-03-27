@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Gallery.Database.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -54,25 +54,25 @@ namespace Gallery.Database.Migrations
                 name: "ImageCollection",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ImageCollectionId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ImageCollection", x => x.Id);
+                    table.PrimaryKey("PK_ImageCollection", x => x.ImageCollectionId);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Tag",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    TagId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tag", x => x.Id);
+                    table.PrimaryKey("PK_Tag", x => x.TagId);
                 });
 
             migrationBuilder.CreateTable(
@@ -185,20 +185,20 @@ namespace Gallery.Database.Migrations
                 name: "Image",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
+                    ImageId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Uri = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: true),
                     Description = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    ImageCollectionId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    ImageCollectionId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Image", x => x.Id);
+                    table.PrimaryKey("PK_Image", x => x.ImageId);
                     table.ForeignKey(
                         name: "FK_Image_ImageCollection_ImageCollectionId",
                         column: x => x.ImageCollectionId,
                         principalTable: "ImageCollection",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "ImageCollectionId");
                 });
 
             migrationBuilder.CreateTable(
@@ -215,13 +215,13 @@ namespace Gallery.Database.Migrations
                         name: "FK_ImageTag_Image_ImageId",
                         column: x => x.ImageId,
                         principalTable: "Image",
-                        principalColumn: "Id",
+                        principalColumn: "ImageId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_ImageTag_Tag_TagId",
                         column: x => x.TagId,
                         principalTable: "Tag",
-                        principalColumn: "Id",
+                        principalColumn: "TagId",
                         onDelete: ReferentialAction.Cascade);
                 });
 

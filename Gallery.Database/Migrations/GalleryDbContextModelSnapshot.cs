@@ -24,7 +24,7 @@ namespace Gallery.Database.Migrations
 
             modelBuilder.Entity("Gallery.Database.Entities.Image", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<string>("ImageId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Description")
@@ -38,7 +38,11 @@ namespace Gallery.Database.Migrations
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
 
-                    b.HasKey("Id");
+                    b.Property<string>("Uri")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ImageId");
 
                     b.HasIndex("ImageCollectionId");
 
@@ -47,7 +51,7 @@ namespace Gallery.Database.Migrations
 
             modelBuilder.Entity("Gallery.Database.Entities.ImageCollection", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<string>("ImageCollectionId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Description")
@@ -59,7 +63,7 @@ namespace Gallery.Database.Migrations
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
 
-                    b.HasKey("Id");
+                    b.HasKey("ImageCollectionId");
 
                     b.ToTable("ImageCollection");
                 });
@@ -81,7 +85,7 @@ namespace Gallery.Database.Migrations
 
             modelBuilder.Entity("Gallery.Database.Entities.Tag", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<string>("TagId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
@@ -89,7 +93,7 @@ namespace Gallery.Database.Migrations
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
 
-                    b.HasKey("Id");
+                    b.HasKey("TagId");
 
                     b.ToTable("Tag");
                 });

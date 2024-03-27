@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gallery.Database.Migrations
 {
     [DbContext(typeof(GalleryDbContext))]
-    [Migration("20240322153125_Init")]
-    partial class Init
+    [Migration("20240327154213_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,7 +27,7 @@ namespace Gallery.Database.Migrations
 
             modelBuilder.Entity("Gallery.Database.Entities.Image", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<string>("ImageId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Description")
@@ -35,15 +35,17 @@ namespace Gallery.Database.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("ImageCollectionId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Title")
-                        .IsRequired()
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
 
-                    b.HasKey("Id");
+                    b.Property<string>("Uri")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ImageId");
 
                     b.HasIndex("ImageCollectionId");
 
@@ -52,7 +54,7 @@ namespace Gallery.Database.Migrations
 
             modelBuilder.Entity("Gallery.Database.Entities.ImageCollection", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<string>("ImageCollectionId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Description")
@@ -64,7 +66,7 @@ namespace Gallery.Database.Migrations
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
 
-                    b.HasKey("Id");
+                    b.HasKey("ImageCollectionId");
 
                     b.ToTable("ImageCollection");
                 });
@@ -86,7 +88,7 @@ namespace Gallery.Database.Migrations
 
             modelBuilder.Entity("Gallery.Database.Entities.Tag", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<string>("TagId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
@@ -94,7 +96,7 @@ namespace Gallery.Database.Migrations
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
 
-                    b.HasKey("Id");
+                    b.HasKey("TagId");
 
                     b.ToTable("Tag");
                 });
@@ -301,26 +303,28 @@ namespace Gallery.Database.Migrations
                 {
                     b.HasOne("Gallery.Database.Entities.ImageCollection", "ImageCollection")
                         .WithMany("Images")
-                        .HasForeignKey("ImageCollectionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ImageCollectionId");
 
                     b.Navigation("ImageCollection");
                 });
 
             modelBuilder.Entity("Gallery.Database.Entities.ImageTag", b =>
                 {
-                    b.HasOne("Gallery.Database.Entities.Image", null)
+                    b.HasOne("Gallery.Database.Entities.Image", "Image")
                         .WithMany("Tags")
                         .HasForeignKey("ImageId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Gallery.Database.Entities.Tag", null)
+                    b.HasOne("Gallery.Database.Entities.Tag", "Tag")
                         .WithMany("Images")
                         .HasForeignKey("TagId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Image");
+
+                    b.Navigation("Tag");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
