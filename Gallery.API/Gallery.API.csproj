@@ -8,6 +8,8 @@
     <UserSecretsId>6497fcdc-1766-4ccb-885d-8b432e1e2be4</UserSecretsId>
   </PropertyGroup>
 	<ItemGroup>
+		<PackageReference Include="AutoMapper" Version="13.0.1" />
+		<PackageReference Include="Azure.Storage.Blobs" Version="12.19.1" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.3" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.3">
 			<PrivateAssets>all</PrivateAssets>
