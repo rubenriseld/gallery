@@ -10,7 +10,7 @@ public record ReadImageDTO
     public required string Uri { get; set; }
     public string? Title { get; set; }
     public string? Description { get; set; }
-    public int ImageCollectionId { get; set; }
+    public string? ImageCollectionId { get; set; }
     public string? ImageCollectionName { get; set; }
     public List<ReadTagDTO> Tags { get; set; } = [];
 }
