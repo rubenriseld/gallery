@@ -13,11 +13,9 @@ public class TagService : ITagService
     private readonly IMapper _mapper;
 
 
-    public TagService(IRepository<Tag> tagRepository, IMapper mapper)
-    {
-        _tagRepository = tagRepository;
-        _mapper = mapper;
-    }
+    public TagService(
+        IRepository<Tag> tagRepository, IMapper mapper) =>
+        (_tagRepository, _mapper) = (tagRepository, mapper);
 
     public async Task<ReadTagDTO> CreateTag(CreateTagDTO createTagDto)
     {
