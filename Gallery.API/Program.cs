@@ -21,13 +21,14 @@ services.AddScoped<IRepository<ImageTag>, Repository<ImageTag>>();
 
 services.AddScoped<IImageService, ImageService>();
 services.AddScoped<ITagService, TagService>();
+services.AddScoped<IImageCollectionService, ImageCollectionService>();
 
 services.AddSingleton(new MapperConfiguration(cfg =>
 {
     cfg.CreateMap<Image, ReadImageDTO>()
         .ForMember(
             dest => dest.ImageCollectionName,
-            opt => opt.MapFrom(src => src.ImageCollection != null ? src.ImageCollection.Name : string.Empty)
+            opt => opt.MapFrom(src => src.ImageCollection.Name)
         );
 
     cfg.CreateMap<CreateImageDTO, Image>();
@@ -86,8 +87,10 @@ if (app.Environment.IsDevelopment())
 
 //TODO implement custom login endpoint or filter out unused Identity endpoints
 app.MapIdentityApi<IdentityUser>();
+
 app.MapImageEndpoints();
 app.MapTagEndpoints();
+app.MapImageCollectionEndpoints();
 
 app.UseHttpsRedirection();
 
