@@ -8,5 +8,5 @@ public class Image
     public string? Description { get; set; }
     public string? ImageCollectionId { get; set; }
     public virtual ImageCollection? ImageCollection { get; set; }
-    public virtual ICollection<ImageTag>? Tags { get; set; }
-}
+    public virtual ICollection<Tag> Tags { get; set; } = new HashSet<Tag>();
+} 

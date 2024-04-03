@@ -33,9 +33,9 @@ public static class ImageCollectionEndpoints
     {
         return Results.Ok(await imageCollectionService.GetImageCollectionById(imageCollectionId));
     }
-    public static async Task<IResult> UpdateImageCollection(IImageCollectionService imageCollectionService, UpdateImageCollectionDTO updateImageCollectionDto)
+    public static async Task<IResult> UpdateImageCollection(IImageCollectionService imageCollectionService, string imageCollectionId, UpdateImageCollectionDTO updateImageCollectionDto)
     {
-        return Results.Ok(await imageCollectionService.UpdateImageCollection(updateImageCollectionDto));
+        return Results.Ok(await imageCollectionService.UpdateImageCollection(imageCollectionId, updateImageCollectionDto));
     }
     public static async Task<IResult> DeleteImageCollection(IImageCollectionService imageCollectionService, string imageCollectionId)
     {

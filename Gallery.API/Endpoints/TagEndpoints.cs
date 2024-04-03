@@ -27,9 +27,9 @@ public static class TagEndpoints
     {
         return Results.Ok(await tagService.GetAllTags());
     }
-    public static async Task<IResult> UpdateTag(ITagService tagService, UpdateTagDTO updateTagDto)
+    public static async Task<IResult> UpdateTag(ITagService tagService, string tagId, UpdateTagDTO updateTagDto)
     {
-        return Results.Ok(await tagService.UpdateTag(updateTagDto));
+        return Results.Ok(await tagService.UpdateTag(tagId, updateTagDto));
     }
     public static async Task<IResult> DeleteTag(ITagService tagService, string tagId)
     {

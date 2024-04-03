@@ -8,5 +8,5 @@ public interface IImageCollectionService
     Task DeleteImageCollection(string imageCollectionId);
     Task<List<ReadImageCollectionDTO>> GetAllImageCollections();
     Task<ReadImageCollectionDTO> GetImageCollectionById(string imageCollectionId);
-    Task<ReadImageCollectionDTO> UpdateImageCollection(UpdateImageCollectionDTO updateImageCollectionDto);
+    Task<ReadImageCollectionDTO> UpdateImageCollection(string imageCollectionId, UpdateImageCollectionDTO updateImageCollectionDto);
 }

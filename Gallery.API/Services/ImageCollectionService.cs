@@ -42,9 +42,9 @@ public class ImageCollectionService : IImageCollectionService
         return _mapper.Map<ReadImageCollectionDTO>(imageCollection);
     }
 
-    public async Task<ReadImageCollectionDTO> UpdateImageCollection(UpdateImageCollectionDTO updateImageCollectionDto)
+    public async Task<ReadImageCollectionDTO> UpdateImageCollection(string imageCollectionId, UpdateImageCollectionDTO updateImageCollectionDto)
     {
-        var imageCollection = await _imageCollectionRepository.Find(updateImageCollectionDto.ImageCollectionId);
+        var imageCollection = await _imageCollectionRepository.Find(imageCollectionId);
 
         _mapper.Map(updateImageCollectionDto, imageCollection);
         _imageCollectionRepository.Update(imageCollection);

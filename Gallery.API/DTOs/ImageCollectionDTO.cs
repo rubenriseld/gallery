@@ -14,7 +14,6 @@ public class ReadImageCollectionDTO
 }
 public class UpdateImageCollectionDTO
 {
-    public required string ImageCollectionId { get; set; }
     public required string Name { get; set; }
     public string? Description { get; set; }
 }

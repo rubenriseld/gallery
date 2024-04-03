@@ -6,6 +6,6 @@ public interface ITagService
 {
     Task<List<ReadTagDTO>> GetAllTags();
     Task<ReadTagDTO> CreateTag(CreateTagDTO createTagDto);
-    Task<ReadTagDTO> UpdateTag(UpdateTagDTO updateTagDto);
+    Task<ReadTagDTO> UpdateTag(string tagId, UpdateTagDTO updateTagDto);
     Task DeleteTag(string tagId);
 }

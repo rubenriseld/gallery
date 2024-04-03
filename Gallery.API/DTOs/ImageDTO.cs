@@ -17,8 +17,8 @@ public record ReadImageDTO
 
 public record UpdateImageDTO
 {
-    public required string ImageId { get; set; }
     public required string Title { get; set; }
     public string? Description { get; set; }
     public string? ImageCollectionId { get; set; }
+    public string[] TagIds { get; set; } = [];
 }

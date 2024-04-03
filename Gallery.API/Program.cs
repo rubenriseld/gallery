@@ -17,7 +17,6 @@ var services = builder.Services;
 services.AddScoped<IRepository<Image>, Repository<Image>>();
 services.AddScoped<IRepository<ImageCollection>, Repository<ImageCollection>>();
 services.AddScoped<IRepository<Tag>, Repository<Tag>>();
-services.AddScoped<IRepository<ImageTag>, Repository<ImageTag>>();
 
 services.AddScoped<IImageService, ImageService>();
 services.AddScoped<ITagService, TagService>();

@@ -11,6 +11,5 @@ public record ReadTagDTO
 }
 public record UpdateTagDTO
 {
-    public required string TagId { get; set; }
     public required string Name { get; set; }
 }

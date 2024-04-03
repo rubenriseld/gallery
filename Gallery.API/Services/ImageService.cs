@@ -6,7 +6,6 @@ using Gallery.API.Interfaces;
 using Gallery.Database.Entities;
 using Gallery.Database.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel.DataAnnotations;
 
 namespace Gallery.API.Services;
@@ -14,6 +13,7 @@ namespace Gallery.API.Services;
 public class ImageService : IImageService
 {
     private readonly IRepository<Image> _imageRepository;
+    private readonly IRepository<Tag> _tagRepository;
     private readonly IMapper _mapper;
     private readonly string _storageAccountName;
     private readonly string _storageAccountKey;
@@ -22,9 +22,11 @@ public class ImageService : IImageService
     public ImageService(
         IConfiguration configuration,
         IRepository<Image> imageRepository,
+        IRepository<Tag> tagRepository,
         IMapper mapper)
     {
         _imageRepository = imageRepository;
+        _tagRepository = tagRepository;
         _mapper = mapper;
 
         _storageAccountName = configuration["AzureBlobStorage:AccountName"]!;
@@ -72,28 +74,29 @@ public class ImageService : IImageService
         return _mapper.Map<List<ReadImageDTO>>(images);
     }
 
-    public async Task<List<ReadImageDTO>> GetImagesFromCollection(string imageCollectionId)
+    public async Task<ReadImageDTO> UpdateImage(string imageId, UpdateImageDTO updateImageDto)
     {
-        if (imageCollectionId.IsNullOrEmpty())
-        {
-            throw new ArgumentException($"{nameof(imageCollectionId)} cannot be null or empty.");
-        }
-
-        var images = await _imageRepository.Get()
-            .Include(i => i.ImageCollection)
-            .Include(i => i.Tags)
-            .Where(i => i.ImageCollectionId != null && i.ImageCollectionId.Equals(imageCollectionId))
-            .ToListAsync();
-
-        return _mapper.Map<List<ReadImageDTO>>(images);
-    }
-
-    public async Task<ReadImageDTO> UpdateImage(UpdateImageDTO updateImageDto)
-    {
-        var image = await _imageRepository.Find(updateImageDto.ImageId);
+        var image = await _imageRepository.Find(imageId);
 
         _mapper.Map(updateImageDto, image);
         _imageRepository.Update(image);
+
+        var existingImageTagIds = image.Tags.Select(t => t.TagId).OrderBy(t => t);
+        var updatedImageTagIds = updateImageDto.TagIds.OrderBy(t => t);
+        
+
+        if(!Enumerable.SequenceEqual(existingImageTagIds, updatedImageTagIds))
+        {
+            foreach (var tagId in existingImageTagIds)
+            {
+                image.Tags.Remove(await _tagRepository.Find(tagId));
+            }
+            foreach (var tagId in updatedImageTagIds)
+            {
+                image.Tags.Add(await _tagRepository.Find(tagId));
+            }
+        }
+
         await _imageRepository.SaveChanges();
         return _mapper.Map<ReadImageDTO>(image);
     }

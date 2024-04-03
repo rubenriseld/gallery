@@ -27,9 +27,9 @@ public static class ImageEndpoints
     {
         return Results.Ok(await imageService.GetAllImages());
     }
-    public static async Task<IResult> UpdateImage(IImageService imageService, UpdateImageDTO updateImageDto)
+    public static async Task<IResult> UpdateImage(IImageService imageService, string imageId, UpdateImageDTO updateImageDto)
     {
-        return Results.Ok(await imageService.UpdateImage(updateImageDto));
+        return Results.Ok(await imageService.UpdateImage(imageId, updateImageDto));
     }
     public static async Task<IResult> DeleteImage(IImageService imageService, string imageId)
     {

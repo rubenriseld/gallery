@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Gallery.Database.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -198,28 +198,29 @@ namespace Gallery.Database.Migrations
                         name: "FK_Image_ImageCollection_ImageCollectionId",
                         column: x => x.ImageCollectionId,
                         principalTable: "ImageCollection",
-                        principalColumn: "ImageCollectionId");
+                        principalColumn: "ImageCollectionId",
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
                 name: "ImageTag",
                 columns: table => new
                 {
-                    ImageId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    TagId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    ImagesImageId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    TagsTagId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ImageTag", x => new { x.ImageId, x.TagId });
+                    table.PrimaryKey("PK_ImageTag", x => new { x.ImagesImageId, x.TagsTagId });
                     table.ForeignKey(
-                        name: "FK_ImageTag_Image_ImageId",
-                        column: x => x.ImageId,
+                        name: "FK_ImageTag_Image_ImagesImageId",
+                        column: x => x.ImagesImageId,
                         principalTable: "Image",
                         principalColumn: "ImageId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ImageTag_Tag_TagId",
-                        column: x => x.TagId,
+                        name: "FK_ImageTag_Tag_TagsTagId",
+                        column: x => x.TagsTagId,
                         principalTable: "Tag",
                         principalColumn: "TagId",
                         onDelete: ReferentialAction.Cascade);
@@ -270,9 +271,9 @@ namespace Gallery.Database.Migrations
                 column: "ImageCollectionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ImageTag_TagId",
+                name: "IX_ImageTag_TagsTagId",
                 table: "ImageTag",
-                column: "TagId");
+                column: "TagsTagId");
         }
 
         /// <inheritdoc />

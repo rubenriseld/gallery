@@ -12,7 +12,6 @@ public class TagService : ITagService
     private readonly IRepository<Tag> _tagRepository;
     private readonly IMapper _mapper;
 
-
     public TagService(
         IRepository<Tag> tagRepository, IMapper mapper) =>
         (_tagRepository, _mapper) = (tagRepository, mapper);
@@ -32,9 +31,9 @@ public class TagService : ITagService
         return _mapper.Map<List<ReadTagDTO>>(tags);
     }
 
-    public async Task<ReadTagDTO> UpdateTag(UpdateTagDTO updateTagDto)
+    public async Task<ReadTagDTO> UpdateTag(string tagId, UpdateTagDTO updateTagDto)
     {
-        var tag = await _tagRepository.Find(updateTagDto.TagId);
+        var tag = await _tagRepository.Find(tagId);
 
         _mapper.Map(updateTagDto, tag);
         _tagRepository.Update(tag);
