@@ -6,9 +6,15 @@ using Gallery.API.Services;
 using Gallery.Database;
 using Gallery.Database.Entities;
 using Gallery.Database.Interfaces;
+using Microsoft.AspNetCore.Authentication.BearerToken;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.Data;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
@@ -73,19 +79,11 @@ services.AddDbContext<GalleryDbContext>(opt =>
 
 var app = builder.Build();
 
-app.MapPost("/logout", async (SignInManager<IdentityUser> signInManager) =>
-{
-    await signInManager.SignOutAsync().ConfigureAwait(false);
-}).RequireAuthorization();
-
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-//TODO implement custom login endpoint or filter out unused Identity endpoints
-app.MapIdentityApi<IdentityUser>();
 
 app.MapImageEndpoints();
 app.MapTagEndpoints();
