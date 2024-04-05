@@ -76,28 +76,30 @@ public class ImageService : IImageService
 
     public async Task<ReadImageDTO> UpdateImage(string imageId, UpdateImageDTO updateImageDto)
     {
-        var image = await _imageRepository.Find(imageId);
+        var image = await _imageRepository.Get()
+            .Where(i => i.ImageId.Equals(imageId))
+            .Include(i => i.Tags)
+            .SingleOrDefaultAsync()
+            ?? throw new ArgumentNullException($"The entity: {typeof(Image)} could not be found. {nameof(imageId)} cannot be null or empty. {nameof(imageId)}: {imageId}.");
 
-        _mapper.Map(updateImageDto, image);
-        _imageRepository.Update(image);
-
-        var existingImageTagIds = image.Tags.Select(t => t.TagId).OrderBy(t => t);
-        var updatedImageTagIds = updateImageDto.TagIds.OrderBy(t => t);
+        var existingImageTagIds = image.Tags.Select(t => t.TagId).OrderBy(t => t).ToArray();
+        var updatedImageTagIds = updateImageDto.TagIds.OrderBy(t => t).ToArray();
         
-
         if(!Enumerable.SequenceEqual(existingImageTagIds, updatedImageTagIds))
         {
-            foreach (var tagId in existingImageTagIds)
+            image.Tags.Clear();
+            
+            var imageTagsToAdd = await _tagRepository.Get().Where(t => updatedImageTagIds.Contains(t.TagId)).ToListAsync();
+            foreach (var tag in imageTagsToAdd)
             {
-                image.Tags.Remove(await _tagRepository.Find(tagId));
-            }
-            foreach (var tagId in updatedImageTagIds)
-            {
-                image.Tags.Add(await _tagRepository.Find(tagId));
+                image.Tags.Add(tag);
             }
         }
 
+        _mapper.Map(updateImageDto, image);
+        _imageRepository.Update(image);
         await _imageRepository.SaveChanges();
+
         return _mapper.Map<ReadImageDTO>(image);
     }
 
