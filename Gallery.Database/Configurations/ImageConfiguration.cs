@@ -1,0 +1,19 @@
+﻿using Gallery.Database.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace Gallery.Database.Configurations;
+
+public class ImageConfiguration : IEntityTypeConfiguration<Image>
+{
+    public void Configure(EntityTypeBuilder<Image> entity)
+    {
+        entity.HasOne(img => img.ImageCollection)
+            .WithMany(ic => ic.Images)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        entity.Property(e => e.Uri).IsRequired();
+        entity.Property(e => e.Title).HasMaxLength(64);
+        entity.Property(e => e.Description).HasMaxLength(256);
+    }
+}
