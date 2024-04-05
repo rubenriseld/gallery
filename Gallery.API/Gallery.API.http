@@ -1,6 +1,0 @@
-@Gallery.API_HostAddress = http://localhost:5298
-
-GET {{Gallery.API_HostAddress}}/images/
-Accept: application/json
-
-###
