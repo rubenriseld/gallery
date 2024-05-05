@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Tag } from '@/types/tag'
+import type { Tag } from '@/assets/types/tag'
 import Modal from './Modal.vue';
 import api from '@/api'
 import { ref, onMounted, computed } from 'vue'

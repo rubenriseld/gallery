@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import type { Image, ImageFormFields } from '@/types/image'
+import type { Image, ImageFormFields } from '@/assets/types/image'
 import Modal from './Modal.vue';
 import api from '@/api'
 import { ref, onMounted, computed } from 'vue'
 import { Operation } from '@/assets/enums/operation';
 import IconDelete from './icons/IconDelete.vue';
 import IconAdd from './icons/IconAdd.vue';
-import type { ImageCollection } from '@/types/imageCollection';
-import type { Tag } from '@/types/tag';
+import type { ImageCollection } from '@/assets/types/imageCollection';
+import type { Tag } from '@/assets/types/tag';
 
 const images = ref<Image[]>([])
 const imageCollections = ref<ImageCollection[]>([])

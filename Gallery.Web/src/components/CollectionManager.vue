@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ImageCollection, ImageCollectionFormFields } from '@/types/imageCollection'
+import type { ImageCollection, ImageCollectionFormFields } from '@/assets/types/imageCollection'
 import Modal from './Modal.vue';
 import api from '@/api'
 import { ref, onMounted, computed } from 'vue'
