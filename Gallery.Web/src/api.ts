@@ -17,6 +17,9 @@ api.interceptors.response.use(
         if (error.response.status === 401) {
             router.push('/login')
         }
+        else {
+            console.error(error)
+        }
         return Promise.reject(error)
     }
 )
