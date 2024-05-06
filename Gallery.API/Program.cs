@@ -53,6 +53,15 @@ services.AddSingleton(new MapperConfiguration(cfg =>
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen();
 
+services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy", builder =>
+    {
+        builder.AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+    });
+});
 //Identity services
 services.AddAuthentication(IdentityConstants.ApplicationScheme)
     .AddIdentityCookies()
@@ -88,6 +97,7 @@ if (app.Environment.IsDevelopment())
 app.MapImageEndpoints();
 app.MapTagEndpoints();
 app.MapImageCollectionEndpoints();
+app.MapAuthEndpoints();
 
 app.UseHttpsRedirection();
 
