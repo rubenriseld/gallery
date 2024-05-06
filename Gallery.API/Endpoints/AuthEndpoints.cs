@@ -9,9 +9,11 @@ public static class AuthEndpoints
     {
         var group = app.MapGroup("api/auth");
 
+        group.MapPost("/login", Login);
+
         group.MapPost("/logout", Logout).RequireAuthorization();
 
-        group.MapPost("/login", Login);
+        group.MapGet("/check", Check).RequireAuthorization();
 
         //ONLY USED FOR CREATING ACCOUNT IN TESTING
         //group.MapPost("/register", Register);
@@ -29,6 +31,10 @@ public static class AuthEndpoints
     {
         signInManager.AuthenticationScheme = IdentityConstants.ApplicationScheme;
         await signInManager.PasswordSignInAsync(login.Email, login.Password, true, lockoutOnFailure: true);
+        return Results.Ok();
+    }
+    public static async Task<IResult> Check()
+    {
         return Results.Ok();
     }
     public static async Task<IResult> Logout(SignInManager<IdentityUser> signInManager)
