@@ -7,12 +7,13 @@ using Gallery.Database.Entities;
 using Gallery.Database.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using SixLabors.ImageSharp;
 
 namespace Gallery.API.Services;
 
 public class ImageService : IImageService
 {
-    private readonly IRepository<Image> _imageRepository;
+    private readonly IRepository<Database.Entities.Image> _imageRepository;
     private readonly IRepository<Tag> _tagRepository;
     private readonly IMapper _mapper;
     private readonly string _storageAccountName;
@@ -21,7 +22,7 @@ public class ImageService : IImageService
 
     public ImageService(
         IConfiguration configuration,
-        IRepository<Image> imageRepository,
+        IRepository<Database.Entities.Image> imageRepository,
         IRepository<Tag> tagRepository,
         IMapper mapper)
     {
@@ -38,24 +39,46 @@ public class ImageService : IImageService
         _blobContainerClient = blobServiceClient.GetBlobContainerClient("gallery");
     }
 
-    
+
     public async Task<List<ReadImageDTO>> UploadImages(
             [FileExtensions(Extensions = "jpg, png, webp, jpeg", ErrorMessage = "Fileformat not supported.")]
-        IFormFileCollection images)
+            IFormFileCollection images)
     {
         var result = new List<ReadImageDTO>();
+        string absoluteUri;
 
         foreach (var image in images)
         {
-            BlobClient client = _blobContainerClient.GetBlobClient(image.FileName);
+            Stream imageStream = image.OpenReadStream();
 
-            await using (Stream data = image.OpenReadStream())
+            if (!image.ContentType.Equals("image/webp", StringComparison.OrdinalIgnoreCase))
             {
-                await client.UploadAsync(data);
+                using (var memoryStream = new MemoryStream())
+                {
+                    imageStream.CopyTo(memoryStream);
+                    memoryStream.Position = 0;
+
+                    using (var imageSharp = SixLabors.ImageSharp.Image.Load(memoryStream))
+                    {
+                        var encoder = new SixLabors.ImageSharp.Formats.Webp.WebpEncoder();
+                        memoryStream.SetLength(0);
+                        imageSharp.Save(memoryStream, encoder);
+                        memoryStream.Position = 0;
+
+                        BlobClient client = _blobContainerClient.GetBlobClient($"{Guid.NewGuid()}.webp");
+                        absoluteUri = client.Uri.AbsoluteUri;
+                        await client.UploadAsync(memoryStream);
+                    }
+                }
+            }
+            else
+            {
+                BlobClient client = _blobContainerClient.GetBlobClient($"{Guid.NewGuid()}{Path.GetExtension(image.FileName)}");
+                absoluteUri = client.Uri.AbsoluteUri;
+                await client.UploadAsync(imageStream);
             }
 
-            var imageEntity = _mapper.Map<Image>(new CreateImageDTO { Uri = client.Uri.AbsoluteUri });
-
+            var imageEntity = _mapper.Map<Database.Entities.Image>(new CreateImageDTO { Uri = absoluteUri });
             await _imageRepository.Add(imageEntity);
             await _imageRepository.SaveChanges();
 
@@ -80,7 +103,7 @@ public class ImageService : IImageService
             .Where(i => i.ImageId.Equals(imageId))
             .Include(i => i.Tags)
             .SingleOrDefaultAsync()
-            ?? throw new ArgumentNullException($"The entity: {typeof(Image)} could not be found. {nameof(imageId)} cannot be null or empty. {nameof(imageId)}: {imageId}.");
+            ?? throw new ArgumentNullException($"The entity: {typeof(Database.Entities.Image)} could not be found. {nameof(imageId)} cannot be null or empty. {nameof(imageId)}: {imageId}.");
 
         var existingImageTagIds = image.Tags.Select(t => t.TagId).OrderBy(t => t).ToArray();
         var updatedImageTagIds = updateImageDto.TagIds.OrderBy(t => t).ToArray();
