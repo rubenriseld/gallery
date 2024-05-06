@@ -8,30 +8,38 @@ import IconDelete from './icons/IconDelete.vue';
 import IconAdd from './icons/IconAdd.vue';
 import type { ImageCollection } from '@/assets/types/imageCollection';
 import type { Tag } from '@/assets/types/tag';
-
-const images = ref<Image[]>([])
-const imageCollections = ref<ImageCollection[]>([])
-const tags = ref<Tag[]>([])
 const selectedImage = ref<ImageFormFields | null>(null)
 const selectedOperation = ref<Operation>(Operation.None)
 const formData = ref()
 const isDeleteOperation = computed(() => selectedOperation.value === Operation.Delete)
-
 const showDeleteButton = ref<boolean[]>([])
 
-onMounted(async () => {
-    await getImages()
-    await getImageCollections()
-    await getTags()
-    showDeleteButton.value = Array(images.value.length).fill(false)
+const props = defineProps({
+    images: {
+        type: Object as () => (Image[]),
+        default: []
+    },
+    collections: {
+        type: Object as () => (ImageCollection[]),
+        default: []
+    },
+    tags: {
+        type: Object as () => (Tag[]),
+        default: []
+    },
+    refresh: Function
 })
-const handleFileSelect = (event: Event) => {
-  const fileList = (event.target as HTMLInputElement).files
-  formData.value = []
+onMounted(async () => {
+    showDeleteButton.value = Array(props.images.length).fill(false)
+})
 
-  if(fileList){
-      for (let i = 0; i < fileList.length; i++) {
-          (formData.value as File[]).push(fileList[i])
+const handleFileSelect = (event: Event) => {
+    const fileList = (event.target as HTMLInputElement).files
+    formData.value = []
+
+    if (fileList) {
+        for (let i = 0; i < fileList.length; i++) {
+            (formData.value as File[]).push(fileList[i])
         }
     }
 }
@@ -47,13 +55,13 @@ async function openCreateForm() {
     formData.value = { ...selectedImage.value }
     selectedOperation.value = Operation.Create
 }
+
 function openUpdateForm(image: Image) {
     selectedImage.value = convertImageToImageFormFields(image)
     const tagIds = image.tags.map(tag => tag.tagId)
     formData.value = { ...selectedImage.value, tagIds }
     selectedOperation.value = Operation.Update;
 }
-
 
 function convertImageToImageFormFields(image: Image) {
     const { imageId, title, description, imageCollectionId, tags } = image
@@ -69,15 +77,7 @@ function convertImageToImageFormFields(image: Image) {
     }
     return imageFormFields
 }
-async function getImages() {
-    images.value = (await api.get('images')).data as Image[]
-}
-async function getImageCollections() {
-    imageCollections.value = (await api.get('imageCollections')).data as ImageCollection[]
-}
-async function getTags() {
-    tags.value = (await api.get('tags')).data as Tag[]
-}
+
 function openDeletePromptModal(image: Image) {
     selectedOperation.value = Operation.Delete
     selectedImage.value = convertImageToImageFormFields(image)
@@ -89,8 +89,9 @@ function clearSelections() {
 async function updateImage() {
     if (selectedImage.value && formData.value) {
         await api.put('images/' + selectedImage.value.imageId, JSON.stringify(formData.value))
-        await getImages()
     }
+    props.refresh && props.refresh()
+
     clearSelections()
 }
 
@@ -101,15 +102,17 @@ async function createImage() {
                 'Content-Type': 'multipart/form-data'
             }
         })
-        await getImages()
     }
+    props.refresh && props.refresh()
+
     clearSelections()
 }
 async function deleteImage() {
     if (selectedImage.value) {
         await api.delete('images/' + selectedImage.value.imageId)
-        await getImages()
     }
+    props.refresh && props.refresh()
+
     clearSelections()
 }
 
@@ -124,9 +127,8 @@ function toggleDeleteButton(index: number, show: boolean) {
             @mouseenter='toggleDeleteButton(index, true)' @mouseleave='toggleDeleteButton(index, false)'>
             <h4>{{ image.title }}</h4>
             <p>{{ image.imageCollectionName }}</p>
-            <p>{{ image.uri }}</p>
-            <p>{{ image.description }}</p>
-            <p v-for='(tag, index) in image.tags' :key='index'>{{tag.name}}</p>
+            <img :src='image.uri' :alt='image.title'>
+            <p v-for='(tag, index) in image.tags' :key='index'>{{ tag.name }}</p>
             <button v-if='showDeleteButton[index]' class='delete-button' @click.stop='openDeletePromptModal(image)'>
                 <IconDelete />
             </button>
@@ -143,7 +145,8 @@ function toggleDeleteButton(index: number, show: boolean) {
             <input id='title' v-model='formData.title' required>
             <input id='description' v-model='formData.description'>
             <select id='imageCollectionId' v-model='formData.imageCollectionId'>
-                <option v-for='(imageCollection, index) in imageCollections' :key='index' :value='imageCollection.imageCollectionId'>{{ imageCollection.name }}</option>
+                <option v-for='(imageCollection, index) in collections' :key='index'
+                    :value='imageCollection.imageCollectionId'>{{ imageCollection.name }}</option>
             </select>
             <div>
                 <label v-for="(tag, tagIndex) in tags" :key="tagIndex">
@@ -177,8 +180,9 @@ function toggleDeleteButton(index: number, show: boolean) {
 .image:hover .delete-button {
     display: block;
 }
+
 .multiselect {
-    width: 50px!important;
+    width: 50px !important;
     position: relative;
 }
 </style>

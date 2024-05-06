@@ -7,7 +7,6 @@ import { Operation } from '@/assets/enums/operation';
 import IconDelete from './icons/IconDelete.vue';
 import IconAdd from './icons/IconAdd.vue';
 
-const collections = ref<ImageCollection[]>([])
 const selectedCollection = ref<ImageCollectionFormFields | null>(null)
 const selectedOperation = ref<Operation>(Operation.None)
 const formData = ref()
@@ -15,9 +14,15 @@ const isDeleteOperation = computed(() => selectedOperation.value === Operation.D
 
 const showDeleteButton = ref<boolean[]>([]);
 
+const props = defineProps({
+    collections: {
+        type: Object as () => (ImageCollection[]),
+        default: []
+    },
+    refresh: Function
+})
 onMounted(async () => {
-    await getCollections()
-    showDeleteButton.value = Array(collections.value.length).fill(false);
+    showDeleteButton.value = Array(props.collections.length).fill(false);
 })
 
 async function openCreateForm() {
@@ -35,9 +40,6 @@ function openUpdateForm(collection: ImageCollection) {
     selectedOperation.value = Operation.Update
 }
 
-async function getCollections() {
-    collections.value = (await api.get('imageCollections')).data as ImageCollection[]
-}
 function openDeletePromptModal(collection: ImageCollection) {
     selectedOperation.value = Operation.Delete
     selectedCollection.value = collection
@@ -50,22 +52,25 @@ async function updateCollection() {
     if (selectedCollection.value) {
         console.log(formData.value)
         await api.put('imageCollections/' + selectedCollection.value.imageCollectionId, JSON.stringify(formData.value))
-        await getCollections()
     }
+    props.refresh && props.refresh()
+
     clearSelections()
 }
 async function createCollection() {
     if (selectedCollection.value) {
         await api.post('imageCollections/', JSON.stringify(formData.value))
-        await getCollections()
     }
+    props.refresh && props.refresh()
+
     clearSelections()
 }
 async function deleteCollection() {
     if (selectedCollection.value) {
         await api.delete('imageCollections/' + selectedCollection.value.imageCollectionId)
-        await getCollections()
     }
+    props.refresh && props.refresh()
+
     clearSelections()
 }
 
@@ -96,18 +101,12 @@ function toggleDeleteButton(index: number, show: boolean) {
         <form v-if='selectedOperation === Operation.Update' @submit.prevent='updateCollection'>
             <input id='name' v-model='formData.name' required>
             <input id='description' v-model='formData.description'>
-            <!-- <template v-for="(property, index) in selectedCollection">
-                <input v-if="!isPrimaryKey(property)" :key="index" v-model="formData[index]">
-            </template> -->
             <button class='cancel-button' @click='clearSelections'>Cancel</button>
             <button class='submit-button' type='submit'>Update</button>
         </form>
         <form v-else-if='selectedOperation === Operation.Create' @submit.prevent='createCollection'>
             <input id='name' v-model='formData.name' required>
             <input id='description' v-model='formData.description'>
-            <!-- <template v-for="(property, index) in selectedCollection">
-                <input v-if="!isPrimaryKey(property)" :key="index" v-model="formData[index]">
-            </template> -->
             <button class='submit-button' type='submit'>Create</button>
         </form>
     </div>

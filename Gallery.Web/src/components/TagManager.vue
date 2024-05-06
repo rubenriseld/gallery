@@ -7,7 +7,6 @@ import { Operation } from '@/assets/enums/operation';
 import IconDelete from './icons/IconDelete.vue';
 import IconAdd from './icons/IconAdd.vue';
 
-const tags = ref<Tag[]>([])
 const selectedTag = ref<Tag | null>(null)
 const selectedOperation = ref<Operation>(Operation.None)
 const formData = ref()
@@ -15,9 +14,16 @@ const isDeleteOperation = computed(() => selectedOperation.value === Operation.D
 
 const showDeleteButton = ref<boolean[]>([]);
 
+const props = defineProps({
+    tags: {
+        type: Object as () => (Tag[]),
+        default: []
+    },
+    refresh: Function
+})
+
 onMounted(async () => {
-    await getTags()
-    showDeleteButton.value = Array(tags.value.length).fill(false);
+    showDeleteButton.value = Array(props.tags.length).fill(false);
 })
 
 async function openCreateForm() {
@@ -34,9 +40,6 @@ function openUpdateForm(tag: Tag) {
     selectedOperation.value = Operation.Update
 }
 
-async function getTags() {
-    tags.value = (await api.get('tags')).data as Tag[]
-}
 function openDeletePromptModal(tag: Tag) {
     selectedOperation.value = Operation.Delete
     selectedTag.value = tag
@@ -48,22 +51,25 @@ function clearSelections() {
 async function updateTag() {
     if (selectedTag.value) {
         await api.put('tags/' + selectedTag.value.tagId, JSON.stringify(formData.value))
-        await getTags()
     }
+    props.refresh && props.refresh()
+
     clearSelections()
 }
 async function createTag() {
     if (selectedTag.value) {
         await api.post('tags/', JSON.stringify(formData.value))
-        await getTags()
     }
+    props.refresh && props.refresh()
+
     clearSelections()
 }
 async function deleteTag() {
     if (selectedTag.value) {
         await api.delete('tags/' + selectedTag.value.tagId)
-        await getTags()
     }
+    props.refresh && props.refresh()
+
     clearSelections()
 }
 
