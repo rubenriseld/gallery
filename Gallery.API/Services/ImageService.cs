@@ -40,7 +40,7 @@ public class ImageService : IImageService
 
     
     public async Task<List<ReadImageDTO>> UploadImages(
-        [FileExtensions(Extensions = "jpg, png, webp", ErrorMessage = "Fileformat not supported.")] 
+            [FileExtensions(Extensions = "jpg, png, webp, jpeg", ErrorMessage = "Fileformat not supported.")]
         IFormFileCollection images)
     {
         var result = new List<ReadImageDTO>();
