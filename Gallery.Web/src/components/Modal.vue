@@ -9,11 +9,11 @@ const props = defineProps({
 })
 const emits = defineEmits(['closeModal'])
 
-const closeModal = () => {
+function closeModal() {
     emits('closeModal')
 }
-const confirmAction = () => {
-    if (props.confirm) props.confirm()
+async function confirmAction() {
+    props.confirm && await props.confirm()
     closeModal()
 }
 
