@@ -1,13 +1,10 @@
 <script setup lang='ts'>
-import CollectionManager from '@/components/CollectionManager.vue'
-import TagManager from '@/components/TagManager.vue'
-import ImageManager from '@/components/ImageManager.vue'
-import TabMenu from '@/components/TabMenu.vue';
-import api from '@/api';
-import { onMounted, ref } from 'vue';
-import type { ImageCollection } from '@/assets/types/imageCollection';
-import type { Image } from '@/assets/types/image';
-import type { Tag } from '@/assets/types/tag';
+import TabMenu from '@/components/TabMenu.vue'
+import api from '@/api'
+import * as requests from '@/requests'
+import { onMounted, ref } from 'vue'
+import type { ImageCollection, Image, Tag } from '@/assets/types'
+import Manager from '@/components/Manager.vue'
 
 const collections = ref<ImageCollection[]>([])
 const images = ref<Image[]>([])
@@ -15,7 +12,6 @@ const tags = ref<Tag[]>([])
 
 onMounted(async () => {
     await refreshData()
-   
 })
 async function refreshData() {
     await getTags()
@@ -35,16 +31,21 @@ async function getCollections() {
 </script>
 <template>
     <div>
-      <TabMenu>
-        <template #Collections>
-          <CollectionManager :collections="collections" :refresh="refreshData" />
-        </template>
-        <template #Tags>
-          <TagManager :tags="tags" :refresh="refreshData" />
-        </template>
-        <template #Images>
-          <ImageManager :collections="collections" :tags="tags" :images="images" :refresh="refreshData" />
-        </template>
-      </TabMenu>
+        <TabMenu>
+            <template #Collections v-if="collections.length">
+                <Manager :key="'collections'" :collections="collections" :objectType="'collections'"
+                    :refresh="refreshData" :create="requests.createCollection" :update="requests.updateCollection"
+                    :delete="requests.deleteCollection" />
+            </template>
+            <template #Tags v-if="tags.length">
+                <Manager :key="'tags'" :tags="tags" :objectType="'tags'" :refresh="refreshData"
+                    :create="requests.createTag" :update="requests.updateTag" :delete="requests.deleteTag" />
+            </template>
+            <template #Images v-if="images.length">
+                <Manager :key="'images'" :images="images" :tags="tags" :collections="collections" :objectType="'images'"
+                    :refresh="refreshData" :create="requests.createImage" :update="requests.updateImage"
+                    :delete="requests.deleteImage" />
+            </template>
+        </TabMenu>
     </div>
-  </template>
+</template>
