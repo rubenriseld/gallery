@@ -31,6 +31,10 @@ export type Image = {
     imageCollectionName?: string,
     tags: Tag[]
 }
+export type ImagePreview = {
+    imageFile : File,
+    imageSrc : string
+}
 export type ImageCollection = {
     imageCollectionId: string,
     name: string,
