@@ -9,11 +9,10 @@ import AdminView from './views/AdminView.vue'
 import CollectionView from './views/CollectionView.vue'
 import LoginView from './views/LoginView.vue'
 
-
 const routes = [
     { path: '/', component: IndexView },
     { path: '/admin', component: AdminView },
-    { path: '/collection', component: CollectionView },
+    { path: '/collection/:collectionId', name:'collection', component: CollectionView, props: true},
     { path: '/login', component: LoginView }
 ]
 
