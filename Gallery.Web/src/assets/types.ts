@@ -6,11 +6,12 @@ export type TagFormFields = {
     name: string
 }
 export type ImageFormFields = {
+    uri: string,
     imageId: string,
     title?: string,
     description?: string,
     imageCollectionId?: string,
-    tagIds: string[]
+    tagIds?: string[]
 }
 export type ImageCollectionFormFields = {
     imageCollectionId: string,
