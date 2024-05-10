@@ -5,16 +5,14 @@ import Menu from './components/Menu.vue'
 
 <template>
     <header>
-        <Menu/>
+        <Menu />
     </header>
-
-        <main>
-            <RouterView class="view"></RouterView>
-        </main>
+    <main>
+        <RouterView class="view"></RouterView>
+    </main>
 </template>
+
 <style scoped>
-
-
 header {
     position: fixed;
     top: 0;
@@ -26,7 +24,7 @@ header {
     justify-content: space-between;
     background-color: var(--lightest-color);
     align-items: center;
-    overflow:hidden;
+    overflow: hidden;
 }
 
 main {
@@ -35,5 +33,4 @@ main {
     background-color: inherit;
     overflow: hidden;
 }
-
 </style>

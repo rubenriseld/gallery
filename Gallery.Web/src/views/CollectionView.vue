@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import api from '@/api';
-import type { Image, ImageCollection } from '@/assets/types';
-import { ref, onMounted, watch, computed } from 'vue';
-import { useRoute } from 'vue-router';
 import IconChevronLeft from '@/components/icons/IconChevronLeft.vue';
 import IconChevronRight from '@/components/icons/IconChevronRight.vue';
 import IconClose from '@/components/icons/IconClose.vue';
+
+import api from '@/api';
+import { ref, onMounted, watch, computed } from 'vue';
+import { useRoute } from 'vue-router';
+
+import type { Image, ImageCollection } from '@/assets/types';
 
 const isLoading = ref(true);
 const collectionId = ref<string>('');
@@ -29,22 +31,22 @@ watch(route, async (to, from) => {
     collectionId.value = to.params.collectionId as string;
     await getCollection()
     isLoading.value = false
-}, { immediate: true });
+}, { immediate: true })
 
 function selectImage(image: Image) {
-    selectedImage.value = image;
+    selectedImage.value = image
 }
 function nextImage() {
     const currentIndex = collection.value?.images.findIndex(image => image.imageId === selectedImage.value?.imageId);
     if (currentIndex !== undefined && currentIndex !== -1 && currentIndex < (collection.value?.images.length ?? 0) - 1) {
-        selectedImage.value = collection.value?.images[currentIndex + 1] || null;
+        selectedImage.value = collection.value?.images[currentIndex + 1] || null
     }
 }
 
 function prevImage() {
     const currentIndex = collection.value?.images.findIndex(image => image.imageId === selectedImage.value?.imageId);
     if (currentIndex !== undefined && currentIndex !== -1 && currentIndex > 0) {
-        selectedImage.value = currentIndex > 0 ? collection.value?.images[currentIndex - 1] as Image | null : null;
+        selectedImage.value = currentIndex > 0 ? collection.value?.images[currentIndex - 1] as Image | null : null
     }
 }
 function clearSelectedImage() {
@@ -52,18 +54,18 @@ function clearSelectedImage() {
 }
 const imageNumber = computed(() => {
     if (!selectedImage.value || !collection.value) return 0;
-    return selectedImage.value ? collection.value.images.findIndex(image => image.imageId === selectedImage.value?.imageId) + 1 : 0;
+    return selectedImage.value ? collection.value.images.findIndex(image => image.imageId === selectedImage.value?.imageId) + 1 : 0
 })
 
 const hasNextImage = computed(() => {
     if (!selectedImage.value || !collection.value) return false;
-    const currentIndex = collection.value.images.findIndex(image => image.imageId === (selectedImage.value?.imageId ?? ''));
-    return currentIndex < collection.value.images.length - 1;
+    const currentIndex = collection.value.images.findIndex(image => image.imageId === (selectedImage.value?.imageId ?? ''))
+    return currentIndex < collection.value.images.length - 1
 })
 
 const hasPrevImage = computed(() => {
     if (!selectedImage.value || !collection.value) return false;
-    const currentIndex = collection.value.images.findIndex(image => image.imageId === (selectedImage.value?.imageId ?? ''));
+    const currentIndex = collection.value.images.findIndex(image => image.imageId === (selectedImage.value?.imageId ?? ''))
     return currentIndex > 0;
 })
 
@@ -72,47 +74,61 @@ async function getCollection() {
 }
 
 </script>
+
 <template>
-    <div v-if="selectedImage" class="selected-image-wrapper" @click="clearSelectedImage">
+    <div v-if="selectedImage"
+        class="selected-image-wrapper"
+        @click="clearSelectedImage">
         <div class="image-and-controls-wrapper">
-            <button :class="{ 'opacity-0': !hasPrevImage, 'disabled': !hasPrevImage }" class="nav-button prev-button"
+            <button :class="{ 'opacity-0': !hasPrevImage, 'disabled': !hasPrevImage }"
+                class="nav-button prev-button"
                 @click.stop="prevImage">
                 <IconChevronLeft class="nav-icon" />
             </button>
             <div class="selected-image-info">
-                <img :src="selectedImage.uri" :alt="selectedImage.description" class="selected-image" />
+                <img :src="selectedImage.uri"
+                    :alt="selectedImage.description"
+                    class="selected-image" />
                 <div class="image-details">
                     <p>{{ imageNumber }}/{{ collection?.images.length || 0 }}</p>
                     <h3>{{ selectedImage.title || 'Untitled' }}</h3>
                     <p>{{ selectedImage.description || 'No description.' }}</p>
                 </div>
             </div>
-            <button :class="{ 'opacity-0': !hasNextImage, 'disabled': !hasNextImage }" class="nav-button next-button"
+            <button :class="{ 'opacity-0': !hasNextImage, 'disabled': !hasNextImage }"
+                class="nav-button next-button"
                 @click.stop="nextImage">
                 <IconChevronRight class="nav-icon" />
             </button>
-            <button class="nav-button close-button" @click.stop="clearSelectedImage">
+            <button class="nav-button close-button"
+                @click.stop="clearSelectedImage">
                 <IconClose class="nav-icon" />
             </button>
         </div>
     </div>
-    <div v-else-if="!isLoading && collection" class="collection-wrapper">
+    <div v-else-if="!isLoading && collection"
+        class="collection-wrapper">
         <h2>{{ collection?.name }}</h2>
         <p>{{ collection?.description }}</p>
         <div class="image-wrapper">
-            <template v-for="image in collection?.images" :key="image.imageId">
-                <div class="image-container" @click="selectImage(image)" @mouseover="hoveredImage = image.imageId"
+            <template v-for="image in collection?.images"
+                :key="image.imageId">
+                <div class="image-container"
+                    @click="selectImage(image)"
+                    @mouseover="hoveredImage = image.imageId"
                     @mouseleave="hoveredImage = ''">
-                    <img :src="image.uri" :alt="image.description" />
-                    <div v-if="hoveredImage === image.imageId" class="image-overlay">
+                    <img :src="image.uri"
+                        :alt="image.description" />
+                    <div v-if="hoveredImage === image.imageId"
+                        class="image-overlay">
                         <span class="image-title">{{ image.title || 'Untitled' }}</span>
                     </div>
                 </div>
             </template>
         </div>
     </div>
-
 </template>
+
 <style scoped>
 .collection-wrapper {
     display: flex;
@@ -208,16 +224,12 @@ img {
 .image-details {
     position: fixed;
     bottom: 1rem;
-    /* Adjust as needed */
     left: 50%;
-    /* Center the div horizontally */
     transform: translateX(-50%);
     color: var(--lightest-color);
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* Ensure the centering is accurate regardless of the div's width */
-    /* Other styles as needed */
 }
 
 .nav-button {
@@ -256,9 +268,7 @@ img {
 
 .selected-image {
     max-height: 80vh;
-    /* 80% of viewport height */
     max-width: 80vw;
-    /* 80% of viewport width */
     object-fit: contain;
     cursor: pointer;
 }

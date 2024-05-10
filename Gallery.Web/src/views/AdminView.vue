@@ -1,10 +1,12 @@
 <script setup lang='ts'>
 import TabMenu from '@/components/TabMenu.vue'
+import Manager from '@/components/Manager.vue'
+
 import api from '@/api'
 import * as requests from '@/requests'
 import { onMounted, ref } from 'vue'
+
 import type { ImageCollection, Image, Tag } from '@/assets/types'
-import Manager from '@/components/Manager.vue'
 
 const collections = ref<ImageCollection[]>([])
 const images = ref<Image[]>([])
@@ -32,21 +34,40 @@ async function getCollections() {
 }
 
 </script>
+
 <template>
     <div>
         <TabMenu>
-            <template #Collections v-if="!isLoading">
-                <Manager :key="'collections'" :collections="collections" :objectType="'collections'"
-                    :refresh="refreshData" :create="requests.createCollection" :update="requests.updateCollection"
+            <template #Collections
+                v-if="!isLoading">
+                <Manager :key="'collections'"
+                    :collections="collections"
+                    :objectType="'collections'"
+                    :refresh="refreshData"
+                    :create="requests.createCollection"
+                    :update="requests.updateCollection"
                     :delete="requests.deleteCollection" />
             </template>
-            <template #Tags v-if="!isLoading">
-                <Manager :key="'tags'" :tags="tags" :objectType="'tags'" :refresh="refreshData"
-                    :create="requests.createTag" :update="requests.updateTag" :delete="requests.deleteTag" />
+            <template #Tags
+                v-if="!isLoading">
+                <Manager :key="'tags'"
+                    :tags="tags"
+                    :objectType="'tags'"
+                    :refresh="refreshData"
+                    :create="requests.createTag"
+                    :update="requests.updateTag"
+                    :delete="requests.deleteTag" />
             </template>
-            <template #Images v-if="!isLoading">
-                <Manager :key="'images'" :images="images" :tags="tags" :collections="collections" :objectType="'images'"
-                    :refresh="refreshData" :create="requests.createImage" :update="requests.updateImage"
+            <template #Images
+                v-if="!isLoading">
+                <Manager :key="'images'"
+                    :images="images"
+                    :tags="tags"
+                    :collections="collections"
+                    :objectType="'images'"
+                    :refresh="refreshData"
+                    :create="requests.createImage"
+                    :update="requests.updateImage"
                     :delete="requests.deleteImage" />
             </template>
         </TabMenu>

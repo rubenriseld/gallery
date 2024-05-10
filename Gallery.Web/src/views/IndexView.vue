@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import api from '@/api';
-import type { ImageCollection } from '@/assets/types';
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
+
+import type { ImageCollection } from '@/assets/types';
 
 const isLoading = ref(true);
 const collectionId = ref<string>('');
@@ -22,12 +23,17 @@ async function getCollections() {
 }
 
 </script>
+
 <template>
-    <div class="collection-wrapper" v-for="(collection, index) in collections" :key="index">
-        <RouterLink class="collection-link" :to="`collection/${collection.imageCollectionId}`">{{ collection.name }}
+    <div v-for="(collection, index) in collections"
+        :key="index"
+        class="collection-wrapper">
+        <RouterLink class="collection-link"
+            :to="`collection/${collection.imageCollectionId}`">{{ collection.name }}
         </RouterLink>
     </div>
 </template>
+
 <style scoped>
 .collection-wrapper {
     height: 15rem;
@@ -48,12 +54,11 @@ async function getCollections() {
     text-transform: uppercase;
     color: var(--darker-color);
     text-decoration: none;
-    transition: all 0.2s ease-in;
+    transition: all 0.1s ease-in;
 }
 
 .collection-link:hover {
-    letter-spacing: 4px;
-    font-weight: 800;
+    transform: scale(1.1);
 }
 
 @media (max-width: 768px) {

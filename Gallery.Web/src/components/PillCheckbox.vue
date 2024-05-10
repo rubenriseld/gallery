@@ -5,10 +5,13 @@ const props = defineProps(['tag', 'tagIndex', 'formData']);
 
 </script>
 <template>
-    <label :class="{ active: formData.tagIds.includes(tag.tagId) }" class="pill">
+    <label :class="`pill ${ formData.tagIds.includes(tag.tagId) && 'active' }`">
         {{ tag.name }}
-        <input type="checkbox" :value="tag.tagId" v-model="formData.tagIds"
-               :id="'tagCheckbox_' + tagIndex" class="checkbox-hidden" />
+        <input type="checkbox"
+            :value="tag.tagId"
+            v-model="formData.tagIds"
+            :id="'tagCheckbox_' + tagIndex"
+            class="checkbox-hidden" />
     </label>
 </template>
 
@@ -16,19 +19,24 @@ const props = defineProps(['tag', 'tagIndex', 'formData']);
 .checkbox-hidden {
     display: none;
 }
+
 .pill {
     padding: 0.5rem;
-    margin:0.5rem;
+    margin: 0.5rem;
     background-color: var(--light-color);
     cursor: pointer;
     user-select: none;
 }
+
 .pill.active {
-    background-color: var(--secondary-color);
+    background-color: var(--primary-color);
+    color:var(--lightest-color);
 }
+
 .pill:hover {
     background-color: var(--secondary-color-hover);
 }
+
 .pill.active:hover {
     background-color: var(--primary-color-hover);
 }

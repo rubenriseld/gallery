@@ -1,5 +1,6 @@
 <script setup lang='ts'>
 import ComponentButton from './ComponentButton.vue';
+
 const props = defineProps({
     modalText: String,
     confirmText: String,
@@ -17,35 +18,44 @@ async function confirmAction() {
 }
 
 </script>
+
 <template>
-    <div v-if='$props.isVisible' class="modal">
-        <p>{{props.modalText}}</p>
+    <div v-if='$props.isVisible'
+        class="modal">
+        <p>{{ props.modalText }}</p>
         <div class="modal-button-wrapper">
-            <ComponentButton buttonType="secondary" :onClick='closeModal' buttonText="Cancel"/>
-            <ComponentButton buttonType="warning" :onClick='confirmAction' :buttonText="$props.confirmText"/>
+            <ComponentButton buttonType="secondary"
+                :onClick='closeModal'
+                buttonText="Cancel" />
+            <ComponentButton buttonType="warning"
+                :onClick='confirmAction'
+                :buttonText="$props.confirmText" />
         </div>
     </div>
 </template>
+
 <style scoped>
 .modal {
     position: fixed;
-    top:50%;
-    left:50%;
+    top: 50%;
+    left: 50%;
     transform: translate(-50%, -50%);
     z-index: 1;
     background-color: var(--lightest-color);
-    width:25rem;
-    padding:2rem;
-    display:flex;
+    width: 25rem;
+    padding: 2rem;
+    display: flex;
     flex-direction: column;
     justify-items: center;
     box-shadow: 0 0 0 1000rem rgba(0, 0, 0, 0.4);
 }
+
 p {
     margin-bottom: 2rem;
 }
+
 .modal-button-wrapper {
-    display:flex;
+    display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;

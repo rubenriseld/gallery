@@ -12,6 +12,7 @@ const setActiveTab = (index: number) => {
     currentTab.value = tabs.value[index];
     router.push({ query: { tab: index.toString() } })
 }
+
 // Restore active tab from URL query parameter on component mount
 onMounted(() => {
     const tabParam = router.currentRoute.value.query.tab
@@ -23,20 +24,23 @@ onMounted(() => {
     }
 })
 
-// Expose methods and variables
-const expose = { setActiveTab, tabs, currentTab };
 </script>
+
 <template>
     <div class="tab-wrapper">
         <div class="tab-menu">
-            <button v-for="(tab, index) in tabs" :key="index" @click="setActiveTab(index)"
-                :class="{ active: activeTab === index }" class="tab-button">{{ tab }}</button>
+            <button v-for="(tab, index) in tabs"
+                :key="index"
+                @click="setActiveTab(index)"
+                :class="{ active: activeTab === index }"
+                class="tab-button">{{ tab }}</button>
         </div>
         <div class="tab-content">
             <slot :name="currentTab"></slot>
         </div>
     </div>
 </template>
+
 <style scoped>
 .tab-wrapper {
     width: 100%;
