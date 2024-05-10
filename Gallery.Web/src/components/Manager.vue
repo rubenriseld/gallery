@@ -21,15 +21,15 @@ const props = defineProps({
         required: true
     },
     images: {
-        type: Object as () => (Image[]),
+        type: Array as () => (Image[]),
         default: []
     },
     collections: {
-        type: Object as () => (ImageCollection[]),
+        type: Array as () => (ImageCollection[]),
         default: []
     },
     tags: {
-        type: Object as () => (Tag[]),
+        type: Array as () => (Tag[]),
         default: []
     },
     refresh: {
