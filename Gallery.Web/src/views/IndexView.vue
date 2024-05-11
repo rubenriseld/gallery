@@ -16,18 +16,31 @@ onMounted(async () => {
     await getCollections()
     console.log(collections.value)
     isLoading.value = false
-})
 
+    collections.value.forEach((collection, index) => {
+        const style = document.createElement('style');
+        style.textContent = `
+            .background-${index} {
+                background-image: url(${collection.coverImage?.uri});
+            }
+            .background-${index}::before {
+                background-image: url(${collection.coverImage?.uri});
+            }
+        `;
+        document.head.append(style);
+    });
+});
 async function getCollections() {
     collections.value = (await api.get("imageCollections")).data as ImageCollection[]
 }
-
 </script>
 
 <template>
     <div v-for="(collection, index) in collections"
         :key="index"
         class="collection-wrapper">
+        <div class="background-image"
+            :style="collection.coverImage?.uri && { backgroundImage: `url(${collection.coverImage.uri})` }" />
         <RouterLink class="collection-link"
             :to="`collection/${collection.imageCollectionId}`">{{ collection.name }}
         </RouterLink>
@@ -42,23 +55,55 @@ async function getCollections() {
     align-items: center;
     background-color: var(--mid-color);
     margin: 1rem 2rem 1rem 2rem;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.background-image {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-size: cover;
+    background-position: center;
+    z-index: 1;
 }
 
 .collection-link {
     height: 100%;
+    width: 100%;
     display: flex;
-    margin: 0 1rem 0 1rem;
     justify-content: center;
     align-items: center;
     font-size: 3rem;
     text-transform: uppercase;
-    color: var(--darker-color);
+    color: var(--lightest-color);
     text-decoration: none;
+    backdrop-filter: blur(5px);
+}
+
+a {
+    z-index: 2;
+    text-shadow: var(--text-shadow);
+    letter-spacing: 2px;
+}
+
+.collection-link,
+.background-image,
+.collection-wrapper {
     transition: all 0.1s ease-in;
 }
 
-.collection-link:hover {
+.collection-wrapper:hover .background-image {
     transform: scale(1.1);
+    filter: brightness(0.4) blur(8px);
+}
+
+.collection-link:hover {
+    font-size: 3.2rem;
 }
 
 @media (max-width: 768px) {
