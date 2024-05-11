@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import PillCheckbox from './PillCheckbox.vue'
+import PillCheckbox from '@/components/form/PillCheckbox.vue'
 
 const props = defineProps({
     tags: Array,

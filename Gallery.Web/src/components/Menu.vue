@@ -1,6 +1,6 @@
 <script setup lang='ts'>
-import IconMenu from './icons/IconMenu.vue'
-import IconClose from './icons/IconClose.vue'
+import IconMenu from '@/components/icons/IconMenu.vue'
+import IconClose from '@/components/icons/IconClose.vue'
 
 import api from '@/api'
 import { onMounted, ref, watch } from 'vue'

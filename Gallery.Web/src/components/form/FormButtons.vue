@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ComponentButton from './ComponentButton.vue';
+import ComponentButton from '@/components/ComponentButton.vue';
 
 const props = defineProps({
     cancelAction: Function,
