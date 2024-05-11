@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { defineProps } from 'vue';
 
 const props = defineProps(['tag', 'tagIndex', 'formData']);
 
 </script>
 <template>
-    <label :class="`pill ${ formData.tagIds.includes(tag.tagId) && 'active' }`">
+    <label :class="`pill ${formData.tagIds.includes(tag.tagId) && 'active'}`">
         {{ tag.name }}
         <input type="checkbox"
             :value="tag.tagId"
@@ -30,7 +29,7 @@ const props = defineProps(['tag', 'tagIndex', 'formData']);
 
 .pill.active {
     background-color: var(--primary-color);
-    color:var(--lightest-color);
+    color: var(--lightest-color);
 }
 
 .pill:hover {
