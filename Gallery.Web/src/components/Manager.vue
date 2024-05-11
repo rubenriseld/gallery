@@ -16,6 +16,7 @@ const selectedObject = ref<ImageFormFields | ImageCollectionFormFields | TagForm
 const objectsToManage = ref<Image[] | ImageCollection[] | Tag[]>([])
 const imagePreviews = ref<ImagePreview[]>([])
 const selectedOperation = ref<Operation>(Operation.None)
+const canSelectCoverImage = ref<boolean>(false)
 const isDeleteOperation = computed(() => selectedOperation.value === Operation.Delete)
 const formData = ref()
 
@@ -130,7 +131,8 @@ function openUpdateForm(object: Image | ImageCollection | Tag) {
     }
     else if (props.objectType === 'collections') {
         selectedObject.value = object as ImageCollection
-        formData.value = { ...selectedObject.value }
+        formData.value = { ...selectedObject.value, coverImageId: (object as ImageCollection).coverImage?.imageId || '' }
+        console.log("update form opened", formData.value)
     }
     else if (props.objectType === 'tags') {
         selectedObject.value = object as Tag
@@ -183,8 +185,23 @@ async function performAction(action: ('update' | 'create' | 'delete')) {
         clearSelections()
     }
 }
+function toggleCanSelectCoverImage() {
+    canSelectCoverImage.value = !canSelectCoverImage.value
+}
+function selectCoverImage(imageId: string) {
+    if (!canSelectCoverImage.value) return
+    const previousExistingCoverImageId = formData.value.coverImageId
+    formData.value = { ...formData.value, coverImageId: (imageId === previousExistingCoverImageId ? null : imageId) }
+}
+function cancelSelectCoverImage() {
+    formData.value = { ...formData.value, coverImageId: (selectedObject.value as ImageCollection).coverImage?.imageId || '' }
+    canSelectCoverImage.value = false
+}
+function isSelectedCoverImage(imageId: string): boolean {
+    return (imageId === (formData.value.coverImageId))
+}
 function shouldRenderInput(formDataIndex: string): boolean {
-    const excludedFormFields = ['tagId', 'imageId', 'imageCollectionId', 'tagIds', 'uri', 'imageCollectionName', 'images']
+    const excludedFormFields = ['tagId', 'imageId', 'imageCollectionId', 'tagIds', 'coverImageId', 'uri', 'imageCollectionName', 'coverImage', 'images']
     return !excludedFormFields.includes(formDataIndex)
 }
 function capitalize(string: string): string {
@@ -224,12 +241,44 @@ function capitalize(string: string): string {
         </div>
     </div>
     <div v-else
-        class="form-wrapper">
-        <IconBack class="go-back-button"
-            @click='clearSelections'></IconBack>
+        class="manager-wrapper">
+        <div class="manager-menu collection-menu">
+            <IconBack class="go-back-button"
+                @click='clearSelections'></IconBack>
+            <div v-if="objectType === 'collections' && selectedOperation !== Operation.Create"
+                class="select-cover-image-button-wrapper">
+                <template v-if="!canSelectCoverImage">
+                    <ComponentButton buttonType="secondary"
+                        :onClick="toggleCanSelectCoverImage"
+                        buttonText="Select cover image" />
+                </template>
+                <template v-else>
+                    <ComponentButton buttonType="secondary"
+                        :onClick="cancelSelectCoverImage"
+                        buttonText="Cancel" />
+                    <ComponentButton buttonType="primary"
+                        :onClick="toggleCanSelectCoverImage"
+                        buttonText="Select" />
+                </template>
+            </div>
+        </div>
         <div class="form-content">
-            <h4 v-if="objectType !== 'images'"
-                class="object-name">{{ (selectedObject as ImageCollection | Tag).name }}</h4>
+            <div v-if="objectType !== 'images'"
+                class="collection-image-preview-wrapper">
+                <!-- <h4 class="object-name">{{ (selectedObject as ImageCollection | Tag).name }}</h4> -->
+
+                <div v-if="objectType === 'collections'"
+                    class="collection-image-preview-container">
+                    <img v-for='(image, index) in (selectedObject as ImageCollection).images'
+                        @click="selectCoverImage(image.imageId)"
+                        :key='index'
+                        :src='(image.uri)'
+                        :alt='image.title'
+                        :class="`collection-image-preview-object 
+                        ${isSelectedCoverImage(image.imageId) && 'selected-cover-image'}
+                        ${canSelectCoverImage && 'selectable-image-preview-object'}`">
+                </div>
+            </div>
             <img v-else-if="selectedOperation !== Operation.Create"
                 :src='(selectedObject as unknown as Image).uri'
                 :alt='(selectedObject as unknown as Image).title'
@@ -300,15 +349,27 @@ function capitalize(string: string): string {
     flex-direction: column;
     align-items: space-between;
     width: 100%;
-    padding: 1rem;
+    padding: 2rem;
     background-color: var(--lightest-color);
 }
 
 .manager-menu {
     display: flex;
     justify-content: space-between;
-    margin: 1rem;
     background-color: var(--lightest-color);
+}
+
+.collection-menu {
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.collection-menu button {
+    margin-left: 1rem;
+}
+
+.select-cover-image-button-wrapper {
+    display: flex;
 }
 
 .go-back-button {
@@ -316,7 +377,6 @@ function capitalize(string: string): string {
     height: 2rem;
     font-weight: 900;
     cursor: pointer;
-    margin-bottom: 1rem;
     color: var(--primary-color);
     transition: all 0.1s ease-in-out;
 }
@@ -329,8 +389,7 @@ function capitalize(string: string): string {
 .object-wrapper {
     display: flex;
     flex-wrap: wrap;
-    padding: 0 0.5rem 0 0.5rem;
-    margin-bottom: 1rem;
+    margin: 1rem -0.5rem 1rem -0.5rem;
 }
 
 .image-object {
@@ -371,7 +430,7 @@ function capitalize(string: string): string {
 }
 
 .object-name {
-    font-weight: 300;
+    padding-left: 0.5rem;
 }
 
 img {
@@ -386,21 +445,48 @@ img {
     object-fit: cover;
 }
 
-.upload-image-preview-wrapper {
+.upload-image-preview-wrapper,
+.collection-image-preview-wrapper {
     width: 50%;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
 }
 
-.upload-image-preview-object {
-    width: 20%;
+.collection-image-preview-container {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.upload-image-preview-object,
+.collection-image-preview-object {
+    width: calc(20% - 1rem);
     height: 10rem;
-    padding: 0.5rem;
+    margin: 0.5rem;
     box-sizing: border-box;
     display: flex;
     overflow: hidden;
     object-fit: cover;
+}
+
+.collection-image-preview-object {
+    opacity: 0.8;
+}
+
+.selectable-image-preview-object {
+    cursor: pointer;
+    transition: all 0.1s ease-in-out;
+}
+
+.selectable-image-preview-object:hover {
+    transform: scale(1.05);
+    opacity: 1;
+}
+
+.selected-cover-image {
+    border: 4px solid var(--secondary-color);
 }
 
 .form-wrapper {
