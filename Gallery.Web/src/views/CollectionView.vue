@@ -178,13 +178,9 @@ img {
     transition: transform 0.1s ease-in-out;
 }
 
-.image-container:hover {
-    transform: scale(1.01);
-}
-
 .image-container:hover img {
     transform: scale(1.05);
-    filter: brightness(0.5) blur(2px);
+    filter: brightness(0.3) blur(8px);
 }
 
 .image-overlay {
@@ -205,6 +201,7 @@ img {
     font-weight: 500;
     color: var(--lightest-color);
     text-align: center;
+    text-shadow: var(--text-shadow);
 }
 
 .selected-image-wrapper {
