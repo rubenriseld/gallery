@@ -18,6 +18,7 @@
     --dark-color: #505050;
     --darker-color: #272727;
     --max-width: 1920px;
+    --text-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
 }
 
 #app {
