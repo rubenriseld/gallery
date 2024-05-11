@@ -9,7 +9,6 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue'])
 function emitData(event: Event) {
     const value = (event.target as HTMLSelectElement)?.value;
-    console.log(value)
     emit('update:modelValue', value)
 }
 </script>

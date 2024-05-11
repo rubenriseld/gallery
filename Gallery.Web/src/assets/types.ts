@@ -1,4 +1,3 @@
-export type ManagerObjectType = 'images' | 'collections' | 'tags'
 export type ButtonType = 'primary' | 'secondary' | 'warning'
 
 export type TagFormFields = {
