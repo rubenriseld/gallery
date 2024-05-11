@@ -19,7 +19,7 @@ header {
     width: 100%;
     max-width: var(--max-width);
     height: 5rem;
-    z-index: 1;
+    z-index: 3;
     display: flex;
     justify-content: space-between;
     background-color: var(--lightest-color);
