@@ -40,7 +40,7 @@ async function confirmAction() {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    z-index: 1;
+    z-index: 10;
     background-color: var(--lightest-color);
     width: 25rem;
     padding: 2rem;
