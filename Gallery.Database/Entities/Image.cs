@@ -1,4 +1,6 @@
-﻿namespace Gallery.Database.Entities;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Gallery.Database.Entities;
 
 public class Image
 {
@@ -8,5 +10,9 @@ public class Image
     public string? Description { get; set; }
     public string? ImageCollectionId { get; set; }
     public virtual ImageCollection? ImageCollection { get; set; }
+    [Range(0, int.MaxValue)]
+    public int OrderInImageCollection { get; set; }
+    public string? CoverImageCollectionId { get; set; }
+    public virtual ImageCollection? CoverImageCollection { get; set; }
     public virtual ICollection<Tag> Tags { get; set; } = new HashSet<Tag>();
 } 
