@@ -15,6 +15,7 @@ export type ImageFormFields = {
 }
 export type ImageCollectionFormFields = {
     imageCollectionId: string,
+    coverImageId?: string,
     name: string,
     description?: string,
 }
@@ -40,5 +41,6 @@ export type ImageCollection = {
     imageCollectionId: string,
     name: string,
     description?: string,
+    coverImage?: Image,
     images: Image[]
 }
