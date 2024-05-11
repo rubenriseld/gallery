@@ -106,8 +106,8 @@ async function authenticate(): Promise<boolean> {
     cursor: pointer;
     display: flex;
     align-items: center;
-    z-index: 2;
     position: relative;
+    z-index: 5;
 }
 
 nav {
@@ -119,7 +119,6 @@ nav {
     padding-top: 5rem;
     box-sizing: border-box;
     background-color: var(--lightest-color);
-    z-index: 1;
     display: none;
 }
 
