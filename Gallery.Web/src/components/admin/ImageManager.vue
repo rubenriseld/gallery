@@ -42,6 +42,7 @@ const imagePreviews = ref<ImagePreview[]>([])
 const selectedOperation = ref<Operation>(Operation.None)
 const isDeleteOperation = computed(() => selectedOperation.value === Operation.Delete)
 const formData = ref()
+const fileInput = ref<HTMLInputElement>()
 
 watch([() => props.tags, () => props.collections, () => props.images], () => {
     tags.value = props.tags
@@ -49,10 +50,14 @@ watch([() => props.tags, () => props.collections, () => props.images], () => {
     images.value = props.images
 })
 
+function openFileInput() {
+    fileInput.value?.click();
+}
 // Function to handle the file select event
 function handleFileSelect(event: Event) {
     const fileList = (event.target as HTMLInputElement).files
     formData.value = []
+    imagePreviews.value = []
 
     if (fileList) {
         for (let i = 0; i < fileList.length; i++) {
@@ -81,12 +86,12 @@ async function openCreateForm() {
 function openUpdateForm(image: Image) {
     selectedImage.value = image
     const tagIds = image.tags.map(tag => tag.tagId)
-    formData.value = { 
-        title : image.title,
-        description : image.description,
-        imageCollectionId : image.imageCollectionId,
-        tagIds : tagIds
-     }
+    formData.value = {
+        title: image.title,
+        description: image.description,
+        imageCollectionId: image.imageCollectionId,
+        tagIds: tagIds
+    }
     selectedOperation.value = Operation.Update;
 }
 
@@ -152,12 +157,12 @@ async function deleteImage() {
                 :alt='(selectedImage as unknown as Image).title'
                 class="form-image-preview">
             <div v-else
-                class="upload-image-preview-wrapper">
+                class="image-upload-preview-wrapper">
                 <img v-for='(image, index) in imagePreviews'
                     :key='index'
                     :src='(image.imageSrc)'
                     :alt='image.imageSrc'
-                    class="upload-image-preview-object">
+                    class="image-upload-preview-object">
             </div>
             <form v-if='selectedImage && selectedOperation !== Operation.Create'
                 @submit.prevent="updateImage">
@@ -186,11 +191,19 @@ async function deleteImage() {
 
             <form v-else-if='selectedOperation === Operation.Create'
                 @submit.prevent="createImage">
-                <div class="image-upload-wrapper">
+                <div class="file-select-wrapper">
+                    <ComponentButton buttonType="secondary"
+                        :onClick='openFileInput'
+                        buttonText="Select images"
+                        class="file-select-button" />
+                    <p class="file-select-text">{{ (formData.length) ?
+                        `${formData.length} images selected` : 'Select images to upload' }}</p>
                     <input class="file-input"
                         type='file'
+                        ref="fileInput"
                         multiple
-                        @change='handleFileSelect'>
+                        @change='handleFileSelect'
+                        style="display:none;">
                 </div>
                 <FormButtons :cancelAction="clearSelections"
                     submitText="Upload" />
@@ -226,20 +239,38 @@ img {
     object-fit: cover;
 }
 
-.upload-image-preview-wrapper {
+.image-upload-preview-wrapper {
     width: 50%;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
 }
 
-.upload-image-preview-object {
+.image-upload-preview-object {
     width: calc(20% - 1rem);
     height: 10rem;
     margin: 0.5rem;
     box-sizing: border-box;
     display: flex;
     object-fit: cover;
+}
+
+.file-select-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    margin-bottom: 2rem;
+}
+
+.file-select-button {
+    width: 100%;
+}
+.file-select-text {
+    margin-top: 1rem;
+    font-size: 1.3rem;
+    color: var(--dark-color);
+    align-self: flex-end;
 }
 
 @media (max-width: 768px) {
@@ -254,8 +285,26 @@ img {
         margin-bottom: 2rem;
     }
 
-    .upload-image-preview-wrapper {
+    .file-select-wrapper {
+        margin-bottom: 1rem;
+    }
+
+    .image-upload-wrapper input {
+        font-size: 1.3rem;
+    }
+
+    .image-upload-preview-wrapper {
         order: 1;
+        width: 100%;
+        margin: 1rem -0.5rem 1rem -0.5rem;
+    }
+
+    .image-upload-preview-object {
+        width: calc(33.3333% - 1rem);
+        height: 10rem;
+        box-sizing: border-box;
+        display: flex;
+        object-fit: cover;
     }
 }
 </style>
