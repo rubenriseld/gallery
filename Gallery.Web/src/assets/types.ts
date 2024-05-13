@@ -1,28 +1,43 @@
 export type ButtonType = 'primary' | 'secondary' | 'warning'
 
-export type TagFormFields = {
-    tagId: string,
-    name: string
+export type ImagePreview = {
+    imageFile: File,
+    imageSrc: string
 }
-export type ImageFormFields = {
-    uri: string,
+export type ReorderImage = {
     imageId: string,
-    title?: string,
-    description?: string,
-    imageCollectionId?: string,
-    tagIds?: string[]
+    orderInImageCollection: number
 }
-export type ImageCollectionFormFields = {
+
+export type ImageCollection = {
     imageCollectionId: string,
-    coverImageId?: string,
+    name: string,
+    description?: string,
+    coverImage?: Image,
+    images: Image[]
+}
+export type CreateImageCollection = {
     name: string,
     description?: string,
 }
+export type UpdateImageCollection = {
+    coverImageId?: string,
+    name: string,
+    description?: string,
+    reorderImages: ReorderImage[],
+}
+
+
 
 export type Tag = {
     tagId: string,
-    name: string
+    name?: string
 }
+export type CreateTag = {
+    name?: string
+}
+export type UpdateTag = CreateTag
+
 export type Image = {
     imageId: string,
     uri: string,
@@ -30,16 +45,15 @@ export type Image = {
     description?: string,
     imageCollectionId?: string,
     imageCollectionName?: string,
+    orderInImageCollection: number,
     tags: Tag[]
 }
-export type ImagePreview = {
-    imageFile : File,
-    imageSrc : string
-}
-export type ImageCollection = {
-    imageCollectionId: string,
-    name: string,
+export type UpdateImage = {
+    title?: string,
     description?: string,
-    coverImage?: Image,
-    images: Image[]
+    imageCollectionId?: string,
+    tagIds?: string[]
+}
+export type CreateImage = {
+    images: File[]
 }

@@ -1,5 +1,5 @@
 export function shouldRenderInput(formDataIndex: string): boolean {
-    const excludedFormFields = ['tagId', 'imageId', 'imageCollectionId', 'tagIds', 'coverImageId', 'uri', 'imageCollectionName', 'coverImage', 'images']
+    const excludedFormFields = ['tagId', 'imageId', 'imageCollectionId', 'tagIds', 'coverImageId', 'uri', 'imageCollectionName', 'orderInImageCollection', 'coverImage', 'images']
     return !excludedFormFields.includes(formDataIndex)
 }
 export function capitalize(string: string): string {

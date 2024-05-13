@@ -13,7 +13,7 @@ import { ref, computed, watch } from 'vue'
 import { shouldRenderInput, capitalize } from '@/assets/functions/managerHelperFunctions';
 
 import { Operation } from '@/assets/enums/operation';
-import type { Image, ImageFormFields, ImageCollection, Tag, ImagePreview } from '@/assets/types'
+import type { Image, UpdateImage, CreateImage, ImageCollection, Tag, ImagePreview } from '@/assets/types'
 
 const props = defineProps({
     images: {
@@ -34,7 +34,7 @@ const props = defineProps({
     }
 })
 
-const selectedImage = ref<ImageFormFields | null>(null)
+const selectedImage = ref<Image | CreateImage | UpdateImage | null>(null)
 const images = ref<Image[]>(props.images)
 const collections = ref<ImageCollection[]>(props.collections)
 const tags = ref<Tag[]>(props.tags)
@@ -73,23 +73,20 @@ function handleFileSelect(event: Event) {
 }
 
 async function openCreateForm() {
-    selectedImage.value = {
-        uri: '',
-        imageId: '',
-        title: '',
-        description: '',
-        imageCollectionId: '',
-        tagIds: []
-    }
+    selectedImage.value = {} as CreateImage
     formData.value = { ...selectedImage.value }
     selectedOperation.value = Operation.Create
 }
 
-function openUpdateForm(object: Image | ImageCollection | Tag) {
-    selectedImage.value = convertImageToImageFormFields(object as Image)
-    const tagIds = (object as Image).tags.map(tag => tag.tagId)
-    formData.value = { ...selectedImage.value, tagIds }
-
+function openUpdateForm(image: Image) {
+    selectedImage.value = image
+    const tagIds = image.tags.map(tag => tag.tagId)
+    formData.value = { 
+        title : image.title,
+        description : image.description,
+        imageCollectionId : image.imageCollectionId,
+        tagIds : tagIds
+     }
     selectedOperation.value = Operation.Update;
 }
 
@@ -97,24 +94,8 @@ function updateFormDataWithEmittedValue(formDataIndex: string, event: any) {
     formData.value = { ...formData.value, [formDataIndex]: event }
 }
 
-function convertImageToImageFormFields(image: Image) {
-    const { uri, imageId, title, description, imageCollectionId, tags } = image
-
-    const tagIds = tags.map(tag => tag.tagId)
-
-    const imageFormFields: ImageFormFields = {
-        uri,
-        imageId,
-        title,
-        description,
-        imageCollectionId,
-        tagIds
-    }
-    return imageFormFields
-}
-
-function openDeletePromptModal(object: Image | ImageCollection | Tag) {
-    selectedImage.value = object as Image
+function openDeletePromptModal(image: Image) {
+    selectedImage.value = image
     selectedOperation.value = Operation.Delete
 }
 function clearSelections() {
@@ -124,7 +105,7 @@ function clearSelections() {
 }
 
 async function updateImage() {
-    await api.put('images/' + formData.value.imageId, JSON.stringify(formData.value))
+    await api.put('images/' + (selectedImage.value as Image).imageId, JSON.stringify(formData.value as UpdateImage))
     clearSelections()
     await props.refresh()
 }
@@ -138,7 +119,7 @@ async function createImage() {
     await props.refresh()
 }
 async function deleteImage() {
-    await api.delete('images/' + formData.value.imageId)
+    await api.delete('images/' + (selectedImage.value as Image).imageId)
     clearSelections()
     await props.refresh()
 }
@@ -147,7 +128,7 @@ async function deleteImage() {
 <template>
     <Modal v-model:isVisible='isDeleteOperation'
         :confirm="deleteImage"
-        :modalText="`Are you sure you want to delete ${(selectedImage as ImageFormFields)?.title || 'this image'}?`"
+        :modalText="`Are you sure you want to delete ${(selectedImage as Image)?.title || 'this image'}?`"
         :confirmText='`Delete`'
         @close-modal='clearSelections' />
 
@@ -156,13 +137,13 @@ async function deleteImage() {
         :openCreateFormText="'Add images'"
         :clearSelections="clearSelections">
         <template #objectDisplay>
-            <div v-for='(object, index) in props.images'
+            <div v-for='(image, index) in props.images'
                 class="image-object"
                 :key='index'
-                @click='openUpdateForm(object)'>
+                @click='openUpdateForm(image)'>
 
-                <img :src='(object as Image).uri'
-                    :alt='(object as Image).title'>
+                <img :src='(image as Image).uri'
+                    :alt='(image as Image).title'>
             </div>
         </template>
         <template #formContent>
@@ -180,7 +161,7 @@ async function deleteImage() {
             </div>
             <form v-if='selectedImage && selectedOperation !== Operation.Create'
                 @submit.prevent="updateImage">
-                <h3 class="object-title">{{ selectedImage?.title || 'Untitled' }}</h3>
+                <h3 class="object-title">{{ formData?.title || 'Untitled' }}</h3>
                 <div>
                     <template v-for="(property, index) in selectedImage">
                         <FormInput v-if="shouldRenderInput(index)"
@@ -198,7 +179,6 @@ async function deleteImage() {
                     <FormButtons :cancelAction="clearSelections"
                         submitText="Update" />
                 </div>
-
                 <ComponentButton buttonType="warning"
                     :onClick='() => openDeletePromptModal(selectedImage as Image)'
                     buttonText="Delete permanently" />
@@ -259,7 +239,6 @@ img {
     margin: 0.5rem;
     box-sizing: border-box;
     display: flex;
-    overflow: hidden;
     object-fit: cover;
 }
 

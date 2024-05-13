@@ -13,7 +13,7 @@ import { ref, computed, watch } from 'vue'
 import { capitalize, shouldRenderInput } from '@/assets/functions/managerHelperFunctions';
 
 import { Operation } from '@/assets/enums/operation';
-import type { Image, ImageCollection, ImageCollectionFormFields, Tag, ImagePreview } from '@/assets/types'
+import type { Image, ImageCollection, CreateImageCollection, UpdateImageCollection, Tag, ImagePreview } from '@/assets/types'
 
 const props = defineProps({
 
@@ -31,7 +31,7 @@ const props = defineProps({
     }
 })
 
-const selectedCollection = ref<ImageCollectionFormFields | null>(null)
+const selectedCollection = ref<ImageCollection | CreateImageCollection | UpdateImageCollection | null>(null)
 const collections = ref<ImageCollection[]>(props.collections)
 const imagePreviews = ref<ImagePreview[]>([])
 const selectedOperation = ref<Operation>(Operation.None)
@@ -46,7 +46,6 @@ watch([() => props.collections], () => {
 
 async function openCreateForm() {
     selectedCollection.value = {
-        imageCollectionId: '',
         name: '',
         description: '',
     }
@@ -55,9 +54,14 @@ async function openCreateForm() {
     selectedOperation.value = Operation.Create
 }
 
-function openUpdateForm(object: Image | ImageCollection | Tag) {
-    selectedCollection.value = object as ImageCollection
-    formData.value = { ...selectedCollection.value, coverImageId: (object as ImageCollection).coverImage?.imageId || '' }
+function openUpdateForm(collection: ImageCollection) {
+    selectedCollection.value = collection
+    formData.value = { 
+        name: collection.name,
+        description: collection.description,
+        coverImageId: collection.coverImage?.imageId || null,
+        reorderImages: []
+    }
     selectedOperation.value = Operation.Update;
 }
 
@@ -65,8 +69,8 @@ function updateFormDataWithEmittedValue(formDataIndex: string, event: any) {
     formData.value = { ...formData.value, [formDataIndex]: event }
 }
 
-function openDeletePromptModal(object: Image | ImageCollection | Tag) {
-    selectedCollection.value = object as ImageCollection
+function openDeletePromptModal(collection: ImageCollection) {
+    selectedCollection.value = collection
     selectedOperation.value = Operation.Delete
 }
 function clearSelections() {
@@ -94,7 +98,7 @@ function isSelectedCoverImage(imageId: string): boolean {
 }
 
 async function updateCollection() {
-    await api.put('imageCollections/' + formData.value.imageCollectionId, JSON.stringify(formData.value))
+    await api.put('imageCollections/' + (selectedCollection.value as ImageCollection).imageCollectionId, JSON.stringify(formData.value as UpdateImageCollection))
     clearSelections()
     await props.refresh()
 }
@@ -104,7 +108,8 @@ async function createCollection() {
     await props.refresh()
 }
 async function deleteCollection() {
-    await api.delete('imageCollections/' + formData.value.imageCollectionId)
+    console.log("del")
+    await api.delete('imageCollections/' + (selectedCollection.value as ImageCollection).imageCollectionId)
     clearSelections()
     await props.refresh()
 }
@@ -112,21 +117,21 @@ async function deleteCollection() {
 
 <template>
     <Modal v-model:isVisible='isDeleteOperation'
-        :confirm="() => deleteCollection"
+        :confirm="deleteCollection"
         :modalText="`Are you sure you want to delete ${selectedCollection?.name || 'this item'}?`"
         :confirmText='`Delete`'
         @close-modal='clearSelections' />
 
     <ManagerWrapper :objectIsSelected="selectedCollection !== null"
         :openCreateForm="openCreateForm"
-        :openCreateFormText="'Add images'"
+        :openCreateFormText="'Add collection'"
         :clearSelections="clearSelections">
         <template #objectDisplay>
-            <div v-for='(object, index) in props.collections'
+            <div v-for='(collection, index) in props.collections'
                 class="collection-object"
                 :key='index'
-                @click='openUpdateForm(object)'>
-                <p>{{ object.name }}</p>
+                @click='openUpdateForm(collection)'>
+                <p>{{ collection.name }}</p>
             </div>
         </template>
         <template #additionalMenuItems
