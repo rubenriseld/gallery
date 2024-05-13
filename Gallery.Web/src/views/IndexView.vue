@@ -2,7 +2,6 @@
 import api from '@/api';
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-
 import type { ImageCollection } from '@/assets/types';
 
 const isLoading = ref(true);
@@ -108,7 +107,8 @@ a {
 
 @media (max-width: 768px) {
     .collection-wrapper {
-        margin: 1rem 1rem 1rem 1rem;
+        margin: 1rem 0 1rem 0;
+        height:10rem;
     }
 }
 </style>
