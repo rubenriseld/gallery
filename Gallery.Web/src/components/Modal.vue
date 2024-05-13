@@ -42,7 +42,6 @@ async function confirmAction() {
     transform: translate(-50%, -50%);
     z-index: 10;
     background-color: var(--lightest-color);
-    width: 25rem;
     padding: 2rem;
     display: flex;
     flex-direction: column;
@@ -59,5 +58,11 @@ p {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+}
+
+@media (max-width: 768px) {
+    .modal {
+        width: 70%;
+    }
 }
 </style>
