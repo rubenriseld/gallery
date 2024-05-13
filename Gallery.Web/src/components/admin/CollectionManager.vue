@@ -4,6 +4,9 @@ import IconBack from '@/components/icons/IconBack.vue';
 import ComponentButton from '@/components/ComponentButton.vue';
 import FormButtons from '@/components/form/FormButtons.vue';
 import FormInput from '@/components/form/FormInput.vue';
+import ManagerWrapper from '@/components/admin/ManagerWrapper.vue';
+import IconMore from '@/components/icons/IconMore.vue';
+import IconLess from '@/components/icons/IconLess.vue';
 
 import api from '@/api';
 import { ref, computed, watch } from 'vue'
@@ -35,6 +38,7 @@ const selectedOperation = ref<Operation>(Operation.None)
 const canSelectCoverImage = ref<boolean>(false)
 const isDeleteOperation = computed(() => selectedOperation.value === Operation.Delete)
 const formData = ref()
+const isMobilePreviewOpen = ref(false)
 
 watch([() => props.collections], () => {
     collections.value = props.collections
@@ -73,6 +77,7 @@ function clearSelections() {
 
 function toggleCanSelectCoverImage() {
     canSelectCoverImage.value = !canSelectCoverImage.value
+    isMobilePreviewOpen.value = canSelectCoverImage.value
 }
 function selectCoverImage(imageId: string) {
     if (!canSelectCoverImage.value) return
@@ -82,6 +87,7 @@ function selectCoverImage(imageId: string) {
 function cancelSelectCoverImage() {
     formData.value = { ...formData.value, coverImageId: (selectedCollection.value as ImageCollection).coverImage?.imageId || '' }
     canSelectCoverImage.value = false
+    isMobilePreviewOpen.value = false
 }
 function isSelectedCoverImage(imageId: string): boolean {
     return (imageId === (formData.value.coverImageId))
@@ -111,29 +117,20 @@ async function deleteCollection() {
         :confirmText='`Delete`'
         @close-modal='clearSelections' />
 
-    <div v-if="!selectedCollection"
-        class="manager-wrapper">
-        <div class="manager-menu">
-            <ComponentButton buttonType="secondary"
-                buttonText="Select multiple" />
-            <ComponentButton buttonType="primary"
-                :onClick='openCreateForm'
-                buttonText="Add image collection" />
-        </div>
-        <div class="object-wrapper">
+    <ManagerWrapper :objectIsSelected="selectedCollection !== null"
+        :openCreateForm="openCreateForm"
+        :openCreateFormText="'Add images'"
+        :clearSelections="clearSelections">
+        <template #objectDisplay>
             <div v-for='(object, index) in props.collections'
                 class="collection-object"
                 :key='index'
                 @click='openUpdateForm(object)'>
-                <p class="object-name">{{ object.name }}</p>
+                <p>{{ object.name }}</p>
             </div>
-        </div>
-    </div>
-    <div v-else
-        class="manager-wrapper">
-        <div class="manager-menu collection-menu">
-            <IconBack class="go-back-button"
-                @click='clearSelections'></IconBack>
+        </template>
+        <template #additionalMenuItems
+            :class="'collection-menu'">
             <div v-if="selectedOperation !== Operation.Create"
                 class="select-cover-image-button-wrapper">
                 <template v-if="!canSelectCoverImage">
@@ -150,9 +147,17 @@ async function deleteCollection() {
                         buttonText="Select" />
                 </template>
             </div>
-        </div>
-        <div class="form-content">
-            <div class="collection-image-preview-wrapper">
+        </template>
+        <template #formContent>
+            <button @click="isMobilePreviewOpen = !isMobilePreviewOpen"
+                class="collection-preview-button">
+                <IconMore v-if="!isMobilePreviewOpen" />
+                <IconLess v-else />
+                <p>Collection preview</p>
+            </button>
+            <div
+                :class="`${isMobilePreviewOpen ? 'collection-image-preview-wrapper' : 'collection-image-preview-hidden'}`">
+
                 <div class="collection-image-preview-container">
                     <img v-for='(image, index) in (selectedCollection as ImageCollection).images'
                         @click="selectCoverImage(image.imageId)"
@@ -160,12 +165,14 @@ async function deleteCollection() {
                         :src='(image.uri)'
                         :alt='image.title'
                         :class="`collection-image-preview-object 
-                        ${isSelectedCoverImage(image.imageId) && 'selected-cover-image'}
-                        ${canSelectCoverImage && 'selectable-image-preview-object'}`">
+                        ${isSelectedCoverImage(image.imageId) ? 'selected-cover-image' : ''}
+                        ${canSelectCoverImage ? 'selectable-image-preview-object' : ''}`">
                 </div>
             </div>
             <form v-if='selectedCollection && selectedOperation !== Operation.Create'
                 @submit.prevent="updateCollection">
+                <h3 :class="`object-title ${!formData?.name ? 'untitled-object' : ''}`">
+                    {{ formData?.name || "Untitled collection" }}</h3>
                 <div>
                     <template v-for="(property, index) in selectedCollection">
                         <FormInput v-if="shouldRenderInput(index)"
@@ -196,76 +203,21 @@ async function deleteCollection() {
                 <FormButtons :cancelAction="clearSelections"
                     submitText="Add" />
             </form>
-        </div>
-    </div>
+        </template>
+    </ManagerWrapper>
 </template>
 
 <style scoped>
-.manager-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: space-between;
-    width: 100%;
-    padding: 2rem;
-    background-color: var(--lightest-color);
-}
-
-.manager-menu {
-    display: flex;
-    justify-content: space-between;
-    background-color: var(--lightest-color);
-}
-
-.collection-menu {
-    justify-content: flex-start;
-    align-items: center;
-}
-
-.collection-menu button {
-    margin-left: 1rem;
-}
-
 .select-cover-image-button-wrapper {
+    margin-left: 1rem;
     display: flex;
 }
 
-.go-back-button {
-    width: 2rem;
-    height: 2rem;
-    font-weight: 900;
-    cursor: pointer;
-    color: var(--primary-color);
-    transition: all 0.1s ease-in-out;
+.select-cover-image-button-wrapper>button:nth-child(1) {
+    margin-right: 1rem;
 }
 
-.go-back-button:hover {
-    color: var(--primary-color-hover);
-    transform: scale(1.2);
-}
-
-.object-wrapper {
-    display: flex;
-    flex-wrap: wrap;
-    margin: 1rem -0.5rem 1rem -0.5rem;
-}
-
-.image-object {
-    width: 20%;
-    cursor: pointer;
-    padding: 0.5rem;
-    box-sizing: border-box;
-    height: 20rem;
-    display: flex;
-    overflow: hidden;
-}
-
-.image-object:hover {
-    filter: brightness(0.5);
-
-}
-
-.collection-object:hover,
-.tag-object:hover {
+.collection-object:hover {
     background-color: var(--mid-color);
 }
 
@@ -278,36 +230,34 @@ async function deleteCollection() {
     cursor: pointer;
 }
 
-.tag-object {
-    background-color: var(--light-color);
-    font-size: 1.2rem;
-    padding: 1rem;
-    margin: 0.5rem;
-    cursor: pointer;
-}
-
-.object-name {
-    padding-left: 0.5rem;
-}
-
 img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
-.form-image-preview {
-    width: 50%;
-    max-height: 40rem;
-    object-fit: cover;
-}
-
-.upload-image-preview-wrapper,
-.collection-image-preview-wrapper {
+.collection-image-preview-wrapper,
+.collection-image-preview-hidden {
     width: 50%;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+}
+
+.collection-preview-button {
+    border-bottom: 2px solid var(--slightly-dark-color);
+    display: none;
+}
+
+.collection-preview-button>svg {
+    width: 2rem;
+    height: 2rem;
+    color: var(--slightly-dark-color);
+}
+
+.collection-preview-button>p {
+    font-size: 1.1rem;
+    color: var(--dark-color);
 }
 
 .collection-image-preview-container {
@@ -317,7 +267,6 @@ img {
     flex-wrap: wrap;
 }
 
-.upload-image-preview-object,
 .collection-image-preview-object {
     width: calc(20% - 1rem);
     height: 10rem;
@@ -346,70 +295,32 @@ img {
     border: 4px solid var(--secondary-color);
 }
 
-.form-wrapper {
-    margin: 2rem;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-}
-
-.form-content {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    margin-top: 2rem;
-}
-
-form {
-    display: flex;
-    width: 40%;
-    flex-direction: column;
-    justify-content: space-between;
-    max-height: 40rem;
-}
-
-label {
-    margin-bottom: 0.5rem;
-}
-
-input {
-    height: 2rem;
-    padding: 0.25rem;
-    font-size: 1rem;
-    font-family: inherit;
-}
-
 @media (max-width: 768px) {
-    .manager-wrapper {
-        padding: 0;
+    .collection-image-preview-wrapper {
+        width: calc(100% + 1rem);
+        margin: 0 -0.5rem 0 -0.5rem;
     }
 
-    .image-object {
-        width: 33.3333%;
-        height: 12rem;
+    .collection-image-preview-object {
+        width: calc(33.3333% - 1rem);
+        margin: 0.5rem;
+        box-sizing: border-box;
+        display: flex;
+        overflow: hidden;
+        object-fit: cover;
     }
 
-    .form-wrapper {
-        margin: 0 1rem 1rem 1rem;
+    .collection-image-preview-hidden {
+        display: none;
     }
 
-    .form-content {
-        margin-top: 0;
-        flex-direction: column;
-    }
-
-    .form-image-preview {
+    .collection-preview-button {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
         width: 100%;
-        height: 20rem;
-        margin-bottom: 2rem;
-    }
-
-    form {
-        width: 100%;
-    }
-
-    .upload-image-preview-wrapper {
-        order: 1;
+        text-align: left;
+        color: var(--darker-color);
     }
 }
 </style>

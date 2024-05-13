@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import Modal from '@/components/Modal.vue';
-import IconBack from '@/components/icons/IconBack.vue';
 import ComponentButton from '@/components/ComponentButton.vue';
 import FormButtons from '@/components/form/FormButtons.vue';
 import FormInput from '@/components/form/FormInput.vue';
+import ManagerWrapper from '@/components/admin/ManagerWrapper.vue';
 
 import api from '@/api';
 import { ref, computed, watch } from 'vue'
@@ -84,17 +84,11 @@ async function deleteTag() {
         :modalText="`Are you sure you want to delete ${selectedTag?.name || 'this item'}?`"
         :confirmText='`Delete`'
         @close-modal='clearSelections' />
-
-    <div v-if="!selectedTag"
-        class="manager-wrapper">
-        <div class="manager-menu">
-            <ComponentButton buttonType="secondary"
-                buttonText="Select multiple" />
-            <ComponentButton buttonType="primary"
-                :onClick='openCreateForm'
-                buttonText="Add tags" />
-        </div>
-        <div class="object-wrapper">
+    <ManagerWrapper :objectIsSelected="selectedTag !== null"
+        :openCreateForm="openCreateForm"
+        :openCreateFormText="'Add tag'"
+        :clearSelections="clearSelections">
+        <template #objectDisplay>
             <div v-for='(tag, index) in tags'
                 class="tag-object"
                 :key='index'
@@ -102,15 +96,8 @@ async function deleteTag() {
                 <p class="object-name">{{ tag.name }}</p>
 
             </div>
-        </div>
-    </div>
-    <div v-else
-        class="manager-wrapper">
-        <div class="manager-menu collection-menu">
-            <IconBack class="go-back-button"
-                @click='clearSelections'></IconBack>
-        </div>
-        <div class="form-content">
+        </template>
+        <template #formContent>
             <form v-if='selectedTag && selectedOperation !== Operation.Create'
                 @submit.prevent="updateTag">
                 <div>
@@ -142,51 +129,11 @@ async function deleteTag() {
                 <FormButtons :cancelAction="clearSelections"
                     submitText="Add" />
             </form>
-        </div>
-    </div>
+        </template>
+    </ManagerWrapper>
 </template>
 
 <style scoped>
-.manager-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: space-between;
-    width: 100%;
-    padding: 2rem;
-    background-color: var(--lightest-color);
-}
-
-.manager-menu {
-    display: flex;
-    justify-content: space-between;
-    background-color: var(--lightest-color);
-}
-
-.collection-menu {
-    justify-content: flex-start;
-    align-items: center;
-}
-
-.go-back-button {
-    width: 2rem;
-    height: 2rem;
-    font-weight: 900;
-    cursor: pointer;
-    color: var(--primary-color);
-    transition: all 0.1s ease-in-out;
-}
-
-.go-back-button:hover {
-    color: var(--primary-color-hover);
-    transform: scale(1.2);
-}
-
-.object-wrapper {
-    display: flex;
-    flex-wrap: wrap;
-    margin: 1rem -0.5rem 1rem -0.5rem;
-}
-
 .tag-object:hover {
     background-color: var(--mid-color);
 }
@@ -199,52 +146,9 @@ async function deleteTag() {
     cursor: pointer;
 }
 
-.object-name {
-    padding-left: 0.5rem;
-}
-
-.form-content {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    margin-top: 2rem;
-}
-
-form {
-    display: flex;
-    width: 40%;
-    flex-direction: column;
-    justify-content: space-between;
-    max-height: 40rem;
-}
-
-label {
-    margin-bottom: 0.5rem;
-}
-
-input {
-    height: 2rem;
-    padding: 0.25rem;
-    font-size: 1rem;
-    font-family: inherit;
-}
-
 @media (max-width: 768px) {
-    .manager-wrapper {
-        padding: 0;
-    }
-
-    .form-wrapper {
-        margin: 0 1rem 1rem 1rem;
-    }
-
-    .form-content {
-        margin-top: 0;
-        flex-direction: column;
-    }
-
-    form {
-        width: 100%;
-    }
+.tag-object{
+    width: 100%;
+}
 }
 </style>

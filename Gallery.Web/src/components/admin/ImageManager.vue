@@ -6,6 +6,7 @@ import FormButtons from '@/components/form/FormButtons.vue';
 import CollectionDropdownSelect from '@/components/form/CollectionDropdownSelect.vue';
 import TagWrapper from '@/components/form/TagWrapper.vue';
 import FormInput from '@/components/form/FormInput.vue';
+import ManagerWrapper from '@/components/admin/ManagerWrapper.vue'
 
 import api from '@/api';
 import { ref, computed, watch } from 'vue'
@@ -150,16 +151,11 @@ async function deleteImage() {
         :confirmText='`Delete`'
         @close-modal='clearSelections' />
 
-    <div v-if="!selectedImage"
-        class="manager-wrapper">
-        <div class="manager-menu">
-            <ComponentButton buttonType="secondary"
-                buttonText="Select multiple" />
-            <ComponentButton buttonType="primary"
-                :onClick='openCreateForm'
-                buttonText="Add images" />
-        </div>
-        <div class="object-wrapper">
+    <ManagerWrapper :objectIsSelected="selectedImage !== null"
+        :openCreateForm="openCreateForm"
+        :openCreateFormText="'Add images'"
+        :clearSelections="clearSelections">
+        <template #objectDisplay>
             <div v-for='(object, index) in props.images'
                 class="image-object"
                 :key='index'
@@ -168,15 +164,8 @@ async function deleteImage() {
                 <img :src='(object as Image).uri'
                     :alt='(object as Image).title'>
             </div>
-        </div>
-    </div>
-    <div v-else
-        class="manager-wrapper">
-        <div class="manager-menu collection-menu">
-            <IconBack class="go-back-button"
-                @click='clearSelections'></IconBack>
-        </div>
-        <div class="form-content">
+        </template>
+        <template #formContent>
             <img v-if="selectedOperation !== Operation.Create"
                 :src='(selectedImage as unknown as Image).uri'
                 :alt='(selectedImage as unknown as Image).title'
@@ -191,6 +180,7 @@ async function deleteImage() {
             </div>
             <form v-if='selectedImage && selectedOperation !== Operation.Create'
                 @submit.prevent="updateImage">
+                <h3 class="object-title">{{ selectedImage?.title || 'Untitled' }}</h3>
                 <div>
                     <template v-for="(property, index) in selectedImage">
                         <FormInput v-if="shouldRenderInput(index)"
@@ -225,50 +215,11 @@ async function deleteImage() {
                 <FormButtons :cancelAction="clearSelections"
                     submitText="Upload" />
             </form>
-        </div>
-    </div>
+        </template>
+    </ManagerWrapper>
 </template>
 
 <style scoped>
-.manager-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: space-between;
-    width: 100%;
-    padding: 2rem;
-    background-color: var(--lightest-color);
-}
-
-.manager-menu {
-    display: flex;
-    justify-content: space-between;
-    background-color: var(--lightest-color);
-}
-
-.select-cover-image-button-wrapper {
-    display: flex;
-}
-
-.go-back-button {
-    width: 2rem;
-    height: 2rem;
-    font-weight: 900;
-    cursor: pointer;
-    color: var(--primary-color);
-    transition: all 0.1s ease-in-out;
-}
-
-.go-back-button:hover {
-    color: var(--primary-color-hover);
-    transform: scale(1.2);
-}
-
-.object-wrapper {
-    display: flex;
-    flex-wrap: wrap;
-    margin: 1rem -0.5rem 1rem -0.5rem;
-}
-
 .image-object {
     width: 20%;
     cursor: pointer;
@@ -312,66 +263,16 @@ img {
     object-fit: cover;
 }
 
-.form-wrapper {
-    margin: 2rem;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-}
-
-.form-content {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    margin-top: 2rem;
-}
-
-form {
-    display: flex;
-    width: 40%;
-    flex-direction: column;
-    justify-content: space-between;
-    max-height: 40rem;
-}
-
-label {
-    margin-bottom: 0.5rem;
-}
-
-input {
-    height: 2rem;
-    padding: 0.25rem;
-    font-size: 1rem;
-    font-family: inherit;
-}
-
 @media (max-width: 768px) {
-    .manager-wrapper {
-        padding: 0;
-    }
-
     .image-object {
         width: 33.3333%;
         height: 12rem;
-    }
-
-    .form-wrapper {
-        margin: 0 1rem 1rem 1rem;
-    }
-
-    .form-content {
-        margin-top: 0;
-        flex-direction: column;
     }
 
     .form-image-preview {
         width: 100%;
         height: 20rem;
         margin-bottom: 2rem;
-    }
-
-    form {
-        width: 100%;
     }
 
     .upload-image-preview-wrapper {
