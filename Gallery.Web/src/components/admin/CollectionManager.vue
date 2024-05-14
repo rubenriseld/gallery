@@ -333,7 +333,6 @@ img {
 }
 
 .collection-preview-button {
-    /* border-bottom: 2px solid var(--mid-color); */
     background-color: var(--light-color);
     display: none;
     padding: 0.5rem;
