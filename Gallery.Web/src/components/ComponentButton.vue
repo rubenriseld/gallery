@@ -51,7 +51,7 @@ button {
 }
 
 button:hover {
-    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: var(--box-shadow);
 }
 
 .primary {
