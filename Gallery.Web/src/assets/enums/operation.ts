@@ -3,5 +3,6 @@ export enum Operation {
     Create,
     Read,
     Update,
-    Delete
+    Delete,
+    Cancel
 }

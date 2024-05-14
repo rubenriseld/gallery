@@ -1,9 +1,11 @@
-export type ButtonType = 'primary' | 'secondary' | 'warning'
+export type ButtonType = 'primary' | 'secondary' | 'warning';
+export type ModalType = 'confirm' | 'warning';
 
 export type ImagePreview = {
     imageFile: File,
     imageSrc: string
 }
+
 export type ReorderImage = {
     imageId: string,
     orderInImageCollection: number

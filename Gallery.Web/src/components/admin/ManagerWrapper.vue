@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import type { ImageCollection, Tag, Image } from '@/assets/types';
-import ComponentButton from '@/components/ComponentButton.vue'
-import IconBack from '@/components/icons/IconBack.vue'
+import ComponentButton from '@/components/ComponentButton.vue';
+import IconBack from '@/components/icons/IconBack.vue';
 import { ref, watch } from 'vue';
 
 const props = defineProps({
@@ -22,11 +21,11 @@ const props = defineProps({
         type: Function,
         required: true
     }
-})
-const objectIsSelected = ref<boolean>(props.objectIsSelected)
+});
+const objectIsSelected = ref<boolean>(props.objectIsSelected);
 
 watch([() => props.objectIsSelected], () => {
-    objectIsSelected.value = props.objectIsSelected
+    objectIsSelected.value = props.objectIsSelected;
 })
 
 </script>
@@ -110,13 +109,14 @@ watch([() => props.objectIsSelected], () => {
     margin-top: 2rem;
 }
 
-.form-content:deep(.object-title){
+.form-content:deep(.object-title) {
     margin: 0.5rem 0 1rem 0;
     font-size: 1.8rem;
     color: var(--darker-color);
 }
+
 .form-content:deep(.untitled-object) {
-   
+
     color: var(--dark-color);
     font-style: italic;
 }
@@ -127,8 +127,9 @@ watch([() => props.objectIsSelected], () => {
     flex-direction: column;
     justify-content: space-between;
 }
-.form-content:deep(form > button.warning){
-    margin-top:4rem;
+
+.form-content:deep(form > button.warning) {
+    margin-top: 4rem;
 }
 
 @media (max-width: 768px) {
@@ -142,7 +143,7 @@ watch([() => props.objectIsSelected], () => {
 
     .form-content {
         flex-direction: column;
-        margin-top:1rem;
+        margin-top: 1rem;
     }
 
     .form-content:deep(form) {

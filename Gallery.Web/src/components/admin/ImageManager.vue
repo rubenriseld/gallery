@@ -1,19 +1,18 @@
 <script setup lang="ts">
 import Modal from '@/components/Modal.vue';
-import IconBack from '@/components/icons/IconBack.vue';
 import ComponentButton from '@/components/ComponentButton.vue';
 import FormButtons from '@/components/form/FormButtons.vue';
 import CollectionDropdownSelect from '@/components/form/CollectionDropdownSelect.vue';
 import TagWrapper from '@/components/form/TagWrapper.vue';
 import FormInput from '@/components/form/FormInput.vue';
-import ManagerWrapper from '@/components/admin/ManagerWrapper.vue'
+import ManagerWrapper from '@/components/admin/ManagerWrapper.vue';
 
 import api from '@/api';
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch } from 'vue';
 import { shouldRenderInput, capitalize } from '@/assets/functions/managerHelperFunctions';
 
 import { Operation } from '@/assets/enums/operation';
-import type { Image, UpdateImage, CreateImage, ImageCollection, Tag, ImagePreview } from '@/assets/types'
+import type { Image, UpdateImage, CreateImage, ImageCollection, Tag, ImagePreview } from '@/assets/types';
 
 const props = defineProps({
     images: {
@@ -32,15 +31,21 @@ const props = defineProps({
         type: Function,
         required: true
     }
-})
+});
 
-const selectedImage = ref<Image | CreateImage | UpdateImage | null>(null)
-const images = ref<Image[]>(props.images)
-const collections = ref<ImageCollection[]>(props.collections)
-const tags = ref<Tag[]>(props.tags)
-const imagePreviews = ref<ImagePreview[]>([])
-const selectedOperation = ref<Operation>(Operation.None)
-const isDeleteOperation = computed(() => selectedOperation.value === Operation.Delete)
+const selectedImage = ref<Image | CreateImage | UpdateImage | null>(null);
+const images = ref<Image[]>(props.images);
+const collections = ref<ImageCollection[]>(props.collections);
+const tags = ref<Tag[]>(props.tags);
+const imagePreviews = ref<ImagePreview[]>([]);
+
+let initialFormData: any = null;
+
+const selectedOperation = ref<Operation>(Operation.None);
+let previousOperation: Operation = Operation.None;
+const isDeleteOperation = computed(() => selectedOperation.value === Operation.Delete);
+const isCancelOperation = computed(() => selectedOperation.value === Operation.Cancel);
+
 const formData = ref()
 const fileInput = ref<HTMLInputElement>()
 
@@ -48,21 +53,21 @@ watch([() => props.tags, () => props.collections, () => props.images], () => {
     tags.value = props.tags
     collections.value = props.collections
     images.value = props.images
-})
+});
 
 function openFileInput() {
     fileInput.value?.click();
 }
 // Function to handle the file select event
 function handleFileSelect(event: Event) {
-    const fileList = (event.target as HTMLInputElement).files
-    formData.value = []
-    imagePreviews.value = []
+    const fileList = (event.target as HTMLInputElement).files;
+    formData.value = [];
+    imagePreviews.value = [];
 
     if (fileList) {
         for (let i = 0; i < fileList.length; i++) {
             // Add the file to the formData array
-            (formData.value as File[]).push(fileList[i])
+            (formData.value as File[]).push(fileList[i]);
 
             // Create a preview of the image
             const reader = new FileReader();
@@ -70,7 +75,7 @@ function handleFileSelect(event: Event) {
                 imagePreviews.value.push({
                     imageFile: fileList[i] as File,
                     imageSrc: x.target?.result as string
-                })
+                });
             }
             reader.readAsDataURL(fileList[i]);
         }
@@ -78,20 +83,22 @@ function handleFileSelect(event: Event) {
 }
 
 async function openCreateForm() {
-    selectedImage.value = {} as CreateImage
-    formData.value = { ...selectedImage.value }
-    selectedOperation.value = Operation.Create
+    selectedImage.value = {} as CreateImage;
+    formData.value = { ...selectedImage.value };
+    initialFormData = formData.value;
+    selectedOperation.value = Operation.Create;
 }
 
 function openUpdateForm(image: Image) {
-    selectedImage.value = image
-    const tagIds = image.tags.map(tag => tag.tagId)
+    selectedImage.value = image;
+    const tagIds = image.tags.map(tag => tag.tagId);
     formData.value = {
         title: image.title,
         description: image.description,
         imageCollectionId: image.imageCollectionId,
         tagIds: tagIds
-    }
+    };
+    initialFormData = formData.value;
     selectedOperation.value = Operation.Update;
 }
 
@@ -100,33 +107,49 @@ function updateFormDataWithEmittedValue(formDataIndex: string, event: any) {
 }
 
 function openDeletePromptModal(image: Image) {
-    selectedImage.value = image
-    selectedOperation.value = Operation.Delete
+    selectedImage.value = image;
+    previousOperation = selectedOperation.value;
+    selectedOperation.value = Operation.Delete;
+}
+function cancel() {
+    if (initialFormData !== null && initialFormData !== formData.value) {
+        openCancelPromptModal();
+    } else {
+        clearSelections();
+    }
+}
+function openCancelPromptModal() {
+    previousOperation = selectedOperation.value;
+    selectedOperation.value = Operation.Cancel;
 }
 function clearSelections() {
-    selectedOperation.value = Operation.None
-    selectedImage.value = null
-    imagePreviews.value = []
+    selectedOperation.value = Operation.None;
+    selectedImage.value = null;
+    imagePreviews.value = [];
+    initialFormData = null;
+}
+function cancelOperation() {
+    selectedOperation.value = previousOperation;
 }
 
 async function updateImage() {
-    await api.put('images/' + (selectedImage.value as Image).imageId, JSON.stringify(formData.value as UpdateImage))
-    clearSelections()
-    await props.refresh()
+    await api.put('images/' + (selectedImage.value as Image).imageId, JSON.stringify(formData.value as UpdateImage));
+    clearSelections();
+    await props.refresh();
 }
 async function createImage() {
     await api.post('images/', formData.value, {
         headers: {
             'Content-Type': 'multipart/form-data'
         }
-    })
-    clearSelections()
-    await props.refresh()
+    });
+    clearSelections();
+    await props.refresh();
 }
 async function deleteImage() {
-    await api.delete('images/' + (selectedImage.value as Image).imageId)
-    clearSelections()
-    await props.refresh()
+    await api.delete('images/' + (selectedImage.value as Image).imageId);
+    clearSelections();
+    await props.refresh();
 }
 </script>
 
@@ -137,6 +160,13 @@ async function deleteImage() {
         :confirmText='`Delete`'
         @close-modal='clearSelections' />
 
+    <Modal v-model:isVisible='isCancelOperation'
+        modalType="confirm"
+        :confirm="clearSelections"
+        :modalText="`You have unsaved changes. Are you sure you want to cancel?`"
+        :confirmText='`Ok`'
+        @close-modal='cancelOperation' />
+
     <ManagerWrapper :objectIsSelected="selectedImage !== null"
         :openCreateForm="openCreateForm"
         :openCreateFormText="'Add images'"
@@ -146,13 +176,12 @@ async function deleteImage() {
                 class="image-object"
                 :key='index'
                 @click='openUpdateForm(image)'>
-
                 <img :src='(image as Image).uri'
                     :alt='(image as Image).title'>
             </div>
         </template>
         <template #formContent>
-            <img v-if="selectedOperation !== Operation.Create"
+            <img v-if="(selectedOperation === Operation.Update || previousOperation === Operation.Update)"
                 :src='(selectedImage as unknown as Image).uri'
                 :alt='(selectedImage as unknown as Image).title'
                 class="form-image-preview">
@@ -164,7 +193,8 @@ async function deleteImage() {
                     :alt='image.imageSrc'
                     class="image-upload-preview-object">
             </div>
-            <form v-if='selectedImage && selectedOperation !== Operation.Create'
+            <form
+                v-if='selectedImage && (selectedOperation === Operation.Update || previousOperation === Operation.Update)'
                 @submit.prevent="updateImage">
                 <h3 class="object-title">{{ formData?.title || 'Untitled' }}</h3>
                 <div>
@@ -181,7 +211,7 @@ async function deleteImage() {
                         @update:modelValue="formData.imageCollectionId = $event" />
                     <TagWrapper :tags="tags"
                         :formData="formData" />
-                    <FormButtons :cancelAction="clearSelections"
+                    <FormButtons :cancelAction="cancel"
                         submitText="Update" />
                 </div>
                 <ComponentButton buttonType="warning"
@@ -189,7 +219,7 @@ async function deleteImage() {
                     buttonText="Delete permanently" />
             </form>
 
-            <form v-else-if='selectedOperation === Operation.Create'
+            <form v-else-if='(selectedOperation === Operation.Create || previousOperation === Operation.Create)'
                 @submit.prevent="createImage">
                 <div class="file-select-wrapper">
                     <ComponentButton buttonType="secondary"
@@ -205,7 +235,7 @@ async function deleteImage() {
                         @change='handleFileSelect'
                         style="display:none;">
                 </div>
-                <FormButtons :cancelAction="clearSelections"
+                <FormButtons :cancelAction="cancel"
                     submitText="Upload" />
             </form>
         </template>
@@ -266,6 +296,7 @@ img {
 .file-select-button {
     width: 100%;
 }
+
 .file-select-text {
     margin-top: 1rem;
     font-size: 1.3rem;

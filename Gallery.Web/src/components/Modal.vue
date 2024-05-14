@@ -1,20 +1,25 @@
 <script setup lang='ts'>
+import type { ModalType } from '@/assets/types';
 import ComponentButton from '@/components/ComponentButton.vue';
 
 const props = defineProps({
+    modalType: {
+        type: String as () => ModalType,
+        default: 'confirm'
+    },
     modalText: String,
     confirmText: String,
     confirm: Function,
     isVisible: Boolean
 })
-const emits = defineEmits(['closeModal'])
+const emits = defineEmits(['closeModal']);
 
 function closeModal() {
-    emits('closeModal')
+    emits('closeModal');
 }
 async function confirmAction() {
-    props.confirm && await props.confirm()
-    closeModal()
+    props.confirm && await props.confirm();
+    closeModal();
 }
 
 </script>
@@ -27,7 +32,7 @@ async function confirmAction() {
             <ComponentButton buttonType="secondary"
                 :onClick='closeModal'
                 buttonText="Cancel" />
-            <ComponentButton buttonType="warning"
+            <ComponentButton :buttonType="`${modalType === 'warning' ? 'warning' : 'primary'}`"
                 :onClick='confirmAction'
                 :buttonText="$props.confirmText" />
         </div>
