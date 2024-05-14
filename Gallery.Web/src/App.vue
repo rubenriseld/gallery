@@ -8,7 +8,7 @@ import Menu from './components/Menu.vue'
         <Menu />
     </header>
     <main>
-        <RouterView class="view"></RouterView>
+        <RouterView></RouterView>
     </main>
 </template>
 
