@@ -13,7 +13,6 @@ onMounted(async () => {
     const id = route.params.collectionId as string
     collectionId.value = id
     await getCollections()
-    console.log(collections.value)
     isLoading.value = false
 
     collections.value.forEach((collection, index) => {
@@ -108,7 +107,7 @@ a {
 @media (max-width: 768px) {
     .collection-wrapper {
         margin: 1rem 0 1rem 0;
-        height:10rem;
+        height: 10rem;
     }
 }
 </style>
