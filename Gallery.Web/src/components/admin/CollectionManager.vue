@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import Modal from '@/components/Modal.vue';
-import IconBack from '@/components/icons/IconBack.vue';
 import ComponentButton from '@/components/ComponentButton.vue';
 import FormButtons from '@/components/form/FormButtons.vue';
 import FormInput from '@/components/form/FormInput.vue';
@@ -9,14 +8,13 @@ import IconMore from '@/components/icons/IconMore.vue';
 import IconLess from '@/components/icons/IconLess.vue';
 
 import api from '@/api';
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch } from 'vue';
 import { capitalize, shouldRenderInput } from '@/assets/functions/managerHelperFunctions';
 
 import { Operation } from '@/assets/enums/operation';
-import type { Image, ImageCollection, CreateImageCollection, UpdateImageCollection, Tag, ImagePreview } from '@/assets/types'
+import type { Image, ImageCollection, CreateImageCollection, UpdateImageCollection, Tag, ImagePreview } from '@/assets/types';
 
 const props = defineProps({
-
     images: {
         type: Array as () => (Image[]),
         default: []
@@ -29,89 +27,148 @@ const props = defineProps({
         type: Function,
         required: true
     }
-})
+});
 
-const selectedCollection = ref<ImageCollection | CreateImageCollection | UpdateImageCollection | null>(null)
-const collections = ref<ImageCollection[]>(props.collections)
-const imagePreviews = ref<ImagePreview[]>([])
-const selectedOperation = ref<Operation>(Operation.None)
-const canSelectCoverImage = ref<boolean>(false)
-const isDeleteOperation = computed(() => selectedOperation.value === Operation.Delete)
-const formData = ref()
-const isMobilePreviewOpen = ref(false)
+const collections = ref<ImageCollection[]>(props.collections);
+const selectedCollection = ref<ImageCollection | CreateImageCollection | UpdateImageCollection | null>(null);
+
+const selectedOperation = ref<Operation>(Operation.None);
+const isDeleteOperation = computed(() => selectedOperation.value === Operation.Delete);
+
+const canSelectCoverImage = ref<boolean>(false);
+const coverImageUri = computed(() => {
+    return ((selectedCollection.value as ImageCollection)?.images.find(image => image.imageId === formData.value.coverImageId)?.uri || '');
+});
+
+const canDragAndDrop = ref<boolean>(false);
+const draggedIndex = ref<number | null>(null);
+let selectedCollectionImagePreviews: Image[] | null = null;
+const reorderImages = computed(() => {
+    return ((selectedCollection.value as ImageCollection)?.images || []).map((image, index) => ({
+        imageId: image.imageId,
+        orderInImageCollection: index
+    }));
+});
+
+
+const isMobilePreviewOpen = ref(false);
+
+const formData = ref();
 
 watch([() => props.collections], () => {
-    collections.value = props.collections
-})
+    collections.value = props.collections;
+});
+
+
+function onDragStart(index: number) {
+    selectedCollectionImagePreviews = [...(selectedCollection.value as ImageCollection)?.images];
+    draggedIndex.value = index;
+}
+
+function onDragEnter(index: number) {
+    if (draggedIndex.value !== null) {
+        const images = [...(selectedCollection.value as ImageCollection)?.images];
+
+        const draggedImage = images[draggedIndex.value as number];
+        images.splice(draggedIndex.value as number, 1);
+        images.splice(index, 0, draggedImage);
+
+        images.forEach((image, i) => {
+            image.orderInImageCollection = i;
+        });
+
+        (selectedCollection.value as ImageCollection).images = images;
+
+        draggedIndex.value = index;
+        formData.value = { ...formData.value, reorderImages: reorderImages.value };
+    }
+}
+
+function onDrop() {
+    draggedIndex.value = null;
+}
 
 async function openCreateForm() {
     selectedCollection.value = {
         name: '',
         description: '',
-    }
+    };
 
-    formData.value = { ...selectedCollection.value }
-    selectedOperation.value = Operation.Create
+    formData.value = { ...selectedCollection.value };
+    selectedOperation.value = Operation.Create;
 }
 
 function openUpdateForm(collection: ImageCollection) {
-    selectedCollection.value = collection
-    formData.value = { 
+    selectedCollection.value = collection;
+    formData.value = {
         name: collection.name,
         description: collection.description,
         coverImageId: collection.coverImage?.imageId || null,
-        reorderImages: []
-    }
+        reorderImages: reorderImages.value
+    };
     selectedOperation.value = Operation.Update;
 }
 
 function updateFormDataWithEmittedValue(formDataIndex: string, event: any) {
-    formData.value = { ...formData.value, [formDataIndex]: event }
+    formData.value = { ...formData.value, [formDataIndex]: event };
 }
 
 function openDeletePromptModal(collection: ImageCollection) {
-    selectedCollection.value = collection
-    selectedOperation.value = Operation.Delete
+    selectedCollection.value = collection;
+    selectedOperation.value = Operation.Delete;
 }
 function clearSelections() {
-    selectedOperation.value = Operation.None
-    selectedCollection.value = null
-    imagePreviews.value = []
+    selectedOperation.value = Operation.None;
+    selectedCollection.value = null;
+    canSelectCoverImage.value = false;
+    isMobilePreviewOpen.value = false;
+    canDragAndDrop.value = false;
+}
+function cancelDeleteOperation() {
+    selectedOperation.value = Operation.None;
 }
 
 function toggleCanSelectCoverImage() {
-    canSelectCoverImage.value = !canSelectCoverImage.value
-    isMobilePreviewOpen.value = canSelectCoverImage.value
+    canSelectCoverImage.value = !canSelectCoverImage.value;
+    isMobilePreviewOpen.value = canSelectCoverImage.value;
 }
 function selectCoverImage(imageId: string) {
-    if (!canSelectCoverImage.value) return
-    const previousExistingCoverImageId = formData.value.coverImageId
-    formData.value = { ...formData.value, coverImageId: (imageId === previousExistingCoverImageId ? null : imageId) }
+    if (!canSelectCoverImage.value) return;
+    const previousExistingCoverImageId = formData.value.coverImageId;
+    formData.value = { ...formData.value, coverImageId: (imageId === previousExistingCoverImageId ? null : imageId) };
 }
 function cancelSelectCoverImage() {
-    formData.value = { ...formData.value, coverImageId: (selectedCollection.value as ImageCollection).coverImage?.imageId || '' }
-    canSelectCoverImage.value = false
-    isMobilePreviewOpen.value = false
+    formData.value = { ...formData.value, coverImageId: (selectedCollection.value as ImageCollection).coverImage?.imageId || '' };
+    canSelectCoverImage.value = false;
+    isMobilePreviewOpen.value = false;
 }
 function isSelectedCoverImage(imageId: string): boolean {
-    return (imageId === (formData.value.coverImageId))
+    return (imageId === (formData.value.coverImageId));
+}
+function toggleDragAndDrop() {
+    canDragAndDrop.value = !canDragAndDrop.value;
+}
+function cancelDragAndDrop() {
+    if (selectedCollectionImagePreviews !== null) {
+        (selectedCollection.value as ImageCollection).images = selectedCollectionImagePreviews;
+    }
+    canDragAndDrop.value = false;
 }
 
 async function updateCollection() {
-    await api.put('imageCollections/' + (selectedCollection.value as ImageCollection).imageCollectionId, JSON.stringify(formData.value as UpdateImageCollection))
-    clearSelections()
-    await props.refresh()
+    await api.put('imageCollections/' + (selectedCollection.value as ImageCollection).imageCollectionId, JSON.stringify(formData.value as UpdateImageCollection));
+    clearSelections();
+    await props.refresh();
 }
 async function createCollection() {
-    await api.post('imageCollections/', JSON.stringify(formData.value))
-    clearSelections()
-    await props.refresh()
+    await api.post('imageCollections/', JSON.stringify(formData.value));
+    clearSelections();
+    await props.refresh();
 }
 async function deleteCollection() {
-    console.log("del")
-    await api.delete('imageCollections/' + (selectedCollection.value as ImageCollection).imageCollectionId)
-    clearSelections()
-    await props.refresh()
+    await api.delete('imageCollections/' + (selectedCollection.value as ImageCollection).imageCollectionId);
+    clearSelections();
+    await props.refresh();
 }
 </script>
 
@@ -120,7 +177,7 @@ async function deleteCollection() {
         :confirm="deleteCollection"
         :modalText="`Are you sure you want to delete ${selectedCollection?.name || 'this item'}?`"
         :confirmText='`Delete`'
-        @close-modal='clearSelections' />
+        @close-modal='cancelDeleteOperation' />
 
     <ManagerWrapper :objectIsSelected="selectedCollection !== null"
         :openCreateForm="openCreateForm"
@@ -138,18 +195,29 @@ async function deleteCollection() {
             :class="'collection-menu'">
             <div v-if="selectedOperation !== Operation.Create"
                 class="select-cover-image-button-wrapper">
-                <template v-if="!canSelectCoverImage">
-                    <ComponentButton buttonType="secondary"
-                        :onClick="toggleCanSelectCoverImage"
-                        buttonText="Select cover image" />
-                </template>
-                <template v-else>
+                <ComponentButton v-if="!canSelectCoverImage && !canDragAndDrop"
+                    buttonType="secondary"
+                    :onClick="toggleCanSelectCoverImage"
+                    buttonText="Select cover image" />
+                <template v-else-if="canSelectCoverImage">
                     <ComponentButton buttonType="secondary"
                         :onClick="cancelSelectCoverImage"
                         buttonText="Cancel" />
                     <ComponentButton buttonType="primary"
                         :onClick="toggleCanSelectCoverImage"
                         buttonText="Select" />
+                </template>
+                <ComponentButton v-if="!canSelectCoverImage && !canDragAndDrop"
+                    buttonType="secondary"
+                    :onClick="toggleDragAndDrop"
+                    buttonText="Toggle Drag and Drop" />
+                <template v-else-if="canDragAndDrop">
+                    <ComponentButton buttonType="secondary"
+                        :onClick="cancelDragAndDrop"
+                        buttonText="Cancel" />
+                    <ComponentButton buttonType="primary"
+                        :onClick="toggleDragAndDrop"
+                        buttonText="Done" />
                 </template>
             </div>
         </template>
@@ -163,19 +231,30 @@ async function deleteCollection() {
             <div
                 :class="`${isMobilePreviewOpen ? 'collection-image-preview-wrapper' : 'collection-image-preview-hidden'}`">
 
-                <div class="collection-image-preview-container">
-                    <img v-for='(image, index) in (selectedCollection as ImageCollection).images'
+                <div @dragover.prevent
+                    @drop="onDrop"
+                    class="collection-image-preview-container">
+                    <img v-for="(image, index) in (selectedCollection as ImageCollection).images"
                         @click="selectCoverImage(image.imageId)"
-                        :key='index'
-                        :src='(image.uri)'
-                        :alt='image.title'
-                        :class="`collection-image-preview-object 
-                        ${isSelectedCoverImage(image.imageId) ? 'selected-cover-image' : ''}
-                        ${canSelectCoverImage ? 'selectable-image-preview-object' : ''}`">
+                        :src="(image.uri)"
+                        :alt="image.title"
+                        :key="index"
+                        :draggable="canDragAndDrop"
+                        @dragstart="onDragStart(index)"
+                        @dragenter="onDragEnter(index)"
+                        :class="{
+                            'collection-image-preview-object': true,
+                            'selected-cover-image': isSelectedCoverImage(image.imageId),
+                            'selectable-image-preview-object': canSelectCoverImage,
+                            'dragable-image-preview-object': canDragAndDrop,
+                        }">
                 </div>
             </div>
             <form v-if='selectedCollection && selectedOperation !== Operation.Create'
                 @submit.prevent="updateCollection">
+                <img v-if="!isMobilePreviewOpen"
+                    :src="coverImageUri"
+                    class="cover-image">
                 <h3 :class="`object-title ${!formData?.name ? 'untitled-object' : ''}`">
                     {{ formData?.name || "Untitled collection" }}</h3>
                 <div>
@@ -241,17 +320,23 @@ img {
     object-fit: cover;
 }
 
-.collection-image-preview-wrapper,
-.collection-image-preview-hidden {
+.collection-image-preview-hidden,
+.collection-image-preview-wrapper {
     width: 50%;
+
+}
+
+.collection-image-preview-wrapper {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
 }
 
 .collection-preview-button {
-    border-bottom: 2px solid var(--slightly-dark-color);
+    /* border-bottom: 2px solid var(--mid-color); */
+    background-color: var(--light-color);
     display: none;
+    padding: 0.5rem;
 }
 
 .collection-preview-button>svg {
@@ -279,26 +364,36 @@ img {
     box-sizing: border-box;
     display: flex;
     overflow: hidden;
-    object-fit: cover;
+}
+
+.cover-image {
+    max-height: 20rem;
 }
 
 .collection-image-preview-object {
-    opacity: 0.8;
+    opacity: 0.5;
+    filter: grayscale(30%);
 }
 
-.selectable-image-preview-object {
+.selectable-image-preview-object,
+.dragable-image-preview-object {
     cursor: pointer;
-    transition: all 0.1s ease-in-out;
+    transition: all 0.08s ease-in-out;
+    filter: none;
 }
 
-.selectable-image-preview-object:hover {
-    transform: scale(1.05);
+.collection-image-preview-object:hover,
+.selectable-image-preview-object.selected-cover-image,
+.dragable-image-preview-object {
+    filter: none;
     opacity: 1;
 }
 
-.selected-cover-image {
-    border: 4px solid var(--secondary-color);
+.selectable-image-preview-object.selected-cover-image {
+    filter: none;
+    outline: 4px solid var(--primary-color);
 }
+
 
 @media (max-width: 768px) {
     .collection-image-preview-wrapper {
