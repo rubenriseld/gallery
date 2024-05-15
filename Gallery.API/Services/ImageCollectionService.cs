@@ -28,7 +28,7 @@ public class ImageCollectionService : IImageCollectionService
     public async Task<List<ReadImageCollectionDTO>> GetAllImageCollections()
     {
         var imageCollections = await _imageCollectionRepository.Get()
-            .Include(c => c.Images)
+            .Include(c => c.Images.OrderBy(i => i.OrderInImageCollection))
             .ToListAsync();
 
         return _mapper.Map<List<ReadImageCollectionDTO>>(imageCollections);
