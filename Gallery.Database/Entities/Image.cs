@@ -12,6 +12,7 @@ public class Image
     public virtual ImageCollection? ImageCollection { get; set; }
     [Range(0, int.MaxValue)]
     public int OrderInImageCollection { get; set; }
+    public bool Sold { get; set; }
     public string? CoverImageCollectionId { get; set; }
     public virtual ImageCollection? CoverImageCollection { get; set; }
     public virtual ICollection<Tag> Tags { get; set; } = new HashSet<Tag>();

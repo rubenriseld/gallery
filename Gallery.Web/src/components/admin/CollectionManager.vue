@@ -107,6 +107,7 @@ async function openCreateForm() {
     selectedCollection.value = {
         name: '',
         description: '',
+        shouldBeDisplayed: false,
     };
     formData.value = { ...selectedCollection.value };
     initialFormData = formData.value;
@@ -302,8 +303,14 @@ async function deleteCollection() {
                             :label="capitalize(index)"
                             :placeholder="capitalize(index)"
                             :modelValue="formData[index]"
+                            :propertyType="property"
                             @update:modelValue="updateFormDataWithEmittedValue(index, $event)" />
                     </template>
+                    <div class="checkbox-wrapper">
+                        <label>Display on the site</label>
+                        <input type="checkbox"
+                            v-model="formData.shouldBeDisplayed">
+                    </div>
                     <FormButtons :cancelAction="cancel"
                         submitText="Update" />
                 </div>
@@ -321,7 +328,11 @@ async function deleteCollection() {
                         :modelValue="formData[index]"
                         @update:modelValue="updateFormDataWithEmittedValue(index, $event)" />
                 </template>
-
+                <div class="checkbox-wrapper">
+                    <label>Display on the site</label>
+                    <input type="checkbox"
+                        v-model="formData.shouldBeDisplayed">
+                </div>
                 <FormButtons :cancelAction="cancel"
                     submitText="Add" />
             </form>
@@ -428,6 +439,16 @@ img {
     outline: 4px solid var(--primary-color);
 }
 
+.checkbox-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 1rem 0 1rem 0;
+}
+
+.checkbox-wrapper input {
+    margin-top: 0.5rem;
+}
 
 @media (max-width: 768px) {
     .collection-image-preview-wrapper {

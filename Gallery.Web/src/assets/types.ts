@@ -15,18 +15,21 @@ export type ImageCollection = {
     imageCollectionId: string,
     name: string,
     description?: string,
+    shouldBeDisplayed: boolean,
     coverImage?: Image,
     images: Image[]
 }
 export type CreateImageCollection = {
     name: string,
     description?: string,
+    shouldBeDisplayed: boolean
 }
 export type UpdateImageCollection = {
     coverImageId?: string,
     name: string,
     description?: string,
-    reorderImages: ReorderImage[],
+    shouldBeDisplayed: boolean,
+    reorderImages: ReorderImage[]
 }
 
 
@@ -48,12 +51,14 @@ export type Image = {
     imageCollectionId?: string,
     imageCollectionName?: string,
     orderInImageCollection: number,
+    sold: boolean,
     tags: Tag[]
 }
 export type UpdateImage = {
     title?: string,
     description?: string,
     imageCollectionId?: string,
+    sold: boolean,
     tagIds?: string[]
 }
 export type CreateImage = {

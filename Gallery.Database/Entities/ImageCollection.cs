@@ -8,4 +8,5 @@ public class ImageCollection
     public string? CoverImageId { get; set; }
     public virtual Image? CoverImage { get; set; }
     public virtual ICollection<Image> Images { get; set; } = new HashSet<Image>();
+    public bool ShouldBeDisplayed { get; set; }
 }

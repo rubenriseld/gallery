@@ -209,8 +209,14 @@ async function deleteImage() {
                     <CollectionDropdownSelect :imageCollections="collections"
                         :modelValue="formData.imageCollectionId"
                         @update:modelValue="formData.imageCollectionId = $event" />
-                    <TagWrapper :tags="tags"
+                    <TagWrapper v-if="tags.length"
+                        :tags="tags"
                         :formData="formData" />
+                    <div class="checkbox-wrapper">
+                        <label>Sold</label>
+                        <input type="checkbox"
+                            v-model="formData.shouldBeDisplayed">
+                    </div>
                     <FormButtons :cancelAction="cancel"
                         submitText="Update" />
                 </div>
@@ -302,6 +308,17 @@ img {
     font-size: 1.3rem;
     color: var(--dark-color);
     align-self: flex-end;
+}
+
+.checkbox-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 1rem 0 1rem 0;
+}
+
+.checkbox-wrapper input {
+    margin-top: 0.5rem;
 }
 
 @media (max-width: 768px) {

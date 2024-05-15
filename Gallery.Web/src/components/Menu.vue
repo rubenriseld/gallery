@@ -20,7 +20,7 @@ const router = useRouter()
 
 onMounted(async () => {
     isLoading.value = true
-    collections.value = (await api.get('imageCollections')).data as ImageCollection[]
+    collections.value = ((await api.get("imageCollections")).data as ImageCollection[]).filter(collection => collection.shouldBeDisplayed === true);
     isAuthenticated.value = await authenticate()
     updateMenuItems()
     isLoading.value = false

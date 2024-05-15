@@ -29,7 +29,7 @@ onMounted(async () => {
     });
 });
 async function getCollections() {
-    collections.value = (await api.get("imageCollections")).data as ImageCollection[]
+    collections.value = ((await api.get("imageCollections")).data as ImageCollection[]).filter(collection => collection.shouldBeDisplayed === true);
 }
 </script>
 
@@ -52,7 +52,7 @@ async function getCollections() {
     justify-content: center;
     align-items: center;
     background-color: var(--mid-color);
-    margin: 1rem 2rem 1rem 2rem;
+    margin: 1rem 0 1rem 0;
     background-size: cover;
     background-position: center;
     position: relative;
@@ -79,13 +79,13 @@ async function getCollections() {
     font-size: 3rem;
     text-transform: uppercase;
     color: var(--lightest-color);
+    opacity: 0.7;
     text-decoration: none;
     backdrop-filter: blur(5px);
 }
 
 a {
     z-index: 2;
-    text-shadow: var(--text-shadow);
     letter-spacing: 2px;
 }
 
@@ -97,11 +97,13 @@ a {
 
 .collection-wrapper:hover .background-image {
     transform: scale(1.1);
-    filter: brightness(0.4) blur(8px);
+    filter: brightness(0.7) blur(8px);
 }
 
 .collection-link:hover {
-    font-size: 3.2rem;
+    color: var(--lightest-color);
+    text-shadow: var(--text-shadow);
+    opacity: 1;
 }
 
 @media (max-width: 768px) {
