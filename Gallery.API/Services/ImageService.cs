@@ -184,6 +184,6 @@ public class ImageService : IImageService
             .Include(c => c.Images)
             .SingleOrDefaultAsync() ?? throw new KeyNotFoundException($"The entity: {typeof(ImageCollection)} {nameof(image.ImageCollectionId)} with ID: {image.ImageCollectionId} could not be found.");
 
-        image.OrderInImageCollection = imageCollection.Images.Count + 1;
+        image.OrderInImageCollection = imageCollection.Images.Count;
     }
 }
