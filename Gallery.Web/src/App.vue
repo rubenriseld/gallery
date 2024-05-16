@@ -1,6 +1,21 @@
 <script setup lang="ts">
+import { onMounted } from 'vue';
 import Menu from './components/Menu.vue'
+import api from './api';
+import { useStore } from 'vuex';
 
+const store = useStore();
+onMounted(async () => {
+    try {
+        const response = await api.get("auth/check");
+        if (response.status === 200) {
+            store.commit('SET_AUTH', true);
+        }
+    }
+    catch (error) {
+        console.error('Error checking authentication:', error);
+    }
+})
 </script>
 
 <template>

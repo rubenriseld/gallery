@@ -70,6 +70,7 @@ function openCancelPromptModal() {
 }
 function clearSelections() {
     selectedOperation.value = Operation.None;
+    previousOperation = Operation.None;
     selectedTag.value = null;
     initialFormData = null;
 }

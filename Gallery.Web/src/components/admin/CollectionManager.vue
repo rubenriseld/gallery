@@ -120,7 +120,8 @@ function openUpdateForm(collection: ImageCollection) {
         name: collection.name,
         description: collection.description,
         coverImageId: collection.coverImage?.imageId || null,
-        reorderImages: reorderImages.value
+        reorderImages: reorderImages.value,
+        shouldBeDisplayed: collection.shouldBeDisplayed
     };
     initialFormData = formData.value;
     selectedOperation.value = Operation.Update;
@@ -148,6 +149,7 @@ function openCancelPromptModal() {
 }
 function clearSelections() {
     selectedOperation.value = Operation.None;
+    previousOperation = Operation.None;
     selectedCollection.value = null;
     canSelectCoverImage.value = false;
     isMobilePreviewOpen.value = false;

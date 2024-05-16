@@ -49,8 +49,9 @@ function prevImage() {
         selectedImage.value = currentIndex > 0 ? collection.value?.images[currentIndex - 1] as Image | null : null
     }
 }
-function clearSelectedImage() {
+function clearSelectedImage(event: MouseEvent) {
     selectedImage.value = null;
+
 }
 const imageNumber = computed(() => {
     if (!selectedImage.value || !collection.value) return 0;
@@ -77,8 +78,7 @@ async function getCollection() {
 
 <template>
     <div v-if="selectedImage"
-        class="selected-image-wrapper"
-        @click="clearSelectedImage">
+        class="selected-image-wrapper">
         <div class="image-and-controls-wrapper">
             <button :class="{ 'opacity-0': !hasPrevImage, 'disabled': !hasPrevImage }"
                 class="nav-button prev-button"
@@ -86,13 +86,17 @@ async function getCollection() {
                 <IconChevronLeft class="nav-icon" />
             </button>
             <div class="selected-image-info">
+                <div class="collection-details">
+                    <p class="collection-name">{{ collection?.name }}</p>
+                    <p class="image-counter">{{ imageNumber }} / {{ collection?.images.length || 0 }}</p>
+                </div>
                 <img :src="selectedImage.uri"
                     :alt="selectedImage.description"
                     class="selected-image" />
                 <div class="image-details">
-                    <p>{{ imageNumber }}/{{ collection?.images.length || 0 }}</p>
-                    <h3>{{ selectedImage.title || 'Untitled' }}</h3>
-                    <p>{{ selectedImage.description || 'No description.' }}</p>
+                    <p class="image-title">{{ selectedImage.title || 'Untitled' }}</p>
+                    <p class="image-description">{{ selectedImage.description || 'No description.' }}
+                        {{ selectedImage.sold ? 'SOLD' : '' }}</p>
                 </div>
             </div>
             <button :class="{ 'opacity-0': !hasNextImage, 'disabled': !hasNextImage }"
@@ -104,6 +108,8 @@ async function getCollection() {
                 @click.stop="clearSelectedImage">
                 <IconClose class="nav-icon" />
             </button>
+            <div class="selected-image-background"
+                @click.stop="clearSelectedImage"></div>
         </div>
     </div>
     <div v-else-if="!isLoading && collection"
@@ -137,14 +143,9 @@ async function getCollection() {
     margin-right: 1rem;
 }
 
-h2 {
-    font-size: 2rem;
-    letter-spacing: 2px;
-}
-
-h2,
-p {
-    margin: 0 1rem 1rem 1rem;
+.collection-wrapper h2,
+.collection-wrapper p {
+    margin-left: 1rem;
 }
 
 .image-wrapper {
@@ -178,6 +179,14 @@ img {
     transition: transform 0.1s ease-in-out;
 }
 
+span {
+    text-transform: uppercase;
+}
+
+button {
+    z-index: 10;
+}
+
 .image-container:hover img {
     transform: scale(1.05);
     filter: brightness(0.3) blur(8px);
@@ -195,14 +204,7 @@ img {
     height: 100%;
 }
 
-.image-title {
-    font-size: 2rem;
-    text-transform: uppercase;
-    font-weight: 500;
-    color: var(--lightest-color);
-    text-align: center;
-    text-shadow: var(--text-shadow);
-}
+
 
 .selected-image-wrapper {
     position: fixed;
@@ -212,21 +214,57 @@ img {
     height: 100%;
     display: flex;
     justify-content: center;
-    backdrop-filter: brightness(0.1) blur(4px);
+    backdrop-filter: brightness(0.2) blur(80px);
     z-index: 3;
 }
 
+.selected-image-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
 
+.collection-details {
+    position: fixed;
+    height: 3rem;
+    font-size: 2rem;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.image-counter {
+    color: var(--lightest-color);
+}
 
 .image-details {
     position: fixed;
     bottom: 1rem;
+    height: 3rem;
     left: 50%;
     transform: translateX(-50%);
-    color: var(--lightest-color);
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+
+
+.image-counter,
+.image-title {
+    font-weight: 500;
+    color: var(--lightest-color);
+}
+
+.collection-name,
+.image-description {
+    color: var(--light-color);
+    opacity: 0.8;
 }
 
 .nav-button {
@@ -235,7 +273,6 @@ img {
     background: none;
     border: none;
     cursor: pointer;
-
 }
 
 .nav-icon {
@@ -247,18 +284,15 @@ img {
 .nav-button:hover .nav-icon {
     transform: scale(1.2);
     color: var(--lightest-color);
-
 }
 
 .close-button {
     position: absolute;
     top: 1rem;
     right: calc((1rem + 100vw - var(--max-width)) / 2);
-    ;
 }
 
 .close-button .nav-icon {
-    color: var(--light-color);
     height: 2.5rem;
     width: 2.5rem;
 }
@@ -266,6 +300,10 @@ img {
 .selected-image {
     max-height: 80vh;
     max-width: 80vw;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     object-fit: contain;
     cursor: pointer;
 }
@@ -276,6 +314,12 @@ img {
 
 .disabled {
     pointer-events: none;
+}
+
+@media (max-width:1920px) {
+    .close-button {
+        right: 1rem;
+    }
 }
 
 @media (max-width: 768px) {
@@ -298,12 +342,65 @@ img {
         filter: none;
     }
 
-    .image-title {
+    .collection-wrapper {
+        margin: 0;
+    }
+
+    .selected-image-info {
+        height: 80%;
+        width: 100%;
+        display: flex;
+        align-self: center;
+    }
+
+    .selected-image {
+        width: 100%;
+        max-height: none;
+        max-width: none;
+        position: relative;
+    }
+
+    .image-and-controls-wrapper {
+        background-color: var(--lightest-color);
+    }
+
+    .collection-details {
         display: none;
     }
 
-    .collection-wrapper {
-        margin: 0;
+    .image-details {
+        bottom: 1.5rem;
+    }
+
+    .image-title,
+    .image-description {
+        color: var(--darker-color);
+    }
+
+    .nav-button {
+        position: fixed;
+        bottom: 1rem;
+        padding: 0;
+    }
+
+    .close-button {
+        height: 3rem;
+    }
+
+    .prev-button {
+        left: 1rem;
+    }
+
+    .next-button {
+        right: 1rem;
+    }
+
+    .nav-icon {
+        color: var(--dark-color);
+    }
+
+    .nav-button:hover .nav-icon {
+        color: var(--darker-color);
     }
 }
 </style>

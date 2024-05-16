@@ -15,7 +15,7 @@ onMounted(async () => {
     await getCollections()
     isLoading.value = false
 
-    collections.value.forEach((collection, index) => {
+    collections.value.length && collections.value.forEach((collection, index) => {
         const style = document.createElement('style');
         style.textContent = `
             .background-${index} {
@@ -29,7 +29,10 @@ onMounted(async () => {
     });
 });
 async function getCollections() {
-    collections.value = ((await api.get("imageCollections")).data as ImageCollection[]).filter(collection => collection.shouldBeDisplayed === true);
+    const response = await api.get("imageCollections");
+    if (Array.isArray(response.data) && response.data.length >= 1) {
+        collections.value = (response.data as ImageCollection[]).filter(collection => collection.shouldBeDisplayed === true);
+    }
 }
 </script>
 

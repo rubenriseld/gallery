@@ -1,61 +1,64 @@
 <script setup lang='ts'>
-import IconMenu from '@/components/icons/IconMenu.vue'
-import IconClose from '@/components/icons/IconClose.vue'
+import IconMenu from '@/components/icons/IconMenu.vue';
+import IconClose from '@/components/icons/IconClose.vue';
 
-import api from '@/api'
-import { onMounted, ref, watch } from 'vue'
-import { useRouter } from "vue-router"
+import api from '@/api';
+import { onMounted, ref, computed } from 'vue';
+import { useRouter } from "vue-router";
 
-import type { ImageCollection } from '@/assets/types'
+import type { ImageCollection } from '@/assets/types';
+import { useStore } from 'vuex';
 
-const props = defineProps({
-    isAuthenticated: Boolean
-})
+const store = useStore();
 
-const collections = ref<ImageCollection[]>([])
-const isAuthenticated = ref<boolean>(props.isAuthenticated)
+const collections = ref<ImageCollection[]>([]);
+const isAuthenticated = computed(() => store.state.isAuthenticated);
 const isMenuOpen = ref(false)
 const isLoading = ref(true)
 const router = useRouter()
 
 onMounted(async () => {
-    isLoading.value = true
-    collections.value = ((await api.get("imageCollections")).data as ImageCollection[]).filter(collection => collection.shouldBeDisplayed === true);
-    isAuthenticated.value = await authenticate()
-    updateMenuItems()
-    isLoading.value = false
-})
-watch([isAuthenticated], async () => {
-    isAuthenticated.value = await authenticate()
-})
+    isLoading.value = true;
+    await getCollections();
+    updateMenuItems();
+    isLoading.value = false;
+});
 
 const menuItems = ref<Array<{ name: string; path: string }>>([
     { name: 'Home', path: '/' },
     { name: 'Admin', path: '/admin' }]
-)
+);
 
 function updateMenuItems() {
     collections.value.map(collection =>
         menuItems.value.push({
             name: collection.name,
             path: `/collection/${collection.imageCollectionId}`
-        }))
+        }));
 }
 
-async function logout() {
-    await api.post('auth/logout')
-    isAuthenticated.value = await authenticate()
-    isMenuOpen.value = false
-    router.push('/')
-}
-async function authenticate(): Promise<boolean> {
+async function getCollections() {
     try {
-        await api.get('auth/check')
-        return true
+        const response = await api.get('imageCollections')
+        if (response.status === 200) {
+            collections.value = (response.data as ImageCollection[]).filter(collection => collection.shouldBeDisplayed === true)
+        }
     }
     catch (error) {
-        return false
+        console.error('Error fetching collections:', error)
     }
+}
+async function logout() {
+    try {
+        await api.post('auth/logout');
+        store.commit('SET_AUTH', false);
+    }
+    catch (error) {
+        console.error('Error logging out:', error);
+    }
+
+    isMenuOpen.value = false;
+    router.push('/');
 }
 </script>
 

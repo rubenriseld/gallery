@@ -96,6 +96,7 @@ function openUpdateForm(image: Image) {
         title: image.title,
         description: image.description,
         imageCollectionId: image.imageCollectionId,
+        sold: image.sold,
         tagIds: tagIds
     };
     initialFormData = formData.value;
@@ -124,6 +125,7 @@ function openCancelPromptModal() {
 }
 function clearSelections() {
     selectedOperation.value = Operation.None;
+    previousOperation = Operation.None;
     selectedImage.value = null;
     imagePreviews.value = [];
     initialFormData = null;
@@ -215,7 +217,7 @@ async function deleteImage() {
                     <div class="checkbox-wrapper">
                         <label>Sold</label>
                         <input type="checkbox"
-                            v-model="formData.shouldBeDisplayed">
+                            v-model="formData.sold">
                     </div>
                     <FormButtons :cancelAction="cancel"
                         submitText="Update" />

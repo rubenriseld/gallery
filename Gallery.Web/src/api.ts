@@ -7,20 +7,17 @@ const api = axios.create({
         'Content-Type': 'application/json',
     },
     withCredentials: true
-})
+});
 
-const router = useRouter()
+const router = useRouter();
 
 api.interceptors.response.use(
     (response) => response,
     (error) => {
-        if (error.response.status === 401) {
-            router.push('/login')
+        if (error.response && error.response.status === 401) {
+            router.push('/login');
         }
-        else {
-            console.error(error)
-        }
-        return Promise.reject(error)
+        return Promise.reject(error);
     }
 )
 

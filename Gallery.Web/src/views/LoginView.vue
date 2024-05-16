@@ -1,29 +1,30 @@
 <script setup lang="ts">
 import ComponentButton from "@/components/ComponentButton.vue";
 
-import api from "@/api"
-import { ref } from "vue"
-import { useRouter, useRoute } from "vue-router"
+import api from "@/api";
+import { ref } from "vue";
+import { useRouter, useRoute } from "vue-router";
+import { useStore } from "vuex";
 
 const formData = ref({
     email: '',
     password: ''
-})
+});
 
-const router = useRouter()
-const route = useRoute()
+const store = useStore();
+const router = useRouter();
+const route = useRoute();
 
 async function login() {
     try {
-        const response = await api.post('auth/login',
-            JSON.stringify(formData.value))
-
+        const response = await api.post('auth/login', JSON.stringify(formData.value));
         if (response.status === 200) {
-            const queryParam = route.query.redirect as string
-            router.push(queryParam || "/")
+            store.commit('SET_AUTH', true);
+            const queryParam = route.query.redirect as string;
+            router.push(queryParam || "/");
         }
     } catch (error) {
-        console.error("Error logging in:", error)
+        console.error("Error logging in:", error);
     }
 }
 </script>

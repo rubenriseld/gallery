@@ -25,13 +25,37 @@ async function fetchData() {
     await getCollections()
 }
 async function getTags() {
-    tags.value = (await api.get('tags')).data as Tag[]
+    try {
+        const response = await api.get('tags')
+        if (response.status === 200) {
+            tags.value = response.data as Tag[];
+        }
+    }
+    catch (error) {
+        console.error('Error fetching tags:', error)
+    }
 }
 async function getImages() {
-    images.value = (await api.get('images')).data as Image[]
+    try {
+        const response = await api.get('images')
+        if (response.status === 200) {
+            images.value = response.data as Image[];
+        }
+    }
+    catch (error) {
+        console.error('Error fetching images:', error)
+    }
 }
 async function getCollections() {
-    collections.value = (await api.get('imageCollections')).data as ImageCollection[]
+    try {
+        const response = await api.get('imageCollections')
+        if (response.status === 200) {
+            collections.value = (response.data as ImageCollection[]).filter(collection => collection.shouldBeDisplayed === true)
+        }
+    }
+    catch (error) {
+        console.error('Error fetching collections:', error)
+    }
 }
 </script>
 

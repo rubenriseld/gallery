@@ -1,6 +1,9 @@
 <script setup lang='ts'>
 import type { ModalType } from '@/assets/types';
 import ComponentButton from '@/components/ComponentButton.vue';
+import { ref } from 'vue';
+
+const isLoading = ref<boolean>(false);
 
 const props = defineProps({
     modalType: {
@@ -18,7 +21,9 @@ function closeModal() {
     emits('closeModal');
 }
 async function confirmAction() {
+    isLoading.value = true;
     props.confirm && await props.confirm();
+    isLoading.value = false;
     closeModal();
 }
 
@@ -27,15 +32,18 @@ async function confirmAction() {
 <template>
     <div v-if='$props.isVisible'
         class="modal">
-        <p>{{ props.modalText }}</p>
-        <div class="modal-button-wrapper">
-            <ComponentButton buttonType="secondary"
-                :onClick='closeModal'
-                buttonText="Cancel" />
-            <ComponentButton :buttonType="`${modalType === 'warning' ? 'warning' : 'primary'}`"
-                :onClick='confirmAction'
-                :buttonText="$props.confirmText" />
-        </div>
+        <p v-if="isLoading">Loading...</p>
+        <template v-else>
+            <p>{{ props.modalText }}</p>
+            <div class="modal-button-wrapper">
+                <ComponentButton buttonType="secondary"
+                    :onClick='closeModal'
+                    buttonText="Cancel" />
+                <ComponentButton :buttonType="`${modalType === 'warning' ? 'warning' : 'primary'}`"
+                    :onClick='confirmAction'
+                    :buttonText="$props.confirmText" />
+            </div>
+        </template>
     </div>
 </template>
 
