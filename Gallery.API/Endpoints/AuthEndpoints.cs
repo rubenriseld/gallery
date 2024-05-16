@@ -15,17 +15,6 @@ public static class AuthEndpoints
 
         group.MapGet("/check", Check).RequireAuthorization();
 
-        //ONLY USED FOR CREATING ACCOUNT IN TESTING
-        //group.MapPost("/register", Register);
-
-    }
-    public static async Task<IResult> Register(UserManager<IdentityUser> userManager, LoginDTO login)
-    {
-        var user = new IdentityUser(login.Email);
-        user.Email = login.Email;
-        await userManager.CreateAsync(user, login.Password);
-
-        return Results.Created();
     }
     public static async Task<IResult> Login(SignInManager<IdentityUser> signInManager, LoginDTO login)
     {

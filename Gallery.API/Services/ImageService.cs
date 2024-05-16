@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Azure.Storage;
 using Azure.Storage.Blobs;
 using Gallery.API.DTOs;
 using Gallery.API.Interfaces;
@@ -8,7 +7,7 @@ using Gallery.Database.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using SixLabors.ImageSharp;
-using static System.Net.Mime.MediaTypeNames;
+using Azure.Identity;
 
 namespace Gallery.API.Services;
 
@@ -19,7 +18,6 @@ public class ImageService : IImageService
     private readonly IRepository<Tag> _tagRepository;
     private readonly IMapper _mapper;
     private readonly string _storageAccountName;
-    private readonly string _storageAccountKey;
     private readonly BlobContainerClient _blobContainerClient;
 
     public ImageService(
@@ -35,11 +33,16 @@ public class ImageService : IImageService
         _mapper = mapper;
 
         _storageAccountName = configuration["AzureBlobStorage:AccountName"]!;
-        _storageAccountKey = configuration["AzureBlobStorage:AccountKey"]!;
-
-        var credentials = new StorageSharedKeyCredential(_storageAccountName, _storageAccountKey);
         var blobUri = $"https://{_storageAccountName}.blob.core.windows.net";
-        var blobServiceClient = new BlobServiceClient(new Uri(blobUri), credentials);
+
+        #region localdev
+        //LOCAL DEVELOPMENT: Requires signing in with Azure CLI in local development environment
+        //var credential = new ChainedTokenCredential(new AzureCliCredential(),new DefaultAzureCredential());
+        //_ = credential.GetTokenAsync(new TokenRequestContext(new[] { "https://graph.microsoft.com/.default" }));
+        #endregion
+
+        var credential = new DefaultAzureCredential();
+        var blobServiceClient = new BlobServiceClient(new Uri(blobUri), credential);
         _blobContainerClient = blobServiceClient.GetBlobContainerClient("gallery");
     }
 
@@ -151,9 +154,7 @@ public class ImageService : IImageService
 
         var fileName = image.Uri.Split('/').Last();
         BlobClient client = _blobContainerClient.GetBlobClient(fileName);
-        //TODO catch exception with exceptionhandler to return 404
         await client.DeleteAsync();
-
 
         if (image.ImageCollectionId is not null)
         {

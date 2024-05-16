@@ -57,6 +57,7 @@ services.AddCors(options =>
             .AllowAnyHeader();
     });
 });
+
 //Identity services
 services.AddAuthentication(IdentityConstants.ApplicationScheme)
     .AddIdentityCookies()
@@ -75,7 +76,6 @@ services.AddIdentityCore<IdentityUser>()
     .AddEntityFrameworkStores<GalleryDbContext>()
     .AddApiEndpoints();
 
-//Connection
 services.AddDbContext<GalleryDbContext>(opt =>
 {
     opt.UseSqlServer(builder.Configuration.GetConnectionString("GalleryDbContext"));
@@ -98,6 +98,8 @@ app.MapImageEndpoints();
 app.MapTagEndpoints();
 app.MapImageCollectionEndpoints();
 app.MapAuthEndpoints();
+
+app.CreateAdminAccount();
 
 app.UseHttpsRedirection();
 
