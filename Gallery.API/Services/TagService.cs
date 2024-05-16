@@ -42,7 +42,7 @@ public class TagService : ITagService
     }
     public async Task DeleteTag(string tagId)
     {
-        var tag = await _tagRepository.Find(tagId);
+        var tag = await _tagRepository.Find(tagId) ?? throw new KeyNotFoundException($"The entity: {typeof(Tag)} with {nameof(tagId)}: {tagId} could not be found."); ;
         _tagRepository.Delete(tag);
         await _tagRepository.SaveChanges();
     }
