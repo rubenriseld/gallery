@@ -107,7 +107,7 @@ public class ImageService : IImageService
             .Where(i => i.ImageId.Equals(imageId))
             .Include(i => i.Tags)
             .SingleOrDefaultAsync()
-            ?? throw new ArgumentNullException($"The entity: {typeof(Database.Entities.Image)} could not be found. {nameof(imageId)} cannot be null or empty. {nameof(imageId)}: {imageId}.");
+            ?? throw new KeyNotFoundException($"The entity: {typeof(Database.Entities.Image)} with {nameof(imageId)}: {imageId} could not be found.");
 
         // If the image is added to a collection for the first time.
         if (image.ImageCollectionId is null && updateImageDto.ImageCollectionId is not null)
@@ -147,8 +147,7 @@ public class ImageService : IImageService
             .Where(i => i.ImageId.Equals(imageId))
             .Include(i => i.Tags)
             .SingleOrDefaultAsync()
-            ?? throw new ArgumentNullException($"The entity: {typeof(Database.Entities.Image)} could not be found. {nameof(imageId)} cannot be null or empty. {nameof(imageId)}: {imageId}.");
-
+            ?? throw new KeyNotFoundException($"The entity: {typeof(Database.Entities.Image)} with {nameof(imageId)}: {imageId} could not be found.");
 
         var fileName = image.Uri.Split('/').Last();
         BlobClient client = _blobContainerClient.GetBlobClient(fileName);
@@ -170,7 +169,7 @@ public class ImageService : IImageService
         var imageCollection = await _imageCollectionRepository.Get()
             .Where(c => c.ImageCollectionId.Equals(imageCollectionId))
         .Include(c => c.Images)
-        .SingleOrDefaultAsync() ?? throw new KeyNotFoundException($"The entity: {typeof(ImageCollection)} {nameof(image.ImageCollectionId)} with ID: {image.ImageCollectionId} could not be found.");
+        .SingleOrDefaultAsync() ?? throw new KeyNotFoundException($"The entity: {typeof(ImageCollection)} with {nameof(image.ImageCollectionId)}: {image.ImageCollectionId} could not be found.");
 
         foreach (var img in imageCollection.Images.Where(i => i.OrderInImageCollection > image.OrderInImageCollection))
         {
@@ -182,7 +181,7 @@ public class ImageService : IImageService
         var imageCollection = await _imageCollectionRepository.Get()
             .Where(c => c.ImageCollectionId.Equals(imageCollectionId))
             .Include(c => c.Images)
-            .SingleOrDefaultAsync() ?? throw new KeyNotFoundException($"The entity: {typeof(ImageCollection)} {nameof(image.ImageCollectionId)} with ID: {image.ImageCollectionId} could not be found.");
+            .SingleOrDefaultAsync() ?? throw new KeyNotFoundException($"The entity: {typeof(ImageCollection)} with {nameof(image.ImageCollectionId)}: {image.ImageCollectionId} could not be found.");
 
         image.OrderInImageCollection = imageCollection.Images.Count;
     }

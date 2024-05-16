@@ -1,4 +1,5 @@
 using AutoMapper;
+using Gallery.API;
 using Gallery.API.DTOs;
 using Gallery.API.Endpoints;
 using Gallery.API.Interfaces;
@@ -80,6 +81,9 @@ services.AddDbContext<GalleryDbContext>(opt =>
     opt.UseSqlServer(builder.Configuration.GetConnectionString("GalleryDbContext"));
 });
 
+services.AddExceptionHandler<ExceptionHandler>();
+services.AddProblemDetails();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -87,6 +91,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseExceptionHandler(_ => { });
 
 app.MapImageEndpoints();
 app.MapTagEndpoints();

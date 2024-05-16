@@ -30,7 +30,11 @@ public static class AuthEndpoints
     public static async Task<IResult> Login(SignInManager<IdentityUser> signInManager, LoginDTO login)
     {
         signInManager.AuthenticationScheme = IdentityConstants.ApplicationScheme;
-        await signInManager.PasswordSignInAsync(login.Email, login.Password, true, lockoutOnFailure: true);
+        var signInResult = await signInManager.PasswordSignInAsync(login.Email, login.Password, true, lockoutOnFailure: true);
+        if (!signInResult.Succeeded)
+        {
+            return Results.BadRequest();
+        }
         return Results.Ok();
     }
     public static async Task<IResult> Check()

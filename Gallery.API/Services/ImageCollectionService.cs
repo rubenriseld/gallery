@@ -40,7 +40,8 @@ public class ImageCollectionService : IImageCollectionService
             .Where(c => c.ImageCollectionId.Equals(imageCollectionId))
             .Include(c => c.Images.OrderBy(i => i.OrderInImageCollection))
             .ThenInclude(i => i.Tags)
-            .SingleOrDefaultAsync();
+            .SingleOrDefaultAsync()
+             ?? throw new KeyNotFoundException($"The entity: {typeof(ImageCollection)} with {nameof(imageCollectionId)}: {imageCollectionId} could not be found."); ;
 
         return _mapper.Map<ReadImageCollectionDTO>(imageCollection);
     }
