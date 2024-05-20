@@ -50,7 +50,7 @@ async function getCollections() {
     try {
         const response = await api.get('imageCollections')
         if (response.status === 200) {
-            collections.value = (response.data as ImageCollection[]).filter(collection => collection.shouldBeDisplayed === true)
+            collections.value = (response.data as ImageCollection[]);
         }
     }
     catch (error) {
