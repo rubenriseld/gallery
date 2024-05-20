@@ -70,7 +70,7 @@ services.AddAuthentication(options =>
     options.Cookie.SameSite = SameSiteMode.None; // Set SameSite attribute to None
     options.Cookie.HttpOnly = true; // Configure HttpOnly
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Configure Secure policy to Always
-    options.Cookie.Expiration = TimeSpan.FromDays(150); // Expire cookie after 150 days
+    options.ExpireTimeSpan = TimeSpan.FromDays(150); // Expire cookie after 150 days
     options.Events = new CookieAuthenticationEvents()
     {
         OnRedirectToLogin = ctx =>
