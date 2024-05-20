@@ -6,14 +6,13 @@ using Gallery.Database.Entities;
 using Gallery.Database.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
-using SixLabors.ImageSharp;
 using Azure.Identity;
 
 namespace Gallery.API.Services;
 
 public class ImageService : IImageService
 {
-    private readonly IRepository<Database.Entities.Image> _imageRepository;
+    private readonly IRepository<Image> _imageRepository;
     private readonly IRepository<ImageCollection> _imageCollectionRepository;
     private readonly IRepository<Tag> _tagRepository;
     private readonly IMapper _mapper;
@@ -22,7 +21,7 @@ public class ImageService : IImageService
 
     public ImageService(
         IConfiguration configuration,
-        IRepository<Database.Entities.Image> imageRepository,
+        IRepository<Image> imageRepository,
         IRepository<ImageCollection> imageCollectionRepository,
         IRepository<Tag> tagRepository,
         IMapper mapper)
@@ -85,7 +84,7 @@ public class ImageService : IImageService
                 await client.UploadAsync(imageStream);
             }
 
-            var imageEntity = _mapper.Map<Database.Entities.Image>(new CreateImageDTO { Uri = absoluteUri });
+            var imageEntity = _mapper.Map<Image>(new CreateImageDTO { Uri = absoluteUri });
             await _imageRepository.Add(imageEntity);
             await _imageRepository.SaveChanges();
 
@@ -110,7 +109,7 @@ public class ImageService : IImageService
             .Where(i => i.ImageId.Equals(imageId))
             .Include(i => i.Tags)
             .SingleOrDefaultAsync()
-            ?? throw new KeyNotFoundException($"The entity: {typeof(Database.Entities.Image)} with {nameof(imageId)}: {imageId} could not be found.");
+            ?? throw new KeyNotFoundException($"The entity: {typeof(Image)} with {nameof(imageId)}: {imageId} could not be found.");
 
         // If the image is added to a collection for the first time.
         if (image.ImageCollectionId is null && updateImageDto.ImageCollectionId is not null)
@@ -150,7 +149,7 @@ public class ImageService : IImageService
             .Where(i => i.ImageId.Equals(imageId))
             .Include(i => i.Tags)
             .SingleOrDefaultAsync()
-            ?? throw new KeyNotFoundException($"The entity: {typeof(Database.Entities.Image)} with {nameof(imageId)}: {imageId} could not be found.");
+            ?? throw new KeyNotFoundException($"The entity: {typeof(Image)} with {nameof(imageId)}: {imageId} could not be found.");
 
         var fileName = image.Uri.Split('/').Last();
         BlobClient client = _blobContainerClient.GetBlobClient(fileName);
@@ -165,7 +164,7 @@ public class ImageService : IImageService
         await _imageRepository.SaveChanges();
     }
 
-    private async Task ReorderImagesInCollection(Database.Entities.Image image, string imageCollectionId)
+    private async Task ReorderImagesInCollection(Image image, string imageCollectionId)
     {
         var imageCollection = await _imageCollectionRepository.Get()
             .Where(c => c.ImageCollectionId.Equals(imageCollectionId))
@@ -177,7 +176,7 @@ public class ImageService : IImageService
             img.OrderInImageCollection--;
         }
     }
-    private async Task SetOrderOfImageInCollection(Database.Entities.Image image, string imageCollectionId)
+    private async Task SetOrderOfImageInCollection(Image image, string imageCollectionId)
     {
         var imageCollection = await _imageCollectionRepository.Get()
             .Where(c => c.ImageCollectionId.Equals(imageCollectionId))
