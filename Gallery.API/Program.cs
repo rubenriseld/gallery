@@ -59,19 +59,21 @@ services.AddCors(options =>
     });
 });
 
-//Identity services
-services.AddAuthentication(IdentityConstants.ApplicationScheme)
-    .AddIdentityCookies()
-    .ApplicationCookie!.Configure(opt => opt.Events = new CookieAuthenticationEvents()
+services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
     {
-        OnRedirectToLogin = ctx =>
+        options.Cookie.SameSite = SameSiteMode.None; // Set SameSite attribute to None
+        options.Events = new CookieAuthenticationEvents()
         {
-            ctx.Response.StatusCode = 401;
-            return Task.CompletedTask;
-        }
+            OnRedirectToLogin = ctx =>
+            {
+                ctx.Response.StatusCode = 401;
+                return Task.CompletedTask;
+            }
+        };
     });
 
-services.AddAuthorizationBuilder();
+services.AddAuthorization();
 
 services.AddIdentityCore<IdentityUser>()
     .AddEntityFrameworkStores<GalleryDbContext>()
