@@ -31,7 +31,7 @@ public class ImageService : IImageService
         _tagRepository = tagRepository;
         _mapper = mapper;
 
-        _storageAccountName = configuration["AzureBlobStorage:AccountName"]!;
+        _storageAccountName = configuration["Storage:AccountName"]!;
         var blobUri = $"https://{_storageAccountName}.blob.core.windows.net";
 
         #region localdev
