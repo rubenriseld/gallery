@@ -34,6 +34,7 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
+    console.log("env url", import.meta.env.VITE_API_URL);
     console.log("beforeEach", to.path, store.state.isAuthenticated)
     if (to.path === '/admin') {
         !store.state.isAuthenticated ? next({ path: '/login', query: { redirect: '/admin' } })
