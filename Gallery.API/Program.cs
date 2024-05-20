@@ -67,7 +67,7 @@ services.AddAuthentication(options =>
 })
 .AddCookie(IdentityConstants.ApplicationScheme, options =>
 {
-    options.Cookie.SameSite = SameSiteMode.None; // Set SameSite attribute to None
+    options.Cookie.SameSite = SameSiteMode.Strict;
     options.Cookie.HttpOnly = true; // Configure HttpOnly
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Configure Secure policy to Always
     options.ExpireTimeSpan = TimeSpan.FromDays(150); // Expire cookie after 150 days
@@ -111,7 +111,7 @@ app.UseCors("CorsPolicy");
 
 app.UseCookiePolicy(new CookiePolicyOptions
 {
-    MinimumSameSitePolicy = SameSiteMode.None,
+    MinimumSameSitePolicy = SameSiteMode.Strict,
     HttpOnly = Microsoft.AspNetCore.CookiePolicy.HttpOnlyPolicy.Always,
     Secure = CookieSecurePolicy.Always
 });
