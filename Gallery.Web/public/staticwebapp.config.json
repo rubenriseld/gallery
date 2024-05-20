@@ -2,16 +2,7 @@
     "navigationFallback": {
         "rewrite": "/index.html",
         "exclude": [
-            "*.{css, svg, js, ts, png, jpeg, jpg, ico}",
-            "auth/check",
-            "auth/login",
-            "auth/logout",
-            "imageCollections",
-            "imageCollections/{id}",
-            "images",
-            "images/{id}",
-            "tags",
-            "tags/{id}"
+            "*.{css, svg, js, ts, png, jpeg, jpg, ico}"
         ]
     }
 }
