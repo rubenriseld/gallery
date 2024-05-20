@@ -96,24 +96,31 @@ services.AddProblemDetails();
 
 var app = builder.Build();
 
+app.UseExceptionHandler(_ => { });
+
 if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-app.UseExceptionHandler(_ => { });
+app.CreateAdminAccount();
+
+app.UseHttpsRedirection();
+app.UseCors("CorsPolicy");
+
+app.UseCookiePolicy(new CookiePolicyOptions
+{
+    MinimumSameSitePolicy = SameSiteMode.None,
+    HttpOnly = Microsoft.AspNetCore.CookiePolicy.HttpOnlyPolicy.Always,
+    Secure = CookieSecurePolicy.Always
+});
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapImageEndpoints();
 app.MapTagEndpoints();
 app.MapImageCollectionEndpoints();
 app.MapAuthEndpoints();
-
-app.CreateAdminAccount();
-
-app.UseHttpsRedirection();
-app.UseCors("CorsPolicy");
-app.UseAuthentication();
-app.UseAuthorization();
 
 app.Run();
