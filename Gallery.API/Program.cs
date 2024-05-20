@@ -59,20 +59,25 @@ services.AddCors(options =>
     });
 });
 
-services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
+services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
+    options.DefaultSignInScheme = IdentityConstants.ApplicationScheme;
+    options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
+})
+.AddCookie(IdentityConstants.ApplicationScheme, options =>
+{
+    options.Cookie.SameSite = SameSiteMode.None; // Set SameSite attribute to None
+    options.Cookie.HttpOnly = true; // Configure HttpOnly attribute to true
+    options.Events = new CookieAuthenticationEvents()
     {
-        options.Cookie.SameSite = SameSiteMode.None; // Set SameSite attribute to None
-        options.Events = new CookieAuthenticationEvents()
+        OnRedirectToLogin = ctx =>
         {
-            OnRedirectToLogin = ctx =>
-            {
-                ctx.Response.StatusCode = 401;
-                return Task.CompletedTask;
-            }
-        };
-    });
-
+            ctx.Response.StatusCode = 401;
+            return Task.CompletedTask;
+        }
+    };
+});
 services.AddAuthorization();
 
 services.AddIdentityCore<IdentityUser>()
