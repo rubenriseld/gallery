@@ -2,7 +2,6 @@ import './assets/main.css'
 
 import { createApp } from 'vue'
 import { createWebHistory, createRouter } from 'vue-router'
-import api from './api'
 import App from './App.vue'
 import IndexView from './views/IndexView.vue'
 import AdminView from './views/AdminView.vue'
@@ -34,8 +33,6 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
-    console.log("env url", import.meta.env.VITE_API_URL);
-    console.log("beforeEach", to.path, store.state.isAuthenticated)
     if (to.path === '/admin') {
         !store.state.isAuthenticated ? next({ path: '/login', query: { redirect: '/admin' } })
             : next()
