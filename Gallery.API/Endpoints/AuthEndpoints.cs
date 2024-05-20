@@ -9,26 +9,25 @@ public static class AuthEndpoints
     {
         var group = app.MapGroup("api/auth");
 
-        group.MapPost("/logout", Logout).RequireAuthorization();
-
         group.MapPost("/login", Login);
 
-        //ONLY USED FOR CREATING ACCOUNT IN TESTING
-        //group.MapPost("/register", Register);
+        group.MapPost("/logout", Logout).RequireAuthorization();
 
-    }
-    public static async Task<IResult> Register(UserManager<IdentityUser> userManager, LoginDTO login)
-    {
-        var user = new IdentityUser(login.Email);
-        user.Email = login.Email;
-        await userManager.CreateAsync(user, login.Password);
+        group.MapGet("/check", Check).RequireAuthorization();
 
-        return Results.Created();
     }
     public static async Task<IResult> Login(SignInManager<IdentityUser> signInManager, LoginDTO login)
     {
         signInManager.AuthenticationScheme = IdentityConstants.ApplicationScheme;
-        await signInManager.PasswordSignInAsync(login.Email, login.Password, true, lockoutOnFailure: true);
+        var signInResult = await signInManager.PasswordSignInAsync(login.Email, login.Password, true, lockoutOnFailure: true);
+        if (!signInResult.Succeeded)
+        {
+            return Results.BadRequest();
+        }
+        return Results.Ok();
+    }
+    public static async Task<IResult> Check()
+    {
         return Results.Ok();
     }
     public static async Task<IResult> Logout(SignInManager<IdentityUser> signInManager)

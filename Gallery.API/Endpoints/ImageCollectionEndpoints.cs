@@ -12,7 +12,7 @@ public static class ImageCollectionEndpoints
 
         group.MapPost("", CreateImageCollection);
 
-        group.MapGet("", GetAllImageCollections);
+        group.MapGet("", GetAllImageCollections).AllowAnonymous();
 
         group.MapGet("{imageCollectionId}", GetImageCollectionById).AllowAnonymous();
 

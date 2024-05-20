@@ -4,6 +4,7 @@ using Gallery.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gallery.Database.Migrations
 {
     [DbContext(typeof(GalleryDbContext))]
-    partial class GalleryDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240510123532_AddedCoverImageAndCollectionOrder")]
+    partial class AddedCoverImageAndCollectionOrder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,9 +42,6 @@ namespace Gallery.Database.Migrations
 
                     b.Property<int>("OrderInImageCollection")
                         .HasColumnType("int");
-
-                    b.Property<bool>("Sold")
-                        .HasColumnType("bit");
 
                     b.Property<string>("Title")
                         .HasMaxLength(64)
@@ -74,9 +74,6 @@ namespace Gallery.Database.Migrations
                         .IsRequired()
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
-
-                    b.Property<bool>("ShouldBeDisplayed")
-                        .HasColumnType("bit");
 
                     b.HasKey("ImageCollectionId");
 

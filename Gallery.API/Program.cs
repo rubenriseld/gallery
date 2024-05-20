@@ -1,4 +1,5 @@
 using AutoMapper;
+using Gallery.API;
 using Gallery.API.DTOs;
 using Gallery.API.Endpoints;
 using Gallery.API.Interfaces;
@@ -6,15 +7,9 @@ using Gallery.API.Services;
 using Gallery.Database;
 using Gallery.Database.Entities;
 using Gallery.Database.Interfaces;
-using Microsoft.AspNetCore.Authentication.BearerToken;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.Data;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
@@ -53,6 +48,16 @@ services.AddSingleton(new MapperConfiguration(cfg =>
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen();
 
+services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy", builder =>
+    {
+        builder.AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+    });
+});
+
 //Identity services
 services.AddAuthentication(IdentityConstants.ApplicationScheme)
     .AddIdentityCookies()
@@ -71,11 +76,13 @@ services.AddIdentityCore<IdentityUser>()
     .AddEntityFrameworkStores<GalleryDbContext>()
     .AddApiEndpoints();
 
-//Connection
 services.AddDbContext<GalleryDbContext>(opt =>
 {
     opt.UseSqlServer(builder.Configuration.GetConnectionString("GalleryDbContext"));
 });
+
+services.AddExceptionHandler<ExceptionHandler>();
+services.AddProblemDetails();
 
 var app = builder.Build();
 
@@ -85,9 +92,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseExceptionHandler(_ => { });
+
 app.MapImageEndpoints();
 app.MapTagEndpoints();
 app.MapImageCollectionEndpoints();
+app.MapAuthEndpoints();
+
+app.CreateAdminAccount();
 
 app.UseHttpsRedirection();
 

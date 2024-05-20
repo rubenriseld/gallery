@@ -4,6 +4,7 @@ using Gallery.API.Interfaces;
 using Gallery.Database.Entities;
 using Gallery.Database.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Gallery.API.Services;
 
@@ -26,7 +27,9 @@ public class ImageCollectionService : IImageCollectionService
 
     public async Task<List<ReadImageCollectionDTO>> GetAllImageCollections()
     {
-        var imageCollections = await _imageCollectionRepository.Get().ToListAsync();
+        var imageCollections = await _imageCollectionRepository.Get()
+            .Include(c => c.Images.OrderBy(i => i.OrderInImageCollection))
+            .ToListAsync();
 
         return _mapper.Map<List<ReadImageCollectionDTO>>(imageCollections);
     }
@@ -35,19 +38,35 @@ public class ImageCollectionService : IImageCollectionService
     {
         var imageCollection = await _imageCollectionRepository.Get()
             .Where(c => c.ImageCollectionId.Equals(imageCollectionId))
-            .Include(c => c.Images)
+            .Include(c => c.Images.OrderBy(i => i.OrderInImageCollection))
             .ThenInclude(i => i.Tags)
-            .SingleOrDefaultAsync();
+            .SingleOrDefaultAsync()
+             ?? throw new KeyNotFoundException($"The entity: {typeof(ImageCollection)} with {nameof(imageCollectionId)}: {imageCollectionId} could not be found."); ;
 
         return _mapper.Map<ReadImageCollectionDTO>(imageCollection);
     }
 
     public async Task<ReadImageCollectionDTO> UpdateImageCollection(string imageCollectionId, UpdateImageCollectionDTO updateImageCollectionDto)
     {
-        var imageCollection = await _imageCollectionRepository.Find(imageCollectionId);
-
+        var shouldReorderImages = !updateImageCollectionDto.ReorderImages.IsNullOrEmpty();
+        var imageCollection = (shouldReorderImages ?
+            await _imageCollectionRepository.Get()
+                .Where(i => i.ImageCollectionId.Equals(imageCollectionId))
+                .Include(i => i.Images)
+                .SingleOrDefaultAsync()
+            : await _imageCollectionRepository.Find(imageCollectionId)) ?? throw new KeyNotFoundException($"The entity: {typeof(ImageCollection)} with {nameof(imageCollectionId)}: {imageCollectionId} could not be found.");
+        if (shouldReorderImages)
+        {
+            foreach (var image in imageCollection.Images)
+            {
+                var reorderImageDTO = updateImageCollectionDto.ReorderImages.FirstOrDefault(reorderImage => reorderImage.ImageId == image.ImageId);
+                if (reorderImageDTO != null)
+                {
+                    image.OrderInImageCollection = reorderImageDTO.OrderInImageCollection;
+                }
+            }
+        }
         _mapper.Map(updateImageCollectionDto, imageCollection);
-        _imageCollectionRepository.Update(imageCollection);
         await _imageCollectionRepository.SaveChanges();
 
         return _mapper.Map<ReadImageCollectionDTO>(imageCollection);

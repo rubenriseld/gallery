@@ -1,47 +1,51 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+<script setup lang="ts">
+import { onMounted } from 'vue';
+import Menu from './components/Menu.vue'
+import api from './api';
+import { useStore } from 'vuex';
+
+const store = useStore();
+onMounted(async () => {
+    try {
+        const response = await api.get("auth/check");
+        if (response.status === 200) {
+            store.commit('SET_AUTH', true);
+        }
+    }
+    catch (error) {
+        console.error('Error checking authentication:', error);
+    }
+})
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
+    <header>
+        <Menu />
+    </header>
+    <main>
+        <RouterView></RouterView>
+    </main>
 </template>
 
 <style scoped>
 header {
-  line-height: 1.5;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    max-width: var(--max-width);
+    height: 5rem;
+    z-index: 3;
+    display: flex;
+    justify-content: space-between;
+    background-color: var(--lightest-color);
+    align-items: center;
+    overflow: hidden;
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+main {
+    margin-top: 5rem;
+    font-family: inherit;
+    background-color: inherit;
+    overflow: hidden;
 }
 </style>
