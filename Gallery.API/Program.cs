@@ -67,10 +67,10 @@ services.AddAuthentication(options =>
 })
 .AddCookie(IdentityConstants.ApplicationScheme, options =>
 {
-    options.Cookie.SameSite = SameSiteMode.None;
-    options.Cookie.HttpOnly = true; // Configure HttpOnly
-    options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Configure Secure policy to Always
-    options.ExpireTimeSpan = TimeSpan.FromDays(150); // Expire cookie after 150 days
+    options.Cookie.SameSite = SameSiteMode.Strict;
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.ExpireTimeSpan = TimeSpan.FromDays(150);
     options.Events = new CookieAuthenticationEvents()
     {
         OnRedirectToLogin = ctx =>
@@ -104,14 +104,14 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
     app.UseSwaggerUI();
 }
 
-app.CreateAdminAccount()
+app.CreateAdminAccount();
 
 app.UseHttpsRedirection();
 app.UseCors("CorsPolicy");
 
 app.UseCookiePolicy(new CookiePolicyOptions
 {
-    MinimumSameSitePolicy = SameSiteMode.None,
+    MinimumSameSitePolicy = SameSiteMode.Strict,
     HttpOnly = Microsoft.AspNetCore.CookiePolicy.HttpOnlyPolicy.Always,
     Secure = CookieSecurePolicy.Always
 });
