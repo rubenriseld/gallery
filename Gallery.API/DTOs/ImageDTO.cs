@@ -3,6 +3,8 @@
 public record CreateImageDTO
 {
     public required string Uri { get; set; }
+    public string? Title { get; set; }
+
 }
 public record ReadImageDTO
 {

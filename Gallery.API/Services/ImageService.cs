@@ -84,7 +84,7 @@ public class ImageService : IImageService
                 await client.UploadAsync(imageStream);
             }
 
-            var imageEntity = _mapper.Map<Image>(new CreateImageDTO { Uri = absoluteUri });
+            var imageEntity = _mapper.Map<Image>(new CreateImageDTO { Uri = absoluteUri, Title = image.FileName});
             await _imageRepository.Add(imageEntity);
             await _imageRepository.SaveChanges();
 
