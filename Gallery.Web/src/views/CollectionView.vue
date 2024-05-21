@@ -91,7 +91,7 @@ async function getCollection() {
                     <p class="image-counter">{{ imageNumber }} / {{ collection?.images.length || 0 }}</p>
                 </div>
                 <img :src="selectedImage.uri"
-                    :alt="selectedImage.description"
+                    :alt="selectedImage.title ? `'Artwork titled ${selectedImage.title}` : 'Untitled artwork'"
                     class="selected-image" />
                 <div class="image-details">
                     <p class="image-title">{{ selectedImage.title || 'Untitled' }}</p>
@@ -122,7 +122,7 @@ async function getCollection() {
                     @mouseover="hoveredImage = image.imageId"
                     @mouseleave="hoveredImage = ''">
                     <img :src="image.uri"
-                        :alt="image.description" />
+                        :alt="image.title ? `'Artwork titled ${image.title}` : 'Untitled artwork'" />
                     <div v-if="hoveredImage === image.imageId"
                         class="image-overlay">
                         <span class="image-title">{{ image.title || 'Untitled' }}</span>
