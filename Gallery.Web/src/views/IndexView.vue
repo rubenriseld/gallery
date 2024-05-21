@@ -82,9 +82,8 @@ async function getCollections() {
     font-size: 3rem;
     text-transform: uppercase;
     color: var(--lightest-color);
-    opacity: 0.7;
+    opacity: 0;
     text-decoration: none;
-    backdrop-filter: blur(5px);
 }
 
 a {
@@ -100,11 +99,12 @@ a {
 
 .collection-wrapper:hover .background-image {
     transform: scale(1.1);
-    filter: brightness(0.7) blur(8px);
+    filter: brightness(0.5);
 }
 
 .collection-link:hover {
     color: var(--lightest-color);
+    backdrop-filter: blur(4px);
     text-shadow: var(--text-shadow);
     opacity: 1;
 }
