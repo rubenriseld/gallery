@@ -163,9 +163,7 @@ nav {
     justify-content: space-between;
     width: 20rem;
     box-shadow: -5px 0 5px rgba(0, 0, 0, 0.1);
-    background: linear-gradient(var(--view-primary-color), var(--view-primary-color)) no-repeat;
-    background-size: 4px 100cap;
-    background-position: 100% 50%;
+
     padding-right: 1rem;
     overflow: visible;
     background-color: var(--lightest-color);
@@ -198,6 +196,15 @@ nav {
 @media (max-width: 1920px) {
     nav {
         right: 0;
+    }
+}
+
+@media (min-width: 1920px) {
+    .show-menu {
+        background: linear-gradient(var(--view-primary-color), var(--view-primary-color)) no-repeat;
+        background-size: 4px 100cap;
+        background-position: 100% 50%;
+        background-color: var(--lightest-color);
     }
 }
 </style>
