@@ -11,10 +11,11 @@ import Menu from './components/Menu.vue'
     </main>
     <footer>
         <div class="contact-info">
-            <a href="mailto:rubenriseld@outlook.com">rubenriseld@outlook.com</a>
+            <a href="mailto:rubenriseld@outlook.com"
+                class="contact-link">rubenriseld@outlook.com</a>
         </div>
         <div>
-            <p>&copy; Ruben Riseld 2024</p>
+            <p class="copy-text">&copy; Ruben Riseld 2024</p>
         </div>
     </footer>
 </template>
@@ -47,21 +48,27 @@ footer {
     justify-content: space-between;
 }
 
-a {
+.contact-link {
     color: var(--darker-color);
     text-decoration: none;
-    font: inherit;
+    font-weight: bold;
+    font-family: inherit;
     padding-bottom: 0.2rem;
 }
 
-a:hover {
+.contact-link:hover {
     background: linear-gradient(var(--view-primary-color), var(--view-primary-color)) no-repeat;
     background-size: 100% 4px;
     background-position: 0 100%;
 }
 
-a,
-p {
+.copy-text {
+    font-weight: lighter;
+    color: var(--dark-color);
+}
+
+.contact-link,
+.copy-text {
     font-size: 1.3rem;
     letter-spacing: 0.4px;
 }
@@ -69,6 +76,17 @@ p {
 @media screen and (max-width: 768px) {
     footer {
         padding: 1rem;
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+
+    .contact-link,
+    .copy-text {
+        font-size: 1rem;
+    }
+
+    .copy-text {
+        margin-top: 1rem;
     }
 }
 </style>
