@@ -19,42 +19,42 @@ jobs:
         with:
           submodules: true
           lfs: false
-      
-      # Step to set up .NET
+
+      # Set up .NET
       - name: Set up .NET
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '8.0.x'
-      
-      # Step to restore .NET dependencies
+
+      # Restore .NET dependencies
       - name: Restore .NET dependencies
         working-directory: ./Gallery.API
         run: dotnet restore
 
-      # Step to build .NET API
+      # Build .NET API
       - name: Build .NET API
         working-directory: ./Gallery.API
         run: dotnet build --configuration Release
 
-      # Step to publish .NET API
+      # Publish .NET API
       - name: Publish .NET API
         working-directory: ./Gallery.API
         run: dotnet publish --configuration Release --output ./publish
 
-      # Step to set up Node.js
+      # Set up Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16.x'
-      
-      # Step to install dependencies and build Vue.js app
+          node-version: '20.x'
+
+      # Install and build Vue.js app
       - name: Install and build Vue.js app
         working-directory: ./Gallery.Web
         run: |
           npm install
           npm run build
 
-      # Step to deploy both frontend and backend
+      # Deploy both frontend and backend
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
@@ -62,12 +62,9 @@ jobs:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_MANGO_GROUND_0DCB75603 }}
           repo_token: ${{ secrets.GITHUB_TOKEN }} # Used for Github integrations (i.e. PR comments)
           action: "upload"
-          ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
-          # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
           app_location: "./Gallery.Web/dist" # Built app content directory
           api_location: "./Gallery.API/publish" # API source code path
-          output_location: "dist" # Built app content directory - optional
-          ###### End of Repository/Build Configurations ######
+          output_location: "" # Leave empty as we're specifying exact locations
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'

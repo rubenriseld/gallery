@@ -5,5 +5,13 @@
             "*.{css, svg, js, ts, png, jpeg, jpg, ico}",
             "/api/*"
         ]
-    }
+    },
+    "routes": [
+        {
+            "route": "/api/*",
+            "allowedRoles": [
+                "anonymous"
+            ]
+        }
+    ]
 }
