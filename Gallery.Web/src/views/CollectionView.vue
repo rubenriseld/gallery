@@ -114,8 +114,6 @@ async function getCollection() {
     </div>
     <div v-else-if="!isLoading && collection"
         class="collection-wrapper">
-        <h2>{{ collection?.name }}</h2>
-        <p>{{ collection?.description }}</p>
         <div class="image-wrapper">
             <template v-for="image in collection?.images"
                 :key="image.imageId">
