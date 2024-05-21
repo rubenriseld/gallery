@@ -125,7 +125,6 @@ watch([() => props.objectIsSelected], () => {
     display: flex;
     width: 40%;
     flex-direction: column;
-    justify-content: space-between;
 }
 
 .form-content:deep(form > button.warning) {
