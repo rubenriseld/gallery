@@ -152,7 +152,7 @@ nav {
 
 .menu-item:hover,
 .logo:hover {
-    background: linear-gradient(var(--secondary-color), var(--secondary-color)) no-repeat;
+    background: linear-gradient(var(--view-primary-color), var(--view-primary-color)) no-repeat;
     background-size: 100% 4px;
     background-position: 0 95%;
 }
@@ -163,7 +163,7 @@ nav {
     justify-content: space-between;
     width: 20rem;
     box-shadow: -5px 0 5px rgba(0, 0, 0, 0.1);
-    background: linear-gradient(var(--secondary-color), var(--secondary-color)) no-repeat;
+    background: linear-gradient(var(--view-primary-color), var(--view-primary-color)) no-repeat;
     background-size: 4px 100cap;
     background-position: 100% 50%;
     padding-right: 1rem;
