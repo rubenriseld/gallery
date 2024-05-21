@@ -23,7 +23,6 @@ onMounted(async () => {
     updateMenuItems();
     isLoading.value = false;
 });
-
 const menuItems = ref<Array<{ name: string; path: string }>>([
     { name: 'Home', path: '/' },
     { name: 'Admin', path: '/admin' }]
@@ -50,13 +49,14 @@ async function getCollections() {
 }
 async function logout() {
     try {
-        await api.post('auth/logout');
-        store.commit('SET_AUTH', false);
+        const response = await api.post('auth/logout');
+        if (response.status === 204) {
+            store.commit('SET_AUTH', false);
+        }
     }
     catch (error) {
         console.error('Error logging out:', error);
     }
-
     isMenuOpen.value = false;
     router.push('/');
 }

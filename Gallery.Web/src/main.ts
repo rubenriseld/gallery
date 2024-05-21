@@ -19,28 +19,26 @@ const store = createStore({
         },
     },
 });
-
 const routes = [
     { path: '/', component: IndexView },
     { path: '/admin', component: AdminView },
     { path: '/collection/:collectionId', name: 'collection', component: CollectionView, props: true },
     { path: '/login', component: LoginView }
-]
+];
 
 const router = createRouter({
     history: createWebHistory(),
     routes,
-})
+});
 
 router.beforeEach(async (to, from, next) => {
-    if (to.path === '/admin') {
-        !store.state.isAuthenticated ? next({ path: '/login', query: { redirect: '/admin' } })
-            : next()
+    if (to.path === '/admin' && store.state.isAuthenticated === false) {
+        next({ path: '/login', query: { redirect: '/admin' } });
     }
-    else next()
+    else next();
 })
 
 createApp(App)
     .use(router)
     .use(store)
-    .mount('#app')
+    .mount('#app');
