@@ -10,6 +10,7 @@ using Gallery.Database.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Quartz;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
@@ -22,6 +23,15 @@ services.AddScoped<IRepository<Tag>, Repository<Tag>>();
 services.AddScoped<IImageService, ImageService>();
 services.AddScoped<ITagService, TagService>();
 services.AddScoped<IImageCollectionService, ImageCollectionService>();
+
+//Ping background service
+
+services.AddQuartz();
+services.AddQuartzHostedService(options =>
+{
+    options.WaitForJobsToComplete = true;
+});
+services.ConfigureOptions<PingService>();
 
 services.AddSingleton(new MapperConfiguration(cfg =>
 {
