@@ -11,7 +11,7 @@ public class PingService : IConfigureOptions<QuartzOptions>
         options.AddJob<PingJob>(jobBuilder => jobBuilder.WithIdentity(pingJobKey))
             .AddTrigger(trigger =>
             trigger.WithSimpleSchedule(schedule =>
-                schedule.WithIntervalInMinutes(15)
+                schedule.WithIntervalInSeconds(10)
                     .RepeatForever())
                    .ForJob(pingJobKey));
     }
