@@ -12,8 +12,6 @@ public static class IApplicationBuilderExtensions
             var adminEmail = configuration["AdminCredentials:Email"] ?? throw new ArgumentNullException($"Could not get {nameof(IdentityUser.Email)} from the {configuration["AdminCredentials"]}.");
 
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
-            var s = bool.TryParse(configuration["DatabaseConfiguration:Seed"], out _);
-            var stwo = userManager.FindByEmailAsync(adminEmail).Result == null;
             if (bool.TryParse(configuration["DatabaseConfiguration:SeedAdminAccount"], out _) && userManager.FindByEmailAsync(adminEmail).Result == null)
             {
                 var hasher = new PasswordHasher<IdentityUser>();
