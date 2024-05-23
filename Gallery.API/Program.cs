@@ -108,7 +108,7 @@ var app = builder.Build();
 
 app.UseExceptionHandler(_ => { });
 
-if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
+if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
