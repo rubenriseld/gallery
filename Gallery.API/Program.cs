@@ -8,6 +8,7 @@ using Gallery.Database;
 using Gallery.Database.Entities;
 using Gallery.Database.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Quartz;
@@ -101,11 +102,20 @@ services.AddDbContext<GalleryDbContext>(opt =>
     opt.UseSqlServer(builder.Configuration.GetConnectionString("GalleryDbContext"));
 });
 
+services.AddHttpLogging(logging =>
+{
+    logging.LoggingFields = HttpLoggingFields.RequestProperties | HttpLoggingFields.ResponseStatusCode;
+    logging.CombineLogs = true;
+    logging.RequestBodyLogLimit = 64;
+    logging.ResponseBodyLogLimit = 64;
+});
 services.AddExceptionHandler<ExceptionHandler>();
+
 services.AddProblemDetails();
 
 var app = builder.Build();
 
+app.UseHttpLogging();
 app.UseExceptionHandler(_ => { });
 
 if (app.Environment.IsDevelopment())
