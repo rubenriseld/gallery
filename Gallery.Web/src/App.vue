@@ -3,24 +3,34 @@ import Menu from './components/Menu.vue'
 </script>
 
 <template>
-    <header>
-        <Menu />
-    </header>
-    <main>
-        <RouterView></RouterView>
-    </main>
-    <footer>
-        <div class="contact-info">
-            <a href="mailto:rubenriseld@outlook.com"
-                class="contact-link">rubenriseld@outlook.com</a>
-        </div>
-        <div>
-            <p class="copy-text">&copy; Ruben Riseld 2024</p>
-        </div>
-    </footer>
+    <div class="flex-stretch">
+
+        <header>
+            <Menu />
+        </header>
+        <main>
+            <RouterView></RouterView>
+        </main>
+        <footer>
+            <div class="contact-info">
+                <a href="mailto:rubenriseld@outlook.com"
+                    class="contact-link">rubenriseld@outlook.com</a>
+            </div>
+            <div>
+                <p class="copy-text">&copy; Ruben Riseld 2024</p>
+            </div>
+        </footer>
+    </div>
 </template>
 
 <style scoped>
+.flex-stretch {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
 header {
     position: fixed;
     top: 0;

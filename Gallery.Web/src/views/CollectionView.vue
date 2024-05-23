@@ -72,6 +72,10 @@ const hasPrevImage = computed(() => {
 
 async function getCollection() {
     collection.value = (await api.get(`imageCollections/${collectionId.value}`)).data as ImageCollection
+    collection.value?.images.forEach(image => {
+        const img = new Image();
+        img.src = image.uri;
+    });
 }
 
 </script>
@@ -121,8 +125,8 @@ async function getCollection() {
                     @click="selectImage(image)"
                     @mouseover="hoveredImage = image.imageId"
                     @mouseleave="hoveredImage = ''">
-                    <img :src="image.uri"
-                        :alt="image.title ? `'Artwork titled ${image.title}` : 'Untitled artwork'" />
+                    <img v-if="image"
+                        :src="image.uri" />
                     <div v-if="hoveredImage === image.imageId"
                         class="image-overlay">
                         <span class="image-title">{{ image.title || 'Untitled' }}</span>
@@ -131,9 +135,20 @@ async function getCollection() {
             </template>
         </div>
     </div>
+    <div v-else
+        class="loading-screen">
+        Loading...
+    </div>
 </template>
 
 <style scoped>
+.loading-screen {
+    display: flex;
+    min-height: 80vh;
+    justify-content: center;
+    align-items: center;
+}
+
 .collection-wrapper {
     display: flex;
     flex-direction: column;
