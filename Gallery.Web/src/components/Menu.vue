@@ -153,7 +153,7 @@ nav {
 .menu-item:hover,
 .logo:hover {
     background: linear-gradient(var(--view-primary-color), var(--view-primary-color)) no-repeat;
-    background-size: 100% 4px;
+    background-size: 100% 2px;
     background-position: 0 95%;
 }
 
@@ -202,7 +202,7 @@ nav {
 @media (min-width: 1920px) {
     .show-menu {
         background: linear-gradient(var(--view-primary-color), var(--view-primary-color)) no-repeat;
-        background-size: 4px 100cap;
+        background-size: 2px 85%;
         background-position: 100% 50%;
         background-color: var(--lightest-color);
     }

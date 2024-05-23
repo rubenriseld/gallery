@@ -18,7 +18,8 @@
     --slightly-dark-color: #98a99d;
     --dark-color: #505050;
     --darker-color: #272727;
-    --view-primary-color: #d0591e;
+    /* --view-primary-color: #d0591e;*/
+    --view-primary-color: #2525256b;
 
     --max-width: 1920px;
     --text-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
