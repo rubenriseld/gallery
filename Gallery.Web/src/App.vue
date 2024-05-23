@@ -51,7 +51,6 @@ footer {
 .contact-link {
     color: var(--darker-color);
     text-decoration: none;
-    font-weight: bold;
     font-family: inherit;
     padding-bottom: 0.2rem;
 }
