@@ -301,7 +301,7 @@ button {
 
 .close-button {
     position: absolute;
-    top: 1rem;
+    top: 0;
     right: calc((1rem + 100vw - var(--max-width)) / 2);
 }
 
