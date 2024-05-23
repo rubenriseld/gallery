@@ -1,8 +1,7 @@
-﻿using Gallery.Database.Entities;
+﻿using Gallery.API.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace Gallery.Database;
 
@@ -20,5 +19,33 @@ public class GalleryDbContext : IdentityDbContext<IdentityUser>
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(GalleryDbContext).Assembly);
         return modelBuilder;
+    }
+
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        var changes = ChangeTracker.Entries();
+
+        foreach (var item in changes)
+        {
+            if (item.State == EntityState.Added)
+            {
+                if (item.Entity is IHasTimeStamps x)
+                {
+                    if (x.CreatedDate == DateTime.MinValue)
+                    {
+                        x.CreatedDate = DateTime.UtcNow;
+                    }
+                }
+            }
+            if (item.State == EntityState.Modified)
+            {
+                if (item.Entity is IHasTimeStamps x)
+                {
+                    x.ModifiedDate = DateTime.UtcNow;
+                }
+            }
+        }
+
+        return base.SaveChangesAsync();
     }
 }

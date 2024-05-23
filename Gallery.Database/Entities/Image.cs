@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Gallery.API.Interfaces;
+using System.ComponentModel.DataAnnotations;
 
 namespace Gallery.Database.Entities;
 
-public class Image
+public class Image : IHasTimeStamps
 {
     public string ImageId { get; private set; } = Guid.NewGuid().ToString();
     public required string Uri { get; set; }
@@ -16,4 +17,6 @@ public class Image
     public string? CoverImageCollectionId { get; set; }
     public virtual ImageCollection? CoverImageCollection { get; set; }
     public virtual ICollection<Tag> Tags { get; set; } = new HashSet<Tag>();
+    public DateTime CreatedDate { get; set; }
+    public DateTime? ModifiedDate { get; set; }
 } 

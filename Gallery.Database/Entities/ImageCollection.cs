@@ -1,6 +1,8 @@
-﻿namespace Gallery.Database.Entities;
+﻿using Gallery.API.Interfaces;
 
-public class ImageCollection
+namespace Gallery.Database.Entities;
+
+public class ImageCollection : IHasTimeStamps
 {
     public string ImageCollectionId { get; private set; } = Guid.NewGuid().ToString();
     public required string Name { get; set; }
@@ -9,4 +11,6 @@ public class ImageCollection
     public virtual Image? CoverImage { get; set; }
     public virtual ICollection<Image> Images { get; set; } = new HashSet<Image>();
     public bool ShouldBeDisplayed { get; set; }
+    public DateTime CreatedDate { get; set; }
+    public DateTime? ModifiedDate { get; set; }
 }

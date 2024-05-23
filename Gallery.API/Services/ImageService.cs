@@ -96,6 +96,7 @@ public class ImageService : IImageService
     public async Task<List<ReadImageDTO>> GetAllImages()
     {
         var images = await _imageRepository.Get()
+            .OrderByDescending(i => i.CreatedDate)
             .Include(i => i.ImageCollection)
             .Include(i => i.Tags)
             .ToListAsync();
